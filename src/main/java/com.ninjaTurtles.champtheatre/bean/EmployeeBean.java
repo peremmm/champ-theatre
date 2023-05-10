@@ -6,7 +6,7 @@ import com.ninjaTurtles.champtheatre.models.Reservation;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -16,8 +16,10 @@ public class EmployeeBean {
     private String firstName;
     private String lastName;
     private String email;
-    private List<Participant> participants = new ArrayList<>();
-    private List<Reservation> reservations1 = new ArrayList<>();
-    private List<Reservation> reservations2 = new ArrayList<>();
+    private List<Participant> participants;
+    private List<Reservation> reservations1;
+    private List<Reservation> reservations2;
     private EmployeeAccount employeeAccount;
+    private LocalDateTime createdOn;
+    private LocalDateTime updateOn;
 }

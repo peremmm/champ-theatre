@@ -5,7 +5,7 @@ import com.ninjaTurtles.champtheatre.models.RoleModule;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.HashSet;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
@@ -13,6 +13,8 @@ import java.util.Set;
 public class RoleBean {
     private Long id;
     private String role;
-    private Set<EmployeeRole> employee = new HashSet<>();
-    private Set<RoleModule> module = new HashSet<>();
+    private Set<EmployeeRole> employee;
+    private Set<RoleModule> module;
+    private LocalDateTime createdOn;
+    private LocalDateTime updateOn;
 }

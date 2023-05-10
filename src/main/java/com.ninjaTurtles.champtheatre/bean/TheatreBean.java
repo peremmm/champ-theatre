@@ -5,7 +5,7 @@ import com.ninjaTurtles.champtheatre.models.Theatre;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -14,5 +14,7 @@ public class TheatreBean {
     private String name;
     private Theatre.Status status;
     private Integer capacity;
-    private List<Reservation> reservations = new ArrayList<>();
+    private List<Reservation> reservations;
+    private LocalDateTime createdOn;
+    private LocalDateTime updateOn;
 }
