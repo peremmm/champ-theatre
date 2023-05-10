@@ -19,6 +19,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
@@ -26,12 +27,11 @@ import lombok.Setter;
 @Table(name = "EMPLOYEES")
 @NoArgsConstructor
 @AllArgsConstructor
-@Setter
+@Data
 
 public class Employee implements Serializable{
 
     private static final long serialVersionUID = -5800161177605867628L;
-
 
 	@Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "custom_employee_sequence")
@@ -47,9 +47,9 @@ public class Employee implements Serializable{
 
     @Column(columnDefinition = "VARCHAR(70)", nullable = false, unique = true)
     private String email;
-    
-    @OneToMany(mappedBy = "employee")
-    private Set<Participant> participants = new HashSet<>();
+
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Participant> participants = new ArrayList<>();
     
     @OneToMany(mappedBy = "booker", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reservation> reservations1 = new ArrayList<>();
@@ -62,8 +62,6 @@ public class Employee implements Serializable{
     
     @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
     private EmployeeAccount employeeAccount;
-
-
 
     
 }

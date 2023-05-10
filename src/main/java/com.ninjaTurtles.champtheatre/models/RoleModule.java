@@ -26,7 +26,6 @@ public class RoleModule {
     @EmbeddedId
     private RoleModuleId id;
 
-   
     @ManyToOne
     @MapsId("roleId")
     @JoinColumn(name = "role_id")

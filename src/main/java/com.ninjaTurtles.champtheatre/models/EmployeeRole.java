@@ -7,18 +7,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-@Setter
-@Getter
-@EqualsAndHashCode
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Data
 @Table(name = EmployeeRole.TABLE_NAME)
 public class EmployeeRole {
     protected static final String TABLE_NAME = "employee_role";

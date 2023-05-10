@@ -1,19 +1,18 @@
 package com.ninjaTurtles.champtheatre.models;
 
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name = "RESERVATIONS")
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Reservation extends AbstractEntity {
@@ -62,7 +61,7 @@ public class Reservation extends AbstractEntity {
     @ManyToOne(fetch = FetchType.EAGER, optional= true)
     @JoinColumn(name = "reviewer_id")
     private Employee reviewer;
-    
-    @OneToMany(mappedBy = "reservation")
-    private Set<Participant> participants = new HashSet<>();
+
+    @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Participant> participants = new ArrayList<>();
 }

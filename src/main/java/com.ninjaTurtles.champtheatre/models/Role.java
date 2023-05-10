@@ -13,18 +13,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
-@Getter
-@EqualsAndHashCode
+@Data
 @Table(name = "ROLES")
 public class Role implements Serializable{
     private static final long serialVersionUID = -4330760658341102884L;

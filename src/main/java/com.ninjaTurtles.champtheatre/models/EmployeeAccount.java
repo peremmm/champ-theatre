@@ -3,13 +3,14 @@ package com.ninjaTurtles.champtheatre.models;
 import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
+@Data
 @Table(name = "EMPLOYEE_ACCOUNTS")
 public class EmployeeAccount extends AbstractEntity{
 	

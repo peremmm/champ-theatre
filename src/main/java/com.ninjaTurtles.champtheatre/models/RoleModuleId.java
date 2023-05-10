@@ -19,7 +19,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class RoleModuleId implements Serializable {
     private static final long serialVersionUID = 2360992123657946697L;
-
     
     @Column(name = "role_id")
     private Long roleId;
