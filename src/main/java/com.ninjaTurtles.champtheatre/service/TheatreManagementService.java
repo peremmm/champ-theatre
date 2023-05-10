@@ -1,5 +1,6 @@
 package com.ninjaTurtles.champtheatre.service;
 
+import com.ninjaTurtles.champtheatre.bean.TheatreBean;
 import com.ninjaTurtles.champtheatre.models.Theatre;
 
 import java.util.List;
@@ -7,7 +8,9 @@ import java.util.List;
 
 public interface TheatreManagementService {
 	
-	List<Theatre> getAllTheatre();
+	List<TheatreBean> getAllTheatre();
+
+	TheatreBean findTheatreById(Long theatreId);
 
 	void changeTheatreStatus(Theatre theatre);
 	

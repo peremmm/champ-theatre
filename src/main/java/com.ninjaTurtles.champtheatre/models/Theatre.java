@@ -1,11 +1,14 @@
 package com.ninjaTurtles.champtheatre.models;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.*;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name = "THEATERS")
@@ -38,5 +41,11 @@ public class Theatre extends AbstractEntity {
 
 	@OneToMany(mappedBy = "theatre", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Reservation> reservations = new ArrayList<>();
+
+	@CreationTimestamp
+	private LocalDateTime createdOn;
+
+	@UpdateTimestamp
+	private LocalDateTime updateOn;
 
 }
