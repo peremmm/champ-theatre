@@ -19,16 +19,16 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "EMPLOYEES")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-
+@Builder
 public class Employee implements Serializable{
 
     private static final long serialVersionUID = -5800161177605867628L;
