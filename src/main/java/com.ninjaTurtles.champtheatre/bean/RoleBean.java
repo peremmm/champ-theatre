@@ -4,6 +4,7 @@ import com.ninjaTurtles.champtheatre.models.EmployeeRole;
 import com.ninjaTurtles.champtheatre.models.RoleModule;
 import lombok.Builder;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -15,6 +16,8 @@ public class RoleBean {
     private String role;
     private Set<EmployeeRole> employee;
     private Set<RoleModule> module;
+    @CreationTimestamp
     private LocalDateTime createdOn;
+    @CreationTimestamp
     private LocalDateTime updateOn;
 }

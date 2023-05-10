@@ -9,6 +9,8 @@ import javax.persistence.Table;
 
 import lombok.*;
 
+import java.io.Serializable;
+
 
 @NoArgsConstructor
 @AllArgsConstructor
