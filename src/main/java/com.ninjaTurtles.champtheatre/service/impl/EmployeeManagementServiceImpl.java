@@ -22,24 +22,28 @@ public class EmployeeManagementServiceImpl implements EmployeeManagementService 
     }
 
     @Override
-    public void register(Employee employee) {
-
+    public Employee register(Employee employee) {
+        return employeeRepository.save(employee);
     }
 
     @Override
     public List<EmployeeBean> getAllEmployee() {
         List<Employee> employees = employeeRepository.findAll();
-        return employees.stream().map((employee) -> mapToEmployeeBean(employee)).collect(Collectors.toList());
+        return employees.stream().map(this::mapToEmployeeBean).collect(Collectors.toList());
     }
 
     private EmployeeBean mapToEmployeeBean(Employee employee) {
-        EmployeeBean employeeBean = EmployeeBean.builder()
+        return EmployeeBean.builder()
                 .id(employee.getId())
                 .firstName(employee.getFirstName())
                 .lastName(employee.getLastName())
                 .email(employee.getEmail())
                 .build();
-        return employeeBean;
+    }
+
+    @Override
+    public EmployeeAccount addEmployeeAccount(Long employeeId, EmployeeAccount employeeAccount) {
+        return null;
     }
 
     @Override
@@ -57,8 +61,5 @@ public class EmployeeManagementServiceImpl implements EmployeeManagementService 
 
     }
 
-    @Override
-    public void addEmployeeAccount(Employee employeeId, EmployeeAccount employeeAccount) {
 
-    }
 }

@@ -11,7 +11,7 @@ public interface EmployeeManagementService {
 
 	List<EmployeeBean> getAllEmployee();
 
-	void register(Employee employee);
+	Employee register(Employee employee);
 
 	void updateEmployeeDetails(Employee employee);
 
@@ -19,6 +19,6 @@ public interface EmployeeManagementService {
 
 	void deleteEmployeeAccount(EmployeeAccount employeeAccount);
 
-	void addEmployeeAccount(Employee employeeId, EmployeeAccount employeeAccount);
+	EmployeeAccount addEmployeeAccount(Long employeeId, EmployeeAccount employeeAccount);
 
 }

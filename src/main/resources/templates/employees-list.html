@@ -18,10 +18,7 @@
             </div>
             <div class="row gx-5">
                 <div>
-                    <form th:action="@{/clubs/search}" class="form-inline my-2 my-lg-0 mb-3">
-                        <input name="query" class="form-control mr-sm-2 mb-5" type="search"
-                               placeholder="Search running clubs" aria-label="Search">
-                    </form>
+
                     <div th:each="employee : ${employees}" class="col-lg-6 mb-2">
                         <div class="position-relative mb-3">
                             <a th:text="${employee.id}"
@@ -46,3 +43,40 @@
 </main>
 </body>
 </html>
+
+<!--<html-->
+<!--        xmlns:th="http://thymeleaf.org"-->
+<!--        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"-->
+<!--        layout:decorate="~{layout}">-->
+<!--<head>-->
+<!--    <title>Employees List</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<main>-->
+<!--    <section>-->
+<!--        <div>-->
+<!--            &lt;!&ndash;            <div th:if="${param.success}" class="alert alert-success">&ndash;&gt;-->
+<!--            &lt;!&ndash;                You are registered successfully!&ndash;&gt;-->
+<!--            &lt;!&ndash;            </div>&ndash;&gt;-->
+<!--            <div>-->
+<!--                <h1>Find Employees</h1>-->
+<!--                <p>Groups of passionate near you</p>-->
+<!--            </div>-->
+<!--            <div>-->
+<!--                <div>-->
+
+<!--                    <div th:each="employee : ${employees}">-->
+<!--                        <div>-->
+<!--                            <a th:text="${employee.id}" href="#!">Project name</a>-->
+<!--                            <a th:text="${employee.firstName}" href="#!">Project name</a>-->
+<!--                            <a th:text="${employee.lastName}" href="#!">Project name</a>-->
+<!--                            <a th:text="${employee.email}" href="#!">Project name</a>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </section>-->
+<!--</main>-->
+<!--</body>-->
+<!--</html>-->
