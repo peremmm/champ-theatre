@@ -34,7 +34,7 @@ public class Role implements Serializable{
     @SequenceGenerator(sequenceName = "custom_role_sequence", name = "custom_role_sequence", allocationSize = 1)
     private Long id;
 
-    @Column(columnDefinition = "VARCHAR(15)", nullable = false)
+    @Column(columnDefinition = "VARCHAR(75)", nullable = false)
     private String role;
 
     @OneToMany(mappedBy = "role")

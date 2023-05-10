@@ -1,13 +1,6 @@
 package com.ninjaTurtles.champtheatre.models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -28,11 +21,15 @@ public class EmployeeAccount extends AbstractEntity{
 
     
     private static final long serialVersionUID = -1574715895034102724L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "custom_employee_account_sequence")
+    @SequenceGenerator(sequenceName = "employee_account_sequence", name = "custom_employee_account_sequence", allocationSize = 1)
+    private Long id;
 
-	@Column(columnDefinition = "VARCHAR(15)", nullable = false)
+	@Column(columnDefinition = "VARCHAR(75)", nullable = false)
     private String username;
 
-    @Column(columnDefinition = "VARCHAR(15)", nullable = false)
+    @Column(columnDefinition = "VARCHAR(75)", nullable = false)
     private String password;
 
     @OneToOne(fetch = FetchType.LAZY)

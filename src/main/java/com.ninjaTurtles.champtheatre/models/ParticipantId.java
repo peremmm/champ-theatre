@@ -24,7 +24,7 @@ public class ParticipantId implements Serializable {
     private static final long serialVersionUID = -197564728129721683L;
     
     @Column(name = "reservation_id")
-    private UUID reservationId;
+    private Long reservationId;
 
     
 	@Column(name = "employee_id")

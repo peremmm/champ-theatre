@@ -45,7 +45,7 @@ public class Employee implements Serializable{
     @Column(columnDefinition = "VARCHAR(75)", nullable = false)
     private String lastName;
 
-    @Column(columnDefinition = "VARCHAR(50)", nullable = false, unique = true)
+    @Column(columnDefinition = "VARCHAR(70)", nullable = false, unique = true)
     private String email;
     
     @OneToMany(mappedBy = "employee")

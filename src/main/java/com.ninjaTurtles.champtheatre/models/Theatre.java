@@ -3,13 +3,7 @@ package com.ninjaTurtles.champtheatre.models;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,6 +24,11 @@ public class Theatre extends AbstractEntity {
 	}
 
 	private static final long serialVersionUID = -127860149735454233L;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "custom_theatre_sequence")
+	@SequenceGenerator(sequenceName = "theatre_sequence", name = "custom_theatre_sequence", allocationSize = 1)
+	private Long id;
 
 	@Column(columnDefinition = "VARCHAR(75)", nullable = false)
 	private String name;

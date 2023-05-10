@@ -34,7 +34,7 @@ public class Module implements Serializable{
     @SequenceGenerator(sequenceName = "custom_module_sequence", name = "custom_module_sequence", allocationSize = 1)
     private Long id;
 
-    @Column(columnDefinition = "VARCHAR(15)", nullable = false)
+    @Column(columnDefinition = "VARCHAR(75)", nullable = false)
     private String module;
 
     @OneToMany(mappedBy = "module")

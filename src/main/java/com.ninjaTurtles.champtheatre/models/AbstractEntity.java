@@ -27,12 +27,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @SuppressWarnings("serial")
 public abstract class AbstractEntity implements Serializable {
-    @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(name = "id", length = 16, unique = true, nullable = false)
-    @JsonProperty(access = Access.READ_WRITE)
-    protected UUID id;
+
 
     @Column(updatable = false, nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")

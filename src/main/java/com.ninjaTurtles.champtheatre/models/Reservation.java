@@ -5,16 +5,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -35,7 +26,12 @@ public class Reservation extends AbstractEntity {
         CANCELLED,
         REJECTED
     }
-   
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "custom_reservation_sequence")
+    @SequenceGenerator(sequenceName = "reservation_sequence", name = "custom_reservation_sequence", allocationSize = 1)
+    private Long id;
+
     @Column( nullable = false)
     private Integer event_type;
     
@@ -45,6 +41,12 @@ public class Reservation extends AbstractEntity {
     
     @Column(columnDefinition = "DATE", nullable = false)
     private Date eventDate;
+
+    @Column(columnDefinition = "DATE", nullable = false)
+    private Date startTime;
+
+    @Column(columnDefinition = "DATE", nullable = false)
+    private Date endTime;
     
     @Enumerated(EnumType.STRING)
     @Column(length = 15, nullable = false)
