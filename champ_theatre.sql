@@ -9,9 +9,9 @@ SELECT 203, 'Bob', 'Johnson', 'bobjohnson@example.com' FROM dual;
 
 -- for EMPLOYEE_ACCOUNTS 
 INSERT INTO employee_accounts (id, created_date, modified_date, password, status, username, employee_id)
-SELECT 1001, '2022-01-01', '2022-01-01', 'password1', 'active', 'johndoe', 1 FROM dual UNION ALL
-SELECT 1002, '2022-01-01', '2022-01-01', 'password2', 'inactive', 'janesmith', 2 FROM dual UNION ALL
-SELECT 1003, '2022-01-01', '2022-01-01', 'password3', 'active', 'bobsmith', 3 FROM dual;
+SELECT 1001, SYSTIMESTAMP, SYSTIMESTAMP, 'password1', 'ACTIVE', 'johndoe', 201 FROM dual UNION ALL
+SELECT 1002, SYSTIMESTAMP, SYSTIMESTAMP, 'password2', 'ACTIVE', 'janesmith', 202 FROM dual UNION ALL
+SELECT 1003, SYSTIMESTAMP, SYSTIMESTAMP, 'password3', 'INACTIVE', 'bobsmith', 203 FROM dual;
 
 -- for MODULES table
 INSERT INTO modules (id,module)
@@ -25,10 +25,10 @@ SELECT 107, 'RoleManagement' FROM dual;
 
 -- for THEATERS table
 INSERT INTO theaters (id, created_date, modified_date, capacity, name, status)
-SELECT 101, '2022-01-01', '2022-01-01', 100, 'Theater A', 'AVAILABLE' FROM dual UNION ALL
-SELECT 102, '2022-01-01', '2022-01-01', 200, 'Theater B', 'OCCUPIED' FROM dual UNION ALL
-SELECT 103, '2022-01-01', '2022-01-01', 150, 'Theater C', 'MAINTENANCE' FROM dual UNION ALL
-SELECT 104, '2022-01-01', '2022-01-01', 150, 'Theater D', 'MAINTENANCE' FROM dual;
+SELECT 101, SYSTIMESTAMP, SYSTIMESTAMP, 100, 'Theater A', 'AVAILABLE' FROM dual UNION ALL
+SELECT 102, SYSTIMESTAMP, SYSTIMESTAMP, 200, 'Theater B', 'OCCUPIED' FROM dual UNION ALL
+SELECT 103, SYSTIMESTAMP, SYSTIMESTAMP, 150, 'Theater C', 'MAINTENANCE' FROM dual UNION ALL
+SELECT 104, SYSTIMESTAMP, SYSTIMESTAMP, 150, 'Theater D', 'MAINTENANCE' FROM dual;
 
 -- for ROLES table
 INSERT INTO roles (id, role)
@@ -50,3 +50,18 @@ SELECT 105, 102 FROM dual UNION ALL
 SELECT 106, 102 FROM dual UNION ALL
 SELECT 105, 103 FROM dual UNION ALL
 SELECT 106, 103 FROM dual;
+
+--for RESERVATIONS table
+INSERT INTO 
+    reservations (id, created_date, modified_date, event_date, event_description, 
+    event_type, status, booker_id, reviewer_id, theatre_id, start_time, end_time)
+VALUES 
+    (1001, SYSTIMESTAMP, SYSTIMESTAMP, DATE '2023-05-15', 'Mothers day celebration', 1, 
+    'PENDING', 201, 202, 101, TIMESTAMP '2023-05-15 09:00:00', TIMESTAMP '2023-05-15 12:00:00');
+
+--to Query for time
+SELECT TO_CHAR(start_time, 'HH24:MI:SS') AS START_TIME, TO_CHAR(end_time, 'HH24:MI:SS') AS END_TIME FROM reservations;
+INSERT INTO participants (id,employee_id, reservation_id, company, first_name, last_name)
+VALUES (1001,201, 1001,NULL , 'John', 'Doe');
+
+-- describe participants;
