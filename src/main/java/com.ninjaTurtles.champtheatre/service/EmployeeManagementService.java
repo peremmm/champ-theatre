@@ -7,19 +7,18 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 public interface EmployeeManagementService {
-	
-	void register(Employee employee);
-	
+
 	List<EmployeeBean> getAllEmployee();
-	
+
+	void register(Employee employee);
+
 	void updateEmployeeDetails(Employee employee);
-	
+
 	void updateEmployeeAccountStatus(EmployeeAccount employeeAccount);
-	
+
 	void deleteEmployeeAccount(EmployeeAccount employeeAccount);
-	
+
 	void addEmployeeAccount(Employee employeeId, EmployeeAccount employeeAccount);
 
 }

@@ -23,12 +23,12 @@
           </form>
         </div>
 
-        <div th:each="employee : ${employees}" class="col-lg-6 mb-2">
+        <div th:each="employees : ${employees}" class="col-lg-6 mb-2">
           <div class="position-relative mb-3">
-            <a th:text="${employee.id}" class="h3 fw-bolder text-decoration-none link-dark stretched-link" href="#!">Project name</a>
-            <a th:text="${employee.firstName}" class="h3 fw-bolder text-decoration-none link-dark stretched-link" href="#!">Project name</a>
-            <a th:text="${employee.lastName}" class="h3 fw-bolder text-decoration-none link-dark stretched-link" href="#!">Project name</a>
-            <a th:text="${employee.email}" class="h3 fw-bolder text-decoration-none link-dark stretched-link" href="#!">Project name</a>
+            <a th:text="${employees.id}" class="h3 fw-bolder text-decoration-none link-dark stretched-link" href="#!">Project name</a>
+            <a th:text="${employees.firstName}" class="h3 fw-bolder text-decoration-none link-dark stretched-link" href="#!">Project name</a>
+            <a th:text="${employees.lastName}" class="h3 fw-bolder text-decoration-none link-dark stretched-link" href="#!">Project name</a>
+            <a th:text="${employees.email}" class="h3 fw-bolder text-decoration-none link-dark stretched-link" href="#!">Project name</a>
 
           </div>
           <a class="btn btn-primary" th:href="@{/clubs/{clubId}(clubId=${club.id})}">View</a>

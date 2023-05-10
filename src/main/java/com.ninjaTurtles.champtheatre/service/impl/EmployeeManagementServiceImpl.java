@@ -6,13 +6,15 @@ import com.ninjaTurtles.champtheatre.models.EmployeeAccount;
 import com.ninjaTurtles.champtheatre.repository.EmployeeRepository;
 import com.ninjaTurtles.champtheatre.service.EmployeeManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class EmployeeManagementServiceImpl implements EmployeeManagementService {
 
-    private EmployeeRepository employeeRepository;
+    private final EmployeeRepository employeeRepository;
 
     @Autowired
     public EmployeeManagementServiceImpl(EmployeeRepository employeeRepository){

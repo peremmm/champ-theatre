@@ -11,7 +11,8 @@ import java.util.List;
 
 @Controller
 public class EmployeeManagementController {
-    private EmployeeManagementService employeeManagementService;
+
+    private final EmployeeManagementService employeeManagementService;
 
     @Autowired
     public EmployeeManagementController(EmployeeManagementService employeeManagementService){
