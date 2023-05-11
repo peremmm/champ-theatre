@@ -11,6 +11,7 @@ import java.util.List;
 @Data
 @Builder
 public class TheatreBean {
+    private Long id;
     private String name;
     private Theatre.Status status;
     private Integer capacity;
