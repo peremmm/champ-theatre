@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
@@ -44,6 +45,13 @@ public class EmployeeManagementController {
         EmployeeAccount employeeAccount = new EmployeeAccount();
         employeeManagementService.addEmployeeAccount(employeeAccount, employee);
         return "redirect:/employees";
+    }
+
+    @GetMapping("/employees/{employeeId}/edit")
+    public String editEmployeeForm(@PathVariable("employeeId") long employeeId, Model model){
+        EmployeeBean employee = employeeManagementService.findEmployeeById(employeeId);
+        model.addAttribute("employee", employee);
+        return "clubs-edit";
     }
 
 

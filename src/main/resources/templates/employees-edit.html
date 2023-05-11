@@ -1,0 +1,34 @@
+<html
+        xmlns:th="http://thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layout}">
+<head>
+    <title>Employee Edit</title>
+</head>
+<body>
+<main>
+    <section>
+        <div class="container">
+            <form role="form" method="post" th:action="@{/employees/{employeeId}/edit(employeeId=${employeeId}})}" th:object="${employee}">
+                <input type="hidden" th:field="*{id}">
+                <div>
+                    <span id="basic-addon1">@</span>
+                    <input type="text" id="firstName" name="firstName" th:field="*{firstName}" placeholder="First Name">
+                </div>
+
+                <div>
+                    <span id="basic-addon2">@</span>
+                    <input type="text" id="lastName" name="lastName" th:field="*{lastName}" placeholder="Last Name">
+                </div>
+
+                <div>
+                    <input type="text" id="email" name="email" th:field="*{email}" placeholder="Email">
+<!--                    <span id="basic-addon3">@champ.aero</span>-->
+                </div>
+                <button class="btn btn-primary" type="submit">Create</button>
+            </form>
+        </div>
+    </section>
+</main>
+</body>
+</html>

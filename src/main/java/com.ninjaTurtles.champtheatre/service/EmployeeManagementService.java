@@ -20,4 +20,5 @@ public interface EmployeeManagementService {
 
 	EmployeeAccount addEmployeeAccount(EmployeeAccount employeeAccount, Employee employee);
 
+	EmployeeBean findEmployeeById(long employeeId);
 }

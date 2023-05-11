@@ -48,12 +48,18 @@ public class EmployeeManagementServiceImpl implements EmployeeManagementService 
     @Override
     public EmployeeAccount addEmployeeAccount(EmployeeAccount employeeAccount, Employee employee) {
         String password = RandomStringUtils.random(10, true, true);
-        employeeAccount.setUsername(employee.getFirstName() + employee.getLastName());
+        employeeAccount.setUsername((employee.getFirstName() + employee.getLastName()).toLowerCase());
         employeeAccount.setPassword(password);
         employeeAccount.setEmployee(employee);
         employeeAccount.setStatus(EmployeeAccount.Status.INACTIVE);
 
         return employeeAccountRepository.save(employeeAccount);
+    }
+
+    @Override
+    public EmployeeBean findEmployeeById(long employeeId) {
+        Employee employee = employeeRepository.findById(employeeId).get();
+        return mapToEmployeeBean(employee);
     }
 
     @Override
