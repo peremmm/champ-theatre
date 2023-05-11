@@ -30,14 +30,23 @@ public class TheatreManagementController {
         return "theatre-list";
     }
 
-    @GetMapping("/theatres/{theatreId}/edit")
+    @GetMapping("/theatres/{theatreId}")
+    public String theatreDetail(@PathVariable("theatreId") long theatreId, Model model){
+        TheatreBean theatreBean = theatreManagementService.findTheatreById(theatreId);
+        model.addAttribute("theatre",theatreBean);
+        return "theatre-details";
+    }
+
+
+
+    @GetMapping("/theatres/{theatreId}/edit-status")
     public String editStatusForm(@PathVariable("theatreId")Long theatreId, Model model){
         TheatreBean theatre = theatreManagementService.findTheatreById(theatreId);
         model.addAttribute("theatre",theatre);
-        return "theatre-edit";
+        return "theatre-edit-status";
     }
 
-    @PostMapping("/theatres/{theatreId}/edit")
+    @PostMapping("/theatres/{theatreId}/edit-details")
     public String editTheatreDetails(@PathVariable("theatreId")Long theatreId,
                                      @ModelAttribute("theatre") Theatre theatre,
                                      BindingResult result,
