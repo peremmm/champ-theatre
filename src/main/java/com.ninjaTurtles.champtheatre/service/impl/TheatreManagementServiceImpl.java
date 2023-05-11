@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class TheatreManagementServiceImpl implements TheatreManagementService {
-    private final TheatreRepository theatreRepository;
+    private TheatreRepository theatreRepository;
 
     @Autowired
     public TheatreManagementServiceImpl(TheatreRepository theatreRepository) {
@@ -47,20 +47,19 @@ public class TheatreManagementServiceImpl implements TheatreManagementService {
             existingTheatre.setName(theatre.getName());
             existingTheatre.setCapacity(theatre.getCapacity());
             existingTheatre.setReservations(theatre.getReservations());
-            //existingTheatre.setUpdateOn(theatre.getUpdateOn());
+            existingTheatre.setUpdateOn(theatre.getUpdateOn());
             theatreRepository.save(existingTheatre);
         }
     }
 
     private TheatreBean mapToTheatreBean(Theatre theatre) {
         TheatreBean theatreBean = TheatreBean.builder()
-                .id(theatre.getId())
                 .name(theatre.getName())
                 .status(theatre.getStatus())
                 .capacity(theatre.getCapacity())
                 .reservations(theatre.getReservations())
-                .createdDate(theatre.getCreatedDate())
-                .modifiedDate(theatre.getModifiedDate())
+                .createdOn(theatre.getCreatedOn())
+                .updateOn(theatre.getUpdateOn())
                 .build();
         return theatreBean;
     }
