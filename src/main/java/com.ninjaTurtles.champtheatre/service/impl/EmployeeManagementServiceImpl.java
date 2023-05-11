@@ -3,8 +3,10 @@ package com.ninjaTurtles.champtheatre.service.impl;
 import com.ninjaTurtles.champtheatre.bean.EmployeeBean;
 import com.ninjaTurtles.champtheatre.models.Employee;
 import com.ninjaTurtles.champtheatre.models.EmployeeAccount;
+import com.ninjaTurtles.champtheatre.repository.EmployeeAccountRepository;
 import com.ninjaTurtles.champtheatre.repository.EmployeeRepository;
 import com.ninjaTurtles.champtheatre.service.EmployeeManagementService;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +17,12 @@ import java.util.stream.Collectors;
 public class EmployeeManagementServiceImpl implements EmployeeManagementService {
 
     private final EmployeeRepository employeeRepository;
+    private final EmployeeAccountRepository employeeAccountRepository;
 
     @Autowired
-    public EmployeeManagementServiceImpl(EmployeeRepository employeeRepository){
+    public EmployeeManagementServiceImpl(EmployeeRepository employeeRepository, EmployeeAccountRepository employeeAccountRepository){
         this.employeeRepository = employeeRepository;
+        this.employeeAccountRepository = employeeAccountRepository;
     }
 
     @Override
@@ -42,8 +46,14 @@ public class EmployeeManagementServiceImpl implements EmployeeManagementService 
     }
 
     @Override
-    public EmployeeAccount addEmployeeAccount(Long employeeId, EmployeeAccount employeeAccount) {
-        return null;
+    public EmployeeAccount addEmployeeAccount(EmployeeAccount employeeAccount, Employee employee) {
+        String password = RandomStringUtils.random(10, true, true);
+        employeeAccount.setUsername(employee.getFirstName() + employee.getLastName());
+        employeeAccount.setPassword(password);
+        employeeAccount.setEmployee(employee);
+        employeeAccount.setStatus(EmployeeAccount.Status.INACTIVE);
+
+        return employeeAccountRepository.save(employeeAccount);
     }
 
     @Override

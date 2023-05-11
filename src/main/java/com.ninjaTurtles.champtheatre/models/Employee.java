@@ -33,10 +33,12 @@ public class Employee implements Serializable{
 
     private static final long serialVersionUID = -5800161177605867628L;
 
-	@Id
+    @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "custom_employee_sequence")
-    @SequenceGenerator(sequenceName = "employee_sequence", name = "custom_employee_sequence", allocationSize = 1)
+    @SequenceGenerator(sequenceName = "employee_sequence", name = "custom_employee_sequence", initialValue = 200, allocationSize = 1)
+    @Column(name = "id")
     private Long id;
+
 
     @Column(columnDefinition = "VARCHAR(75)", nullable = false)
     private String firstName;
@@ -59,7 +61,7 @@ public class Employee implements Serializable{
     @OneToMany(mappedBy = "employee")
     private Set<EmployeeRole> roles = new HashSet<>();
     
-    @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = true)
+    @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private EmployeeAccount employeeAccount;
 
     

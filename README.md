@@ -15,24 +15,3 @@ GRANT CREATE SYNONYM TO champ_theatre;
 GRANT UNLIMITED TABLESPACE TO champ_theatre;
 
 ```
-
-### Update persistence.xml unit name
-```
-<persistence-unit name="champtheatre">
-    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-</persistence-unit>
-```
-
-### Update JpaConfiguration.java
-```
-    @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
-        LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
-        factoryBean.setJpaVendorAdapter(jpaVendorAdapter());
-        factoryBean.setPersistenceUnitName("champtheatre");
-        factoryBean.setDataSource(dataSource());
-        factoryBean.setPackagesToScan("com.bootcamp.webapp.web");
-        factoryBean.setJpaProperties(hibernateProperties());
-        return factoryBean;
-    }
-```

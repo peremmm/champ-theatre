@@ -3,6 +3,7 @@ package com.ninjaTurtles.champtheatre.controller;
 import com.ninjaTurtles.champtheatre.bean.EmployeeBean;
 import com.ninjaTurtles.champtheatre.models.Employee;
 import com.ninjaTurtles.champtheatre.models.EmployeeAccount;
+import com.ninjaTurtles.champtheatre.repository.EmployeeAccountRepository;
 import com.ninjaTurtles.champtheatre.service.EmployeeManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -40,7 +41,8 @@ public class EmployeeManagementController {
     @PostMapping("/employees/new")
     public String saveEmployee(@ModelAttribute("employee") Employee employee){
         employeeManagementService.register(employee);
-//        employeeManagementService.addEmployeeAccount(employee.getId(), employeeAccount);
+        EmployeeAccount employeeAccount = new EmployeeAccount();
+        employeeManagementService.addEmployeeAccount(employeeAccount, employee);
         return "redirect:/employees";
     }
 
