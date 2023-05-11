@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class TheatreManagementServiceImpl implements TheatreManagementService {
-    private TheatreRepository theatreRepository;
+    private final TheatreRepository theatreRepository;
 
     @Autowired
     public TheatreManagementServiceImpl(TheatreRepository theatreRepository) {
@@ -22,7 +22,7 @@ public class TheatreManagementServiceImpl implements TheatreManagementService {
     @Override
     public List<TheatreBean> getAllTheatre() {
         List<Theatre> theatres = theatreRepository.findAll();
-        return theatres.stream().map((theatre) -> mapToTheatreBean(theatre)).collect(Collectors.toList());
+        return theatres.stream().map(this::mapToTheatreBean).collect(Collectors.toList());
     }
 
     @Override
@@ -47,21 +47,21 @@ public class TheatreManagementServiceImpl implements TheatreManagementService {
             existingTheatre.setName(theatre.getName());
             existingTheatre.setCapacity(theatre.getCapacity());
             existingTheatre.setReservations(theatre.getReservations());
-            existingTheatre.setUpdateOn(theatre.getUpdateOn());
+            existingTheatre.setModifiedDate(theatre.getModifiedDate());
             theatreRepository.save(existingTheatre);
         }
     }
 
     private TheatreBean mapToTheatreBean(Theatre theatre) {
-        TheatreBean theatreBean = TheatreBean.builder()
+        return TheatreBean.builder()
+                .id(theatre.getId())
                 .name(theatre.getName())
                 .status(theatre.getStatus())
                 .capacity(theatre.getCapacity())
                 .reservations(theatre.getReservations())
-                .createdOn(theatre.getCreatedOn())
-                .updateOn(theatre.getUpdateOn())
+                .createdDate(theatre.getCreatedDate())
+                .modifiedDate(theatre.getModifiedDate())
                 .build();
-        return theatreBean;
     }
 
 }
