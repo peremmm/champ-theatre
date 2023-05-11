@@ -6,15 +6,17 @@ import java.util.*;
 import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+
 
 @Entity
 @Table(name = "RESERVATIONS")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Reservation extends AbstractEntity {
     
     private static final long serialVersionUID = -644923194083178365L;
