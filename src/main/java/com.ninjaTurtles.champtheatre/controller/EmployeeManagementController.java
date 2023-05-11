@@ -29,7 +29,7 @@ public class EmployeeManagementController {
     public String listEmployees(Model model) {
         List<EmployeeBean> employees = employeeManagementService.getAllEmployee();
         model.addAttribute("employees", employees);
-        return "employees-list";
+        return "layout";
     }
 
     @GetMapping("/employees/new")
