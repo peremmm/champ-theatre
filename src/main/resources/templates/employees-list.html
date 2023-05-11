@@ -1,82 +1,38 @@
-<html
-        xmlns:th="http://thymeleaf.org"
-        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        layout:decorate="~{layout}">
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
 <head>
-    <title>Employees List</title>
+    <title>Employee List</title>
 </head>
-<body class="d-flex flex-column h-100">
-<main class="flex-shrink-0">
-    <section layout:fragment="body" class="py-5">
-        <div class="container px-5 my-5">
-            <div th:if="${param.success}" class="alert alert-success">
-                You are registered successfully!
-            </div>
-            <div class="text-center mb-5">
-                <h1 class="fw-bolder">Find Employees</h1>
-                <p class="lead fw-normal text-muted mb-0">Groups of passionate near you</p>
-            </div>
-            <div class="row gx-5">
-                <div>
-
-                    <div th:each="employee : ${employees}" class="col-lg-6 mb-2">
-                        <div class="position-relative mb-3">
-                            <a th:text="${employee.id}"
-                               class="h3 fw-bolder text-decoration-none link-dark stretched-link" href="#!">Project
-                                name</a>
-                            <a th:text="${employee.firstName}"
-                               class="h3 fw-bolder text-decoration-none link-dark stretched-link" href="#!">Project
-                                name</a>
-                            <a th:text="${employee.lastName}"
-                               class="h3 fw-bolder text-decoration-none link-dark stretched-link" href="#!">Project
-                                name</a>
-                            <a th:text="${employee.email}"
-                               class="h3 fw-bolder text-decoration-none link-dark stretched-link" href="#!">Project
-                                name</a>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-</main>
+<body>
+<div class="container">
+    <h1>Employee List</h1>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="employee : ${employees}">
+            <td th:text="${employee.id}"></td>
+            <td th:text="${employee.firstName}"></td>
+            <td th:text="${employee.lastName}"></td>
+            <td th:text="${employee.email}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var message = /*[[${message}]]*/ null;
+    if (message) {
+        alert(message);
+    }
+    /*]]>*/
+</script>
 </body>
 </html>
-
-<!--<html-->
-<!--        xmlns:th="http://thymeleaf.org"-->
-<!--        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"-->
-<!--        layout:decorate="~{layout}">-->
-<!--<head>-->
-<!--    <title>Employees List</title>-->
-<!--</head>-->
-<!--<body>-->
-<!--<main>-->
-<!--    <section>-->
-<!--        <div>-->
-<!--            &lt;!&ndash;            <div th:if="${param.success}" class="alert alert-success">&ndash;&gt;-->
-<!--            &lt;!&ndash;                You are registered successfully!&ndash;&gt;-->
-<!--            &lt;!&ndash;            </div>&ndash;&gt;-->
-<!--            <div>-->
-<!--                <h1>Find Employees</h1>-->
-<!--                <p>Groups of passionate near you</p>-->
-<!--            </div>-->
-<!--            <div>-->
-<!--                <div>-->
-
-<!--                    <div th:each="employee : ${employees}">-->
-<!--                        <div>-->
-<!--                            <a th:text="${employee.id}" href="#!">Project name</a>-->
-<!--                            <a th:text="${employee.firstName}" href="#!">Project name</a>-->
-<!--                            <a th:text="${employee.lastName}" href="#!">Project name</a>-->
-<!--                            <a th:text="${employee.email}" href="#!">Project name</a>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </section>-->
-<!--</main>-->
-<!--</body>-->
-<!--</html>-->
