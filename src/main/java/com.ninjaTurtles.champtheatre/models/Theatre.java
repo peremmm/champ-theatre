@@ -2,6 +2,7 @@ package com.ninjaTurtles.champtheatre.models;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.*;
@@ -43,9 +44,9 @@ public class Theatre extends AbstractEntity {
 	private List<Reservation> reservations = new ArrayList<>();
 
 	@CreationTimestamp
-	private LocalDateTime createdOn;
+	private Date createdDate;
 
 	@UpdateTimestamp
-	private LocalDateTime updateOn;
+	private Date modifiedDate;
 
 }

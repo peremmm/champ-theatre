@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -16,6 +17,6 @@ public class TheatreBean {
     private Theatre.Status status;
     private Integer capacity;
     private List<Reservation> reservations;
-    private LocalDateTime createdOn;
-    private LocalDateTime updateOn;
+    private Date createdDate;
+    private Date modifiedDate;
 }

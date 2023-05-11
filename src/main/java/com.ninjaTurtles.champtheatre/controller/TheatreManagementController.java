@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import java.util.List;
 
 @Controller
-public class TheatreController {
-    private TheatreManagementService theatreManagementService;
+public class TheatreManagementController {
+    private final TheatreManagementService theatreManagementService;
 
     @Autowired
-    public TheatreController(TheatreManagementService theatreManagementService) {
+    public TheatreManagementController(TheatreManagementService theatreManagementService) {
         this.theatreManagementService = theatreManagementService;
     }
 
