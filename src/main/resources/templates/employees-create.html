@@ -11,22 +11,30 @@
         <div class="container">
             <form role="form" method="post" th:action="@{/employees/new}" th:object="${employee}">
                 <div>
-                    <span id="basic-addon1">@</span>
+                    <span id="basic-addon1"></span>
                     <input type="text" id="firstName" name="firstName" th:field="*{firstName}" placeholder="First Name">
                 </div>
 
                 <div>
-                    <span id="basic-addon2">@</span>
+                    <span id="basic-addon2"></span>
                     <input type="text" id="lastName" name="lastName" th:field="*{lastName}" placeholder="Last Name">
                 </div>
 
                 <div>
-                    <input type="text" id="email" name="email" th:field="*{email}" placeholder="Email">
+                    <input type="email" id="email" name="email" th:field="*{email}" placeholder="Email">
 <!--                    <span id="basic-addon3">@champ.aero</span>-->
                 </div>
                 <button class="btn btn-primary" type="submit">Create</button>
             </form>
         </div>
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            var error = /*[[${error}]]*/ null;
+            if (error) {
+                alert(error);
+            }
+            /*]]>*/
+        </script>
     </section>
 </main>
 </body>

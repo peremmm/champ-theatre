@@ -1,6 +1,10 @@
 
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title>Employee List</title>
+</head>
 
 <section th:replace="header-menu.html"></section>
 
@@ -15,48 +19,38 @@
             </ol>
         </nav>
     </div><!-- End Page Title -->
-
-
-    <!-- EDIT THIS AS YOU WILL -->
     <section class="section dashboard">
-        <div >
-            <div th:if="${param.success}" class="alert alert-success">
-                You are registered successfully!
-            </div>
-            <div >
-                <h1>Find Employees</h1>
-                <p >Groups of passionate near you</p>
-            </div>
-            <div class="row gx-5">
-                <div>
-
-                    <div th:each="employee : ${employees}">
-                        <div >
-                            <a th:text="${employee.id}"
-                               >Project
-                                name</a>
-                            <a th:text="${employee.firstName}"
-                               >Project
-                                name</a>
-                            <a th:text="${employee.lastName}"
-                               >Project
-                                name</a>
-                            <a th:text="${employee.email}"
-                               >Project
-                                name</a>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
+    <h1>Employee List</h1>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="employee : ${employees}">
+            <td th:text="${employee.id}"></td>
+            <td th:text="${employee.firstName}"></td>
+            <td th:text="${employee.lastName}"></td>
+            <td th:text="${employee.email}"></td>
+        </tr>
+        </tbody>
+    </table>
     </section>
-    <!-- END OF CONTENT -->
+</main>
 
-</main><!-- End #main -->
-
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var message = /*[[${message}]]*/ null;
+    if (message) {
+        alert(message);
+    }
+    /*]]>*/
+</script>
 <section th:replace="footer-scripts.html"></section>
 
 </html>
+
