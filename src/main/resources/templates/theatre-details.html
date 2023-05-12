@@ -32,7 +32,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="theatre : ${theatres}">
+            <tr>
                 <td th:text="${theatre.id}"></td>
                 <td th:text="${theatre.name}"></td>
                 <td th:text="${theatre.capacity}"></td>
@@ -45,14 +45,6 @@
     </section>
 </main>
 
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    var message = /*[[${message}]]*/ null;
-    if (message) {
-        alert(message);
-    }
-    /*]]>*/
-</script>
 <section th:replace="footer-scripts.html"></section>
 
 </html>

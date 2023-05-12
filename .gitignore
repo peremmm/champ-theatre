@@ -688,6 +688,9 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 
+#Application Properties
+application.properties
+
 ### VisualStudio Patch ###
 # Additional files built by Visual Studio
 

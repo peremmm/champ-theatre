@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <title>Theatre Edit Status</title>
+</head>
+
+<section th:replace="header-menu.html"></section>
+
+<main id="main" class="main">
+
+    <!-- Start Page Title -->
+    <div class="pagetitle">
+        <h1>Edit Theatre Details</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item active">Theatres</li>
+            </ol>
+        </nav>
+    </div>
+    <!-- End Page Title -->
+
+    <section class="section dashboard">
+        <div class="container">
+            <form method="post" >
+                <select name="status" id="status" th:field="*{theatre.status}">
+                    <option th:each="status : ${statuses}"
+                            th:value="${status}"
+                            th:text="${status}"
+                    ></option>
+                </select>
+                <button type="submit" class="btn btn-primary">Update Status</button>
+            </form>
+        </div>
+    </section>
+</main>
+<section th:replace="footer-scripts.html"></section>
+</html>

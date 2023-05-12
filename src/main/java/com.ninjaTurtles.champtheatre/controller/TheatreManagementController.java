@@ -6,11 +6,9 @@ import com.ninjaTurtles.champtheatre.service.TheatreManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
@@ -24,39 +22,62 @@ public class TheatreManagementController {
     }
 
     @GetMapping("/theatres")
-    public String listTheatres(Model model){
+    public String GetAllTheatres(Model model){
         List<TheatreBean> theatres = theatreManagementService.getAllTheatre();
         model.addAttribute("theatres", theatres);
         return "theatre-list";
     }
 
     @GetMapping("/theatres/{theatreId}")
-    public String theatreDetail(@PathVariable("theatreId") long theatreId, Model model){
+    public String getTheatreById(@PathVariable("theatreId") long theatreId, Model model){
         TheatreBean theatreBean = theatreManagementService.findTheatreById(theatreId);
         model.addAttribute("theatre",theatreBean);
         return "theatre-details";
     }
 
-
-
-    @GetMapping("/theatres/{theatreId}/edit-status")
-    public String editStatusForm(@PathVariable("theatreId")Long theatreId, Model model){
+    @GetMapping("/theatres/{theatreId}/update")
+    public String updateTheatreDetails(@PathVariable("theatreId") Long theatreId, Model model) {
         TheatreBean theatre = theatreManagementService.findTheatreById(theatreId);
-        model.addAttribute("theatre",theatre);
-        return "theatre-edit-status";
+        model.addAttribute("theatre", theatre);
+        model.addAttribute("statuses", Theatre.Status.values());
+        return "theatre-edit-details";
     }
 
-    @PostMapping("/theatres/{theatreId}/edit-details")
-    public String editTheatreDetails(@PathVariable("theatreId")Long theatreId,
+    @PostMapping("/theatres/{theatreId}/update")
+    public String saveTheatreDetails(@PathVariable("theatreId") Long theatreId,
                                      @ModelAttribute("theatre") Theatre theatre,
                                      BindingResult result,
-                                     Model model){
-        if (result.hasErrors()){
+                                     Model model) {
+        if (result.hasErrors()) {
             model.addAttribute("theatre", theatre);
-            return "theatre-edit";
+            model.addAttribute("statuses", Theatre.Status.values());
+            return "theatre-edit-details";
         }
         theatre.setId(theatreId);
         theatreManagementService.updateTheatreDetails(theatre);
-        return "redirect:/theatres";
+        return "redirect:/theatres/" + theatreId;
     }
+
+
+    @GetMapping("/theatres/{theatreId}/change-status")
+    public String changeTheatreStatusForm(@PathVariable("theatreId") Long theatreId, Model model) {
+        TheatreBean theatre = theatreManagementService.findTheatreById(theatreId);
+        model.addAttribute("theatre", theatre);
+        model.addAttribute("statuses", Theatre.Status.values());
+        return "theatre-edit-status";
+    }
+
+    @PostMapping("/theatres/{theatreId}/change-status")
+    public String saveTheatreStatus(@PathVariable Long theatreId, @ModelAttribute("theatre") Theatre theatre,
+                                      BindingResult result, Model model) {
+        if (result.hasErrors()){
+            model.addAttribute("theatre", theatre);
+            model.addAttribute("statuses", Theatre.Status.values());
+            return "theatre-edit-status";
+        }
+        theatre.setId(theatreId);
+        theatreManagementService.changeTheatreStatus(theatre);
+        return "redirect:/theatres/" + theatreId;
+    }
+
 }
