@@ -11,20 +11,15 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 
-import lombok.Builder;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 @MappedSuperclass
-@Setter
-@Getter
+@Data
 @NoArgsConstructor
 @SuppressWarnings("serial")
 public abstract class AbstractEntity implements Serializable {

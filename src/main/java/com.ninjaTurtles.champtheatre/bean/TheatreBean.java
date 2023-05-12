@@ -4,6 +4,8 @@ import com.ninjaTurtles.champtheatre.models.Reservation;
 import com.ninjaTurtles.champtheatre.models.Theatre;
 import lombok.Builder;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -17,6 +19,10 @@ public class TheatreBean {
     private Theatre.Status status;
     private Integer capacity;
     private List<Reservation> reservations;
+
+    @CreationTimestamp
     private Date createdDate;
+
+    @UpdateTimestamp
     private Date modifiedDate;
 }

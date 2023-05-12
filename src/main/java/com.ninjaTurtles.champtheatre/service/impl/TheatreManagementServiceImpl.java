@@ -47,7 +47,6 @@ public class TheatreManagementServiceImpl implements TheatreManagementService {
             existingTheatre.setName(theatre.getName());
             existingTheatre.setCapacity(theatre.getCapacity());
             existingTheatre.setReservations(theatre.getReservations());
-            existingTheatre.setModifiedDate(theatre.getModifiedDate());
             theatreRepository.save(existingTheatre);
         }
     }
