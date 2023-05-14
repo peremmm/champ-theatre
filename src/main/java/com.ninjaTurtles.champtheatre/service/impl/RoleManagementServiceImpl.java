@@ -9,6 +9,7 @@ import com.ninjaTurtles.champtheatre.service.RoleManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -24,6 +25,12 @@ public class RoleManagementServiceImpl implements RoleManagementService {
     public List<RoleBean> getAllRoles() {
         List<Role> roles = roleRepository.findAll();
         return roles.stream().map(this::mapToRoleBean).collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<Role> getRoleById(Long id) {
+        Optional<Role> role = roleRepository.findById(103L);
+        return role;
     }
 
     private RoleBean mapToRoleBean(Role role){

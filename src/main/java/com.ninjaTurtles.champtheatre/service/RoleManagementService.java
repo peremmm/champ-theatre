@@ -7,12 +7,15 @@ import com.ninjaTurtles.champtheatre.models.Role;
 import com.ninjaTurtles.champtheatre.models.RoleModule;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 
 public interface RoleManagementService {
 	
 	List<RoleBean> getAllRoles();
+
+	Optional<Role> getRoleById(Long id);
 	
 	void addRole(Role role, Set<RoleModule> modules);
 	

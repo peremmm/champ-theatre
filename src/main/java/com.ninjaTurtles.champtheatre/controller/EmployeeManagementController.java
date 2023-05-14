@@ -8,10 +8,7 @@ import com.ninjaTurtles.champtheatre.service.EmployeeManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -51,17 +48,25 @@ public class EmployeeManagementController {
 
     @PostMapping("/employees/new")
     public String saveEmployee(@ModelAttribute("employee") Employee employee, RedirectAttributes redirectAttributes){
+        EmployeeAccount employeeAccount = new EmployeeAccount();
+
         try {
             employeeManagementService.register(employee);
         } catch (ServiceException e) {
             redirectAttributes.addFlashAttribute("error", "Email already exists");
             return "redirect:/employees/new"; // Redirect to the new employee form
         }
-
-        EmployeeAccount employeeAccount = new EmployeeAccount();
         employeeManagementService.addEmployeeAccount(employeeAccount, employee);
-        String message = "Employee " + employee.getFirstName() + " " + employee.getLastName() + " has been registered successfully";
-        redirectAttributes.addFlashAttribute("message", message);
+//        EmployeeBean employeeId = employeeManagementService.findEmployeeIdByEmail(employee.getEmail());
+//        Role role = new Role();
+//        role.setId(103L);
+//        employeeManagementService.addEmployeeRole(role.getId(), employeeId.getId());
+
+        redirectAttributes.addFlashAttribute("message",
+                "Employee " +
+                        employee.getFirstName() + " " +
+                        employee.getLastName() +
+                        " has been registered successfully");
 
         return "redirect:/employees";
     }
@@ -71,14 +76,14 @@ public class EmployeeManagementController {
     public String editEmployeeForm(@PathVariable("employeeId") long employeeId, Model model){
         EmployeeBean employee = employeeManagementService.findEmployeeById(employeeId);
         model.addAttribute("employee", employee);
-        return "clubs-edit";
+        return "employees-edit";
     }
 
     @PostMapping("/employees/{employeeId}/edit")
-    public String updateEmployeeName(@PathVariable("employeeId") Long employeeId, @ModelAttribute("employee") EmployeeBean employeeBean){
+    public String updateEmployee(@PathVariable("employeeId") Long employeeId, @ModelAttribute("employee") EmployeeBean employeeBean){
         employeeBean.setId(employeeId);
-        employeeManagementService.updateEmployeeId(employeeBean);
-        return null;
+        employeeManagementService.updateEmployee(employeeBean);
+        return "redirect:/employees";
     }
 
 

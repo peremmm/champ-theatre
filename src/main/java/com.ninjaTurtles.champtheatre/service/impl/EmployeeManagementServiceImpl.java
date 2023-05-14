@@ -2,14 +2,15 @@ package com.ninjaTurtles.champtheatre.service.impl;
 
 import com.ninjaTurtles.champtheatre.bean.EmployeeBean;
 import com.ninjaTurtles.champtheatre.exception.ServiceException;
-import com.ninjaTurtles.champtheatre.models.Employee;
-import com.ninjaTurtles.champtheatre.models.EmployeeAccount;
+import com.ninjaTurtles.champtheatre.models.*;
 import com.ninjaTurtles.champtheatre.repository.EmployeeAccountRepository;
 import com.ninjaTurtles.champtheatre.repository.EmployeeRepository;
+import com.ninjaTurtles.champtheatre.repository.RoleRepository;
 import com.ninjaTurtles.champtheatre.service.EmployeeManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -19,13 +20,16 @@ public class EmployeeManagementServiceImpl implements EmployeeManagementService 
 
     private final EmployeeRepository employeeRepository;
     private final EmployeeAccountRepository employeeAccountRepository;
+    private final RoleRepository roleRepository;
 
     @Autowired
-    public EmployeeManagementServiceImpl(EmployeeRepository employeeRepository, EmployeeAccountRepository employeeAccountRepository){
+    public EmployeeManagementServiceImpl(EmployeeRepository employeeRepository, EmployeeAccountRepository employeeAccountRepository, RoleRepository roleRepository){
         this.employeeRepository = employeeRepository;
         this.employeeAccountRepository = employeeAccountRepository;
+        this.roleRepository = roleRepository;
     }
 
+    @Transactional
     @Override
     public Employee register(Employee employee) throws ServiceException {
         if (employeeRepository.findByEmail(employee.getEmail()).isPresent()) {
@@ -49,6 +53,7 @@ public class EmployeeManagementServiceImpl implements EmployeeManagementService 
                 .build();
     }
 
+    @Transactional
     @Override
     public EmployeeAccount addEmployeeAccount(EmployeeAccount employeeAccount, Employee employee) {
 
@@ -79,6 +84,29 @@ public class EmployeeManagementServiceImpl implements EmployeeManagementService 
         return employeeAccountRepository.save(employeeAccount);
     }
 
+    /**
+     * TO DO
+     * roles (id, role) Initial
+     * 101, 'Administrator'
+     * 102, 'Reservation Coordinator'
+     * 103, 'User'
+     */
+    @Transactional
+    @Override
+    public EmployeeRole addEmployeeRole(Long roleId, Long employeeId) {
+        EmployeeRole employeeRole = new EmployeeRole();
+        EmployeeRoleId id = new EmployeeRoleId();
+        id.setRoleId(roleId);
+        id.setEmployeeId(employeeId);
+        employeeRole.setId(id);
+        Employee employee = employeeRepository.findById(employeeId).orElse(null);
+        if (employee != null) {
+            employeeRole.setEmployee(employee);
+        }
+        System.out.println("EmployeeID: " + employeeId + "\nRoleId: " + roleId);
+        return null; //employeeRoleRepository.save(employeeRole);
+    }
+
 
     @Override
     public EmployeeBean findEmployeeById(long employeeId) {
@@ -87,13 +115,24 @@ public class EmployeeManagementServiceImpl implements EmployeeManagementService 
     }
 
     @Override
-    public void updateEmployeeId(EmployeeBean employeeBean) {
-//        Employee employee = mapToEmployeeBean()
+    public EmployeeBean findEmployeeIdByEmail(String employeeEmail) {
+        Employee employee = employeeRepository.findByEmail(employeeEmail).get();
+        return mapToEmployeeBean(employee);
     }
 
     @Override
-    public void updateEmployeeDetails(Employee employee) {
+    public void updateEmployee(EmployeeBean employeeBean) {
+        Employee employee = mapToEmployee(employeeBean);
+        employeeRepository.save(employee);
+    }
 
+    private Employee mapToEmployee(EmployeeBean employeeBean) {
+        return Employee.builder()
+                .id(employeeBean.getId())
+                .firstName(employeeBean.getFirstName())
+                .lastName(employeeBean.getLastName())
+                .email(employeeBean.getEmail())
+                .build();
     }
 
     @Override
