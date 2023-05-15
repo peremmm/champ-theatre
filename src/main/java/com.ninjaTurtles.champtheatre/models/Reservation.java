@@ -22,10 +22,17 @@ public class Reservation extends AbstractEntity {
     private static final long serialVersionUID = -644923194083178365L;
     
     public enum Status {
+        UNREVIEWED,
+
         PENDING,
+
         APPROVED,
         CANCELLED,
         REJECTED
+    }
+    public enum Type {
+        BUSINESS,
+        LEISURE
     }
 
     @Id
@@ -34,7 +41,7 @@ public class Reservation extends AbstractEntity {
     private Long id;
 
     @Column( nullable = false)
-    private Integer event_type;
+    private Type event_type;
     
     @Lob
     @Column(nullable = false)

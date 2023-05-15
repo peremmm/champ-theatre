@@ -6,19 +6,17 @@ import com.ninjaTurtles.champtheatre.models.Reservation;
 import com.ninjaTurtles.champtheatre.models.Theatre;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
+import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
 @Data
-@Getter
 @Builder
 public class ReservationBean {
 
     private Long id;
-    private Integer event_type;
+    private Reservation.Type event_type;
     private String event_description;
     private Date eventDate;
     private Date startTime;
@@ -28,7 +26,11 @@ public class ReservationBean {
     private Employee booker;
     private Employee reviewer;
     private List<Participant> participants;
-    private Date updateOn;
-    private Date createdOn;
+
+    @CreationTimestamp
+    private Date modifiedDate;
+
+    @CreationTimestamp
+    private Date createdDate;
 
 }

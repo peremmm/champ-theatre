@@ -1,6 +1,7 @@
 package com.ninjaTurtles.champtheatre.service;
 
 import com.ninjaTurtles.champtheatre.bean.ReservationBean;
+import com.ninjaTurtles.champtheatre.models.Employee;
 import com.ninjaTurtles.champtheatre.models.Reservation;
 import com.ninjaTurtles.champtheatre.models.Theatre;
 import com.ninjaTurtles.champtheatre.repository.ReservationRepository;
@@ -12,11 +13,16 @@ public interface ReservationManagementService {
 	
 	ReservationBean findById(Long reservationId);
 
-	List<ReservationBean> searchReservationByBooker(Long bookerId);
+	List<ReservationBean> findByBooker(Employee booker);
 
-	Reservation saveReservation(ReservationBean reservationBean);
+	List<ReservationBean> findByReviewer(Employee reviewer);
 
-	void updateReservation(ReservationBean reservationBean);
+	void save(ReservationBean reservationBean);
 
 
+	List<ReservationBean> findAll();
+
+	void updateDetails(ReservationBean reservationbean);
+
+	void updateStatus(ReservationBean reservationbean);
 }
