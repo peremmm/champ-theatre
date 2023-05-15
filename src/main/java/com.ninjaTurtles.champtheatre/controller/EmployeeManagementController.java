@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
@@ -71,7 +72,6 @@ public class EmployeeManagementController {
         return "redirect:/employees";
     }
 
-
     @GetMapping("/employees/{employeeId}/edit")
     public String editEmployeeForm(@PathVariable("employeeId") long employeeId, Model model){
         EmployeeBean employee = employeeManagementService.findEmployeeById(employeeId);
@@ -85,6 +85,5 @@ public class EmployeeManagementController {
         employeeManagementService.updateEmployee(employeeBean);
         return "redirect:/employees";
     }
-
 
 }

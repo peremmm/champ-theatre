@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "EMPLOYEE_ACCOUNTS")
 public class EmployeeAccount extends AbstractEntity{
 
-    public EmployeeAccount(Long employeeId, String username, String password) {
+    public EmployeeAccount(Long employeeId, String username, String password, boolean isPasswordChanged) {
 
         this.username = username;
         this.password = password;
@@ -46,6 +46,5 @@ public class EmployeeAccount extends AbstractEntity{
     @Enumerated(EnumType.STRING)
     @Column(length = 15, nullable = false)
     private Status status;
-    
-    
+
 }
