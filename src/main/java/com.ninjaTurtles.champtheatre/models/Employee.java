@@ -18,6 +18,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import javax.validation.constraints.Email;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -46,6 +48,7 @@ public class Employee implements Serializable{
     @Column(columnDefinition = "VARCHAR(75)", nullable = false)
     private String lastName;
 
+    @Email
     @Column(columnDefinition = "VARCHAR(70)", nullable = false, unique = true)
     private String email;
 
