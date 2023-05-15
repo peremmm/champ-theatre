@@ -34,7 +34,7 @@ public class LoginController {
             session.setAttribute("username", username);
 
             if (loginService.isPasswordChanged(username)) {
-                return "theatre-list";
+                return "redirect:/theatre-list";
             } else {
                 return "change-password";
             }
