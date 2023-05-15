@@ -6,6 +6,7 @@ import com.ninjaTurtles.champtheatre.models.Reservation;
 import lombok.Builder;
 import lombok.Data;
 
+import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -13,8 +14,20 @@ import java.util.List;
 @Builder
 public class EmployeeBean {
     private Long id;
+
+    @NotNull
+    @NotEmpty(message = "Please enter the First name")
+    @ValidName(message = "Invalid first name")
     private String firstName;
+
+    @NotNull
+    @NotEmpty(message = "Please enter the Last name")
+    @ValidName(message = "Invalid last name")
     private String lastName;
+
+    @Email
+    @NotEmpty(message = "Please enter the Email")
+    @Size(max = 70, message = "Email must be no more than 70 characters")
     private String email;
     private List<Participant> participants;
     private List<Reservation> reservations1;

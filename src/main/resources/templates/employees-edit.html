@@ -29,24 +29,24 @@
                     <p class="text-center small">Enter details to edit</p>
                 </div>
 
-                <form class="row g-3 needs-validation" novalidate method="post" th:action="@{/employees/{employeeId}/edit(employeeId=${employee.id})}" th:object="${employee}">
+                <form class="row g-3 needs-validation" method="post" th:action="@{/employees/{employeeId}/edit(employeeId=${employee.id})}" th:object="${employee}">
                     <input type="hidden" th:field="*{id}">
                     <div class="col-12">
                         <label for="firstName" class="form-label">First Name</label>
-                        <input type="text" name="firstName" class="form-control" id="firstName" th:field="*{firstName}" required>
-                        <div class="invalid-feedback">Please, enter your first name!</div>
+                        <input type="text" name="firstName" class="form-control" id="firstName" th:field="*{firstName}" th:classappend="${#fields.hasErrors('firstName')} ? 'is-invalid'">
+                        <div th:if="${#fields.hasErrors('firstName')}" class="invalid-feedback" th:errors="*{firstName}"></div>
                     </div>
 
                     <div class="col-12">
                         <label for="lastName" class="form-label">Last Name</label>
-                        <input type="text" name="lastName" class="form-control" id="lastName" th:field="*{lastName}" required>
-                        <div class="invalid-feedback">Please, enter your first name!</div>
+                        <input type="text" name="lastName" class="form-control" id="lastName" th:field="*{lastName}" th:classappend="${#fields.hasErrors('lastName')} ? 'is-invalid'">
+                        <div th:if="${#fields.hasErrors('lastName')}" class="invalid-feedback" th:errors="*{lastName}"></div>
                     </div>
 
                     <div class="col-12">
                         <label for="yourEmail" class="form-label">Email</label>
-                        <input type="email" name="email" class="form-control" id="yourEmail" th:field="*{email}" required>
-                        <div class="invalid-feedback">Please enter a valid Email adddress!</div>
+                        <input type="email" name="email" class="form-control" id="yourEmail" th:field="*{email}" th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'">
+                        <div th:if="${#fields.hasErrors('email')}" class="invalid-feedback" th:errors="*{email}"></div>
                     </div>
 
                     <div class="col-12">
