@@ -66,16 +66,6 @@
             }
             /*]]>*/
 
-            document.addEventListener("DOMContentLoaded", function() {
-                var ul = document.getElementById("account-manage-nav");
-                var links = ul.getElementsByTagName("a");
-                for (var i = 0; i < links.length; i++) {
-                  links[i].addEventListener("click", function(event) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                  });
-                }
-              });
         </script>
 <section th:replace="footer-scripts.html"></section>
 

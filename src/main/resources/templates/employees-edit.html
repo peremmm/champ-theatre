@@ -50,7 +50,7 @@
                     </div>
 
                     <div class="col-12">
-                        <button class="btn btn-primary w-100" type="submit">Edit Account</button>
+                        <button id="edit-btn" class="btn btn-primary w-100" type="submit" onclick="return confirmAction()">Edit Account</button>
                     </div>
                 </form>
 
@@ -65,6 +65,11 @@
                 alert(error);
             }
             /*]]>*/
+
+            function confirmAction() {
+                var confirmed = confirm("Are you sure you want to edit this employee?");
+                return confirmed;
+            }
         </script>
 <section th:replace="footer-scripts.html"></section>
 
