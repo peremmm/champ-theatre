@@ -8,11 +8,13 @@ import com.ninjaTurtles.champtheatre.repository.EmployeeRepository;
 import com.ninjaTurtles.champtheatre.repository.RoleRepository;
 import com.ninjaTurtles.champtheatre.service.EmployeeManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,7 +33,8 @@ public class EmployeeManagementServiceImpl implements EmployeeManagementService 
 
     @Transactional
     @Override
-    public Employee register(Employee employee) throws ServiceException {
+    public Employee register(EmployeeBean employeebean) throws ServiceException {
+        Employee employee = mapToEmployee(employeebean);
         if (employeeRepository.findByEmail(employee.getEmail()).isPresent()) {
             throw new ServiceException("Email already exists.");
         }
@@ -39,23 +42,26 @@ public class EmployeeManagementServiceImpl implements EmployeeManagementService 
     }
 
     @Override
-    public List<EmployeeBean> getAllEmployee() {
-        List<Employee> employees = employeeRepository.findAll();
+    public List<EmployeeBean> getAllEmployee(String sortField, boolean ascending) {
+        Sort.Direction direction = ascending ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, sortField);
+        List<Employee> employees = employeeRepository.findAll(sort);
         return employees.stream().map(this::mapToEmployeeBean).collect(Collectors.toList());
     }
+
 
     private EmployeeBean mapToEmployeeBean(Employee employee) {
         return EmployeeBean.builder()
                 .id(employee.getId())
-                .firstName(employee.getFirstName())
-                .lastName(employee.getLastName())
+                .firstName(employee.getFirstName().trim())
+                .lastName(employee.getLastName().trim())
                 .email(employee.getEmail())
                 .build();
     }
 
     @Transactional
     @Override
-    public EmployeeAccount addEmployeeAccount(EmployeeAccount employeeAccount, Employee employee) {
+    public EmployeeAccount addEmployeeAccount(EmployeeAccount employeeAccount, EmployeeBean employeeBean) {
 
         /**
          * Get the first three characters of the first name and last name
@@ -63,6 +69,7 @@ public class EmployeeManagementServiceImpl implements EmployeeManagementService 
          *
          * (e.g.) Lastname = "Yu"
          */
+        Employee employee = mapToEmployee(employeeBean);
         String firstNamePrefix = employee.getFirstName().substring(0, Math.min(employee.getFirstName().length(), 3));
         String lastNamePrefix = employee.getLastName().substring(0, Math.min(employee.getLastName().length(), 3));
 
@@ -100,8 +107,9 @@ public class EmployeeManagementServiceImpl implements EmployeeManagementService 
         id.setEmployeeId(employeeId);
         employeeRole.setId(id);
         Employee employee = employeeRepository.findById(employeeId).orElse(null);
+
         if (employee != null) {
-            employeeRole.setEmployee(employee);
+            employee.setRoles((Set<EmployeeRole>) employeeRole);
         }
         System.out.println("EmployeeID: " + employeeId + "\nRoleId: " + roleId);
         return null; //employeeRoleRepository.save(employeeRole);
@@ -129,8 +137,8 @@ public class EmployeeManagementServiceImpl implements EmployeeManagementService 
     private Employee mapToEmployee(EmployeeBean employeeBean) {
         return Employee.builder()
                 .id(employeeBean.getId())
-                .firstName(employeeBean.getFirstName())
-                .lastName(employeeBean.getLastName())
+                .firstName(employeeBean.getFirstName().trim())
+                .lastName(employeeBean.getLastName().trim())
                 .email(employeeBean.getEmail())
                 .build();
     }
