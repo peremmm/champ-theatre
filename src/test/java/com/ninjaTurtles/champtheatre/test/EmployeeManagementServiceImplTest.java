@@ -1,4 +1,17 @@
-//package com.ninjaTurtles.champtheatre.test;
+//package com.ninjaTurtles.champtheatre.service.impl;
+//
+//import static org.junit.jupiter.api.Assertions.*;
+//import static org.mockito.Mockito.when;
+//
+//import java.util.ArrayList;
+//import java.util.List;
+//import java.util.Optional;
+//
+//import org.junit.jupiter.api.Test;
+//import org.mockito.InjectMocks;
+//import org.mockito.Mock;
+//import org.springframework.boot.test.context.SpringBootTest;
+//import org.springframework.data.domain.Sort;
 //
 //import com.ninjaTurtles.champtheatre.bean.EmployeeBean;
 //import com.ninjaTurtles.champtheatre.exception.ServiceException;
@@ -6,116 +19,74 @@
 //import com.ninjaTurtles.champtheatre.repository.EmployeeAccountRepository;
 //import com.ninjaTurtles.champtheatre.repository.EmployeeRepository;
 //import com.ninjaTurtles.champtheatre.repository.RoleRepository;
-//import com.ninjaTurtles.champtheatre.service.impl.EmployeeManagementServiceImpl;
-//import org.junit.Assert;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//import org.mockito.InjectMocks;
-//import org.mockito.Mock;
-//import org.mockito.Mockito;
-//import org.mockito.MockitoAnnotations;
 //
-//import java.util.ArrayList;
-//import java.util.List;
-//import java.util.Optional;
-//
-//import static org.junit.jupiter.api.Assertions.assertEquals;
-//import static org.mockito.Mockito.*;
-//
+//@SpringBootTest
 //public class EmployeeManagementServiceImplTest {
 //
 //    @InjectMocks
-//    private EmployeeManagementServiceImpl employeeManagementService;
+//    private EmployeeManagementServiceImpl employeeService;
 //
 //    @Mock
 //    private EmployeeRepository employeeRepository;
+//
 //    @Mock
 //    private EmployeeAccountRepository employeeAccountRepository;
+//
 //    @Mock
 //    private RoleRepository roleRepository;
 //
-//    @BeforeEach
-//    public void setup() {
-//        MockitoAnnotations.initMocks(this);
-//        employeeManagementService = new EmployeeManagementServiceImpl(employeeRepository, employeeAccountRepository, roleRepository);
-//    }
-//
 //    @Test
-//    public void testGetAllEmployee() {
-//        // Create a list of test employees
+//    void testGetAllEmployee() {
+//        // given
 //        List<Employee> employees = new ArrayList<>();
-//        Employee employee1 = new Employee();
-//        employee1.setId(1L);
-//        employee1.setFirstName("John");
-//        employee1.setLastName("Doe");
-//        employee1.setEmail("john@example.com");
+//        employees.add(new Employee(1L, "John", "Doe", "johndoe@example.com"));
+//        employees.add(new Employee(2L, "Jane", "Smith", "janesmith@example.com"));
+//        when(employeeRepository.findAll(Sort.by(Sort.Direction.ASC, "firstName")))
+//                .thenReturn(employees);
 //
-//        Employee employee2 = new Employee();
-//        employee2.setId(2L);
-//        employee2.setFirstName("Jane");
-//        employee2.setLastName("Smith");
-//        employee2.setEmail("jane@example.com");
+//        // when
+//        List<EmployeeBean> employeeBeans = employeeService.getAllEmployee("firstName", true);
 //
-//        employees.add(employee1);
-//        employees.add(employee2);
-//
-//        // Mock the repository response
-//        when(employeeRepository.findAll()).thenReturn(employees);
-//
-//        // Call the service method
-//        List<EmployeeBean> employeeBeans = employeeManagementService.getAllEmployee();
-//
-//        // Verify the repository method was called
-//        verify(employeeRepository, times(1)).findAll();
-//
-//        // Assert the result
-//        assertEquals(employees.size(), employeeBeans.size());
-//        for (int i = 0; i < employees.size(); i++) {
-//            Employee employee = employees.get(i);
-//            EmployeeBean employeeBean = employeeBeans.get(i);
-//            assertEquals(employee.getId(), employeeBean.getId());
-//            assertEquals(employee.getFirstName(), employeeBean.getFirstName());
-//            assertEquals(employee.getLastName(), employeeBean.getLastName());
-//            assertEquals(employee.getEmail(), employeeBean.getEmail());
-//        }
+//        // then
+//        assertEquals(2, employeeBeans.size());
+//        assertEquals("John", employeeBeans.get(0).getFirstName());
+//        assertEquals("Doe", employeeBeans.get(0).getLastName());
+//        assertEquals("johndoe@example.com", employeeBeans.get(0).getEmail());
+//        assertEquals("Jane", employeeBeans.get(1).getFirstName());
+//        assertEquals("Smith", employeeBeans.get(1).getLastName());
+//        assertEquals("janesmith@example.com", employeeBeans.get(1).getEmail());
 //    }
 //
 //    @Test
-//    public void testGetAllEmployee_NoEmployees() {
-//        // Mock an empty list of employees
-//        when(employeeRepository.findAll()).thenReturn(new ArrayList<>());
+//    void testRegisterWithExistingEmail() {
+//        // given
+//        EmployeeBean employeeBean = new EmployeeBean();
+//        employeeBean.setEmail("johndoe@example.com");
+//        when(employeeRepository.findByEmail("johndoe@example.com")).thenReturn(Optional.of(new Employee()));
 //
-//        // Call the service method
-//        List<EmployeeBean> employeeBeans = employeeManagementService.getAllEmployee();
-//
-//        // Verify the repository method was called
-//        verify(employeeRepository, times(1)).findAll();
-//
-//        // Assert the result
-//        assertEquals(0, employeeBeans.size());
+//        // when, then
+//        assertThrows(ServiceException.class, () -> {
+//            employeeService.register(employeeBean);
+//        });
 //    }
 //
 //    @Test
-//    public void testRegister() {
-//        // Test the scenario where the email does not exist in the database
-//        Employee employee = new Employee();
-//        employee.setEmail("test@test.com");
-//        Mockito.when(employeeRepository.findByEmail(Mockito.anyString())).thenReturn(Optional.empty());
-//        Mockito.when(employeeRepository.save(Mockito.any())).thenReturn(employee);
-//        Employee result = employeeManagementService.register(employee);
-//        Assert.assertEquals(employee, result);
+//    void testRegister() throws ServiceException {
+//        // given
+//        EmployeeBean employeeBean;
+//        employeeBean = new EmployeeBean();
+//        employeeBean.setEmail("johndoe@example.com");
+//        when(employeeRepository.findByEmail("johndoe@example.com")).thenReturn(Optional.empty());
+//        when(employeeRepository.save(new Employee("John", "Doe", "johndoe@example.com")))
+//                .thenReturn(new Employee(1L, "John", "Doe", "johndoe@example.com"));
 //
-//        // Test the scenario where the email already exists in the database
-//        Mockito.when(employeeRepository.findByEmail(Mockito.anyString())).thenReturn(Optional.of(employee));
-//        ServiceException exception = Assert.assertThrows(ServiceException.class, () -> employeeManagementService.register(employee));
-//        Assert.assertEquals("Email already exists.", exception.getMessage());
+//        // when
+//        Employee employee = employeeService.register(employeeBean);
+//
+//        // then
+//        assertNotNull(employee.getId());
+//        assertEquals("John", employee.getFirstName());
+//        assertEquals("Doe", employee.getLastName());
+//        assertEquals("johndoe@example.com", employee.getEmail());
 //    }
-//
-//    //est for updateEmployeeDetails
-//
-//    //test for updateEmployeeAccountStatus
-//
-//    //test for deleteEmployeeAccount
-//
-//    //test for addEmployeeAccount
 //}

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -144,13 +145,23 @@ public class EmployeeManagementServiceImpl implements EmployeeManagementService 
     }
 
     @Override
-    public void updateEmployeeAccountStatus(EmployeeAccount employeeAccount) {
-
+    public void delete(Long employeeId) {
+        employeeRepository.deleteById(employeeId);
     }
 
     @Override
-    public void deleteEmployeeAccount(EmployeeAccount employeeAccount) {
+    public void updateEmployeeAccountStatus(Long employeeId) {
 
+    }
+
+
+    @Override
+    public void deleteEmployeeAccount(Long employeeId) {
+        Optional<EmployeeAccount> optionalEmployeeAccount = employeeAccountRepository.findByEmployeeId(employeeId);
+        optionalEmployeeAccount.ifPresent(employeeAccount -> {
+            employeeAccount.setStatus(EmployeeAccount.Status.TERMINATED);
+            employeeAccountRepository.save(employeeAccount);
+        });
     }
 
     private String generatePassword() {

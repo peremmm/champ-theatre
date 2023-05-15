@@ -37,7 +37,7 @@ public class Employee implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "custom_employee_sequence")
-    @SequenceGenerator(sequenceName = "employee_sequence", name = "custom_employee_sequence", initialValue = 200, allocationSize = 1)
+    @SequenceGenerator(sequenceName = "employee_sequence", name = "custom_employee_sequence", initialValue = 205, allocationSize = 1)
     @Column(name = "id")
     private Long id;
 
@@ -67,5 +67,10 @@ public class Employee implements Serializable{
     @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private EmployeeAccount employeeAccount;
 
-    
+
+    public Employee(long l, String john, String doe, String s) {
+    }
+
+    public Employee(String john, String doe, String s) {
+    }
 }

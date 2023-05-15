@@ -104,5 +104,15 @@ public class EmployeeManagementController {
         return "redirect:/employees";
     }
 
+    @GetMapping("/employees/{employeeId}/delete")
+    public String deleteEmployee(@PathVariable("employeeId") Long employeeId,
+                                 RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("message",
+                "Employee " + employeeId + " has been deleted");
+        employeeManagementService.deleteEmployeeAccount(employeeId);
+        employeeManagementService.delete(employeeId);
+        return "redirect:/employees";
+    }
+
 
 }

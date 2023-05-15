@@ -30,7 +30,7 @@ public class EmployeeAccount extends AbstractEntity{
     private static final long serialVersionUID = -1574715895034102724L;
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "custom_employee_account_sequence")
-    @SequenceGenerator(sequenceName = "employee_account_sequence", name = "custom_employee_account_sequence", initialValue = 1000, allocationSize = 1)
+    @SequenceGenerator(sequenceName = "employee_account_sequence", name = "custom_employee_account_sequence", initialValue = 1005, allocationSize = 1)
     private Long id;
 
 	@Column(columnDefinition = "VARCHAR(75)", nullable = false)

@@ -9,18 +9,11 @@ import java.util.List;
 
 public interface EmployeeManagementService {
 
-//	List<EmployeeBean> getAllEmployee();
-
 	List<EmployeeBean> getAllEmployee(String sortField, boolean ascending);
 
 	Employee register(EmployeeBean employeeBean);
 
 	void updateEmployee(EmployeeBean employeeBean);
-
-	void updateEmployeeAccountStatus(EmployeeAccount employeeAccount);
-
-	void deleteEmployeeAccount(EmployeeAccount employeeAccount);
-
 
 	EmployeeAccount addEmployeeAccount(EmployeeAccount employeeAccount, EmployeeBean employeeBean);
 
@@ -30,7 +23,9 @@ public interface EmployeeManagementService {
 
 	EmployeeBean findEmployeeIdByEmail(String employeeEmail);
 
+	void delete(Long employeeId);
 
+	void updateEmployeeAccountStatus(Long employeeId);
 
-
+	void deleteEmployeeAccount(Long employeeId);
 }
