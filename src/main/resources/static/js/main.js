@@ -1,10 +1,22 @@
-/**
-* Template Name: NiceAdmin
-* Updated: Mar 09 2023 with Bootstrap v5.2.3
-* Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
-* Author: BootstrapMade.com
-* License: https://bootstrapmade.com/license/
+/** Highlight on active nav bar
+* Added by: Alona
 */
+    var navLinks = document.querySelectorAll('.nav-link');
+    var currentPath = window.location.pathname;
+
+    for (var i = 0; i < navLinks.length; i++) {
+      var link = navLinks[i];
+      var linkPath = link.getAttribute('href');
+
+      if (linkPath === currentPath) {
+        link.classList.remove('collapsed');
+      } else if (currentPath.includes('/employees') && linkPath.includes('/employees')) {
+        link.classList.remove('collapsed');
+      }
+    }
+
+
+
 (function() {
   "use strict";
 

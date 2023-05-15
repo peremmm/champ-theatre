@@ -102,7 +102,7 @@
   <ul class="sidebar-nav" id="sidebar-nav">
 
     <li class="nav-item">
-      <a class="nav-link " href="#">
+      <a class="nav-link collapsed " href="#">
         <i class="bi bi-grid"></i>
         <span>Dashboard</span>
       </a>
@@ -110,7 +110,7 @@
 
 
     <li class="nav-item">
-      <a class="nav-link collapsed" href="#">
+      <a class="nav-link collapsed" href="/reservations">
         <i class="bi bi-journal-text"></i>
         <span>My Reservations</span>
       </a>
@@ -121,7 +121,7 @@
           </a>
         </li>
       </ul>
-    </li><!-- My Reservations Nav -->
+    </li><!-- Reservations Nav -->
 
     <li class="nav-item">
       <a class="nav-link collapsed" href="#">
@@ -131,24 +131,24 @@
     </li><!-- Create a Reservation Nav -->
 
     <li class="nav-item">
-      <a class="nav-link collapsed" href="#">
+      <a class="nav-link collapsed" href="/requests">
         <i class="bi bi-card-checklist"></i>
-        <span>Approve Requests</span>
+        <span>Requests</span>
       </a>
-    </li><!-- Approve Request Nav -->
+    </li><!--  Request Nav -->
 
     <li class="nav-item">
-      <a class="nav-link collapsed" data-bs-target="#account-manage-nav" data-bs-toggle="collapse" href="#">
+      <a class="nav-link collapsed " data-bs-target="#account-manage-nav" data-bs-toggle="collapse" href="/employees">
         <i class="bi bi-menu-button-wide"></i><span>Manage Accounts</span><i class="bi bi-chevron-down ms-auto"></i>
       </a>
       <ul id="account-manage-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-        <li>
-          <a href="/employees">
+        <li >
+          <a   href="/employees">
             <i class="bi bi-circle"></i><span>View Employees</span>
           </a>
         </li>
-        <li>
-          <a href="/employees/new">
+        <li  >
+          <a  href="/employees/new">
             <i class="bi bi-circle"></i><span>Create Employee</span>
           </a>
         </li>

@@ -1,6 +1,5 @@
 package com.ninjaTurtles.champtheatre.service;
 
-import com.ninjaTurtles.champtheatre.bean.EmployeeAccountBean;
 import com.ninjaTurtles.champtheatre.models.EmployeeAccount;
 import org.springframework.stereotype.Service;
 

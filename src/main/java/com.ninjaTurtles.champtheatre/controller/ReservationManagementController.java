@@ -30,7 +30,7 @@ public class ReservationManagementController {
         this.reservationManagementService = reservationManagementService;
     }
 
-    @GetMapping("/allReservations")
+    @GetMapping("/requests")
     public String listAllReservations(Model model, RedirectAttributes redirectAttributes) {
 
         List<ReservationBean> reservations = reservationManagementService.findAll();
@@ -42,14 +42,14 @@ public class ReservationManagementController {
         if (redirectAttributes.containsAttribute("error")) {
             model.addAttribute("error", redirectAttributes.getAttribute("error"));
         }
-        return "reservation-list";
+        return "requests-list";
     }
 
 
-    /****** WAITING FOR USER SESSION ********/
+    /****** WAITING FOR USER SESSION *******/
     @GetMapping("/reservations")
-    public String listReservations(Model model, RedirectAttributes redirectAttributes) {
-
+    public String listUserReservations(Model model, RedirectAttributes redirectAttributes) {
+        // Need user
         List<ReservationBean> reservations = reservationManagementService.findByBooker(new Employee());
         model.addAttribute("reservations", reservations);
 
