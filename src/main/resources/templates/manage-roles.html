@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <title>Manage Roles</title>
+</head>
+<section th:replace="header-menu.html"></section>
+
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Manage Roles</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item active">Manage Roles</li>
+            </ol>
+        </nav>
+    </div>
+
+    <section class="section dashboard">
+        <div class="card mb-3">
+            <div class="card-body">
+
+                <!-- Create new role -->
+                <section>
+                    <br>
+                    <h2>Create New Role</h2>
+                    <form method="post" action="/createRole">
+                        <!-- Role name input -->
+                        <div class="row mb-3">
+                            <label for="roleName" class="col-sm-2 col-form-label">Role Name:</label>
+                            <div class="col-sm-10">
+                                <input type="text" id="roleName" name="roleName" required class="form-control">
+                            </div>
+                        </div>
+                        <br>
+                        <!-- Role description input -->
+                        <div class="row mb-3">
+                            <label for="roleDescription" class="col-sm-2 col-form-label">Role Description:</label>
+                            <div class="col-sm-10">
+                                <input type="text" id="roleDescription" name="roleDescription" class="form-control">
+                            </div>
+                        </div>
+                        <br>
+
+                        <!-- Modules selection -->
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label">Modules:</label>
+                            <div class="col-sm-10">
+                                <!-- Loop through available modules -->
+                                <div th:each="module : ${availableModules}">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="module" name="modules" th:value="${module}" th:text="${module}">
+                                        <label class="form-check-label" for="module"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <!-- Submit button -->
+                        <div class="row mb-3">
+                            <div class="col-sm-1"></div>
+                            <div class="col-sm-10 text-center">
+                                <button type="submit" class="btn btn-primary w-50">Create</button>
+                            </div>
+                        </div>
+                    </form>
+                </section>
+
+
+<!--                <section>-->
+<!--                    <h2>User Role Assignment</h2>-->
+<!--                    &lt;!&ndash; User list &ndash;&gt;-->
+<!--                    <table>-->
+<!--                        <thead>-->
+<!--                        <tr>-->
+<!--                            <th>User</th>-->
+<!--                            <th>Assigned Role(s)</th>-->
+<!--                            <th>Actions</th>-->
+<!--                        </tr>-->
+<!--                        </thead>-->
+<!--                        <tbody>-->
+<!--                        &lt;!&ndash; Loop through the users &ndash;&gt;-->
+<!--                        <tr th:each="user : ${users}">-->
+<!--                            <td th:text="${user.name}"></td>-->
+<!--                            <td>-->
+<!--                                &lt;!&ndash; Loop through the assigned roles of the current user &ndash;&gt;-->
+<!--                                <ul>-->
+<!--                                    <li th:each="role : ${user.roles}" th:text="${role.employee}"></li>-->
+<!--                                </ul>-->
+<!--                            </td>-->
+<!--                            <td>-->
+<!--                                &lt;!&ndash; Actions for each user &ndash;&gt;-->
+<!--                                <a href="#" th:href="@{/assignRoles/{userId}(userId=${user.id})}">Assign Role</a>-->
+<!--                                <a href="#" th:href="@{/removeRoles/{userId}(userId=${user.id})}">Remove Role</a>-->
+<!--                            </td>-->
+<!--                        </tr>-->
+<!--                        </tbody>-->
+<!--                    </table>-->
+<!--                </section>-->
+
+            </div>
+        </div>
+    </section>
+</main>
+
+
+<section th:replace="footer-scripts.html"></section>
+
+
+</html>
