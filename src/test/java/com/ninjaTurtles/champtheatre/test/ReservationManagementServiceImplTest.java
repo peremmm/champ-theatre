@@ -1,4 +1,4 @@
-package com.ninjaTurtles.champtheatre.service.impl;
+package com.ninjaTurtles.champtheatre.test;
 
 import com.ninjaTurtles.champtheatre.bean.ReservationBean;
 import com.ninjaTurtles.champtheatre.models.Employee;
@@ -7,6 +7,7 @@ import com.ninjaTurtles.champtheatre.models.Theatre;
 import com.ninjaTurtles.champtheatre.repository.EmployeeRepository;
 import com.ninjaTurtles.champtheatre.repository.ReservationRepository;
 import com.ninjaTurtles.champtheatre.repository.TheatreRepository;
+import com.ninjaTurtles.champtheatre.service.impl.ReservationManagementServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

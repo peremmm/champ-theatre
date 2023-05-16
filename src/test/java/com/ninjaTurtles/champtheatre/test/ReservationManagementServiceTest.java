@@ -1,4 +1,4 @@
-package com.ninjaTurtles.champtheatre.service.Impl;
+package com.ninjaTurtles.champtheatre.test;
 import static org.junit.Assert.*;
 
 
