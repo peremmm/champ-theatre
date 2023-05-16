@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <title>Employee Account</title>
+</head>
+
+<section th:replace="header-menu.html"></section>
+
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>Edit Employee</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item active"><a href="/employees">Employees</a></li>
+                <li class="breadcrumb-item active">Account</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+    <section class="section dashboard">
+
+        <div class="card mb-3">
+
+            <div class="card-body">
+
+                <div class="pt-4 pb-2">
+                    <h5 class="card-title text-center pb-0 fs-4">Employee Account</h5>
+                    <p class="text-center small">View account details and status</p>
+                </div>
+
+                <form class="row g-3 needs-validation" method="post" th:action="@{/employee-accounts/{employeeAccountId}/edit(employeeAccountId=${employeeAccount.id})}" th:object="${employeeAccount}">
+                <input type="hidden" th:field="*{id}">
+                    <div class="col-12">
+                        <label for="username" class="form-label">User Name</label>
+                        <input type="text" name="username" class="form-control" id="username" th:field="*{username}" disabled>
+                    </div>
+
+                    <div class="col-12">
+                        <label for="employee_id" class="form-label">Employee ID</label>
+                        <input type="text" name="employee_id" class="form-control" id="employee_id" th:field="*{employee_id}" disabled>
+                    </div>
+
+                    <div class="col-12">
+                        <label for="status" class="form-label">Status</label>
+                        <input type="text" name="status" class="form-control" id="status" th:field="*{status}" >
+                    </div>
+
+                    <div class="col-12">
+                        <button id="edit-btn" class="btn btn-primary w-100" type="submit" onclick="return confirmAction()">Edit Status</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </section>
+</main>
+<script th:inline="javascript">
+
+            function confirmAction() {
+                var confirmed = confirm("Confirm Status change?");
+                return confirmed;
+            }
+
+            var form = document.querySelector('form');
+            var submitBtn = document.querySelector('#edit-btn');
+            var inputs = form.querySelectorAll('input');
+
+            for (var i = 0; i < inputs.length; i++) {
+                inputs[i].addEventListener('input', function() {
+                    submitBtn.removeAttribute('disabled');
+                });
+            }
+        </script>
+<section th:replace="footer-scripts.html"></section>
+
+</html>

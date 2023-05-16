@@ -64,7 +64,7 @@ public class Employee implements Serializable{
     @OneToMany(mappedBy = "employee")
     private Set<EmployeeRole> roles = new HashSet<>();
     
-    @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "employee", fetch = FetchType.LAZY)
     private EmployeeAccount employeeAccount;
 
 

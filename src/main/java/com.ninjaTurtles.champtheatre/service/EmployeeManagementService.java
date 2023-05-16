@@ -25,7 +25,7 @@ public interface EmployeeManagementService {
 
 	void delete(Long employeeId);
 
-	void updateEmployeeAccountStatus(Long employeeId);
-
 	void deleteEmployeeAccount(Long employeeId);
+
+	Employee findEmployeeByEmail(String email);
 }

@@ -20,44 +20,126 @@
     </div><!-- End Page Title -->
     <section class="section dashboard">
 
-        <div class="card mb-3">
+        <div class="row">
+            <div class="col-lg-6">
 
-            <div class="card-body">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Employee Full Details</h5>
+                        <p>Details here</p>
 
-                <div class="pt-4 pb-2">
-                    <h5 class="card-title text-center pb-0 fs-4">Edit an Employee </h5>
-                    <p class="text-center small">Enter details to edit</p>
+                        <form class="row g-3">
+                            <div class="col-md-4">
+                                <label for="validationDefault01" class="form-label">First name</label>
+                                <input type="text" class="form-control" id="validationDefault01" th:value="${employee.firstName}" disabled>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="validationDefault02" class="form-label">Last name</label>
+                                <input type="text" class="form-control" id="validationDefault02" th:value="${employee.lastName}" disabled>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="validationDefaultUsername" class="form-label">Username</label>
+                                <div class="input-group">
+                                    <span class="input-group-text" id="inputGroupPrepend2">@</span>
+                                    <input type="text" class="form-control" id="validationDefaultUsername" aria-describedby="inputGroupPrepend2" th:value="${employee.employeeAccount.username}" disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="validationDefault03" class="form-label">Email</label>
+                                <input type="text" class="form-control" id="validationDefault03" th:value="${employee.email}" disabled>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="validationDefault04" class="form-label">Status</label>
+<!--                                <select class="form-select" id="validationDefault04" th:field="*{employee.employeeAccount.status}" aria-readonly="true">-->
+<!--                                    <option value="" selected disabled>Choose...</option>-->
+<!--                                    <option value="ACTIVE">ACTIVE</option>-->
+<!--                                    <option value="INACTIVE">INACTIVE</option>-->
+<!--                                    <option value="TERMINATED">TERMINATED</option>-->
+<!--                                </select>-->
+                                <input type="text" class="form-control" id="validationDefault04" th:value="${employee.employeeAccount.status}" disabled>
+
+                            </div>
+                        </form>
+                        <!-- End Browser Default Validation -->
+
+                    </div>
                 </div>
+            </div>
 
-                <form class="row g-3 needs-validation" method="post" th:action="@{/employees/{employeeId}/edit(employeeId=${employee.id})}" th:object="${employee}">
-                    <input type="hidden" th:field="*{id}">
-                    <div class="col-12">
-                        <label for="firstName" class="form-label">First Name</label>
-                        <input type="text" name="firstName" class="form-control" id="firstName" th:field="*{firstName}" th:classappend="${#fields.hasErrors('firstName')} ? 'is-invalid'">
-                        <div th:if="${#fields.hasErrors('firstName')}" class="invalid-feedback" th:errors="*{firstName}"></div>
+            <div class="col-lg-6">
+                <div class="card">
+
+                    <div class="card-body">
+                        <div class="pt-4 pb-2">
+                            <h5 class="card-title text-center pb-0 fs-4">Edit an Employee </h5>
+                            <p class="text-center small">Enter details to edit</p>
+                        </div>
+                        <form id="edit-form" class="row g-3 needs-validation" method="post" th:action="@{/employees/{employeeId}/edit(employeeId=${employee.id})}" th:object="${employee}">
+                            <input type="hidden" th:field="*{id}">
+                            <input type="hidden" th:field="*{employeeAccount.id}">
+                            <input type="hidden" th:field="*{employeeAccount.username}">
+                            <input type="hidden" th:field="*{employeeAccount.password}">
+
+                            <input type="hidden" th:field="*{employeeAccount.employee.id}">
+                            <div class="col-12">
+                                <label for="firstName" class="form-label">First Name</label>
+                                <input type="text" name="firstName" class="form-control" id="firstName" th:field="*{firstName}" th:classappend="${#fields.hasErrors('firstName')} ? 'is-invalid'">
+                                <div th:if="${#fields.hasErrors('firstName')}" class="invalid-feedback" th:errors="*{firstName}"></div>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="lastName" class="form-label">Last Name</label>
+                                <input type="text" name="lastName" class="form-control" id="lastName" th:field="*{lastName}" th:classappend="${#fields.hasErrors('lastName')} ? 'is-invalid'">
+                                <div th:if="${#fields.hasErrors('lastName')}" class="invalid-feedback" th:errors="*{lastName}"></div>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="yourEmail" class="form-label">Email</label>
+                                <input type="email" name="email" class="form-control" id="yourEmail" th:field="*{email}" th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'">
+                                <div th:if="${#fields.hasErrors('email')}" class="invalid-feedback" th:errors="*{email}"></div>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label">Status:</label>
+                                <select class="form-select" th:field="*{employeeAccount.status}" >
+                                    <option value="" selected disabled>Choose...</option>
+                                    <option value="ACTIVE">ACTIVE</option>
+                                    <option value="INACTIVE">INACTIVE</option>
+                                    <option value="TERMINATED">TERMINATED</option>
+                                </select>
+                            </div>
+
+
+                            <div class="col-12">
+                                <button id="edit-btn" class="btn btn-primary w-100" type="button"  data-bs-toggle="modal" data-bs-target="#basicModal" disabled>Edit Account</button>
+                            </div>
+                            <div class="modal fade" id="basicModal" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Confirmation</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Confirming edit for the employee?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Save changes</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><!-- End Basic Modal-->
+
+                        </form>
+
                     </div>
-
-                    <div class="col-12">
-                        <label for="lastName" class="form-label">Last Name</label>
-                        <input type="text" name="lastName" class="form-control" id="lastName" th:field="*{lastName}" th:classappend="${#fields.hasErrors('lastName')} ? 'is-invalid'">
-                        <div th:if="${#fields.hasErrors('lastName')}" class="invalid-feedback" th:errors="*{lastName}"></div>
-                    </div>
-
-                    <div class="col-12">
-                        <label for="yourEmail" class="form-label">Email</label>
-                        <input type="email" name="email" class="form-control" id="yourEmail" th:field="*{email}" th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'">
-                        <div th:if="${#fields.hasErrors('email')}" class="invalid-feedback" th:errors="*{email}"></div>
-                    </div>
-
-                    <div class="col-12">
-                        <button id="edit-btn" class="btn btn-primary w-100" type="submit" onclick="return confirmAction()">Edit Account</button>
-                    </div>
-                </form>
-
+                </div>
             </div>
         </div>
     </section>
 </main>
+
 <script th:inline="javascript">
             /*<![CDATA[*/
             var error = /*[[${error}]]*/ null;
@@ -66,9 +148,14 @@
             }
             /*]]>*/
 
-            function confirmAction() {
-                var confirmed = confirm("Are you sure you want to edit this employee?");
-                return confirmed;
+            var form = document.querySelector('#edit-form');
+            var submitBtn = document.querySelector('#edit-btn');
+            var inputs = form.querySelectorAll('input, select');
+
+            for (var i = 0; i < inputs.length; i++) {
+                inputs[i].addEventListener('input', function() {
+                    submitBtn.removeAttribute('disabled');
+                });
             }
         </script>
 <section th:replace="footer-scripts.html"></section>

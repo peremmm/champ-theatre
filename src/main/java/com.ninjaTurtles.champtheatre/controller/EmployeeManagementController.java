@@ -61,19 +61,14 @@ public class EmployeeManagementController {
         if( result.hasErrors()) {
             return "employees-create";
         }
-        EmployeeAccount employeeAccount = new EmployeeAccount();
 
         try {
-            employeeManagementService.register(employeeBean);
+            employeeManagementService.addEmployeeAccount(new EmployeeAccount(), employeeBean);
         } catch (ServiceException e) {
             redirectAttributes.addFlashAttribute("error", "Email already exists");
             return "redirect:/employees/new";
         }
-        employeeManagementService.addEmployeeAccount(employeeAccount, employeeBean);
-//        EmployeeBean employeeId = employeeManagementService.findEmployeeIdByEmail(employee.getEmail());
-//        Role role = new Role();
-//        role.setId(103L);
-//        employeeManagementService.addEmployeeRole(role.getId(), employeeId.getId());
+
 
         redirectAttributes.addFlashAttribute("message",
                 "Employee " +
@@ -95,12 +90,17 @@ public class EmployeeManagementController {
     @PostMapping("/employees/{employeeId}/edit")
     public String updateEmployee(@PathVariable("employeeId") Long employeeId,
                                  @Valid @ModelAttribute("employee") EmployeeBean employeeBean,
-                                 BindingResult result){
+                                 BindingResult result,
+                                 RedirectAttributes redirectAttributes){
         if(result.hasErrors()){
             return "employees-edit";
         }
         employeeBean.setId(employeeId);
         employeeManagementService.updateEmployee(employeeBean);
+        redirectAttributes.addFlashAttribute("message",
+                "Employee " +
+                        employeeBean.getId() +
+                        " has been EDITED with status " + employeeBean.getEmployeeAccount().getStatus());
         return "redirect:/employees";
     }
 
@@ -114,5 +114,11 @@ public class EmployeeManagementController {
         return "redirect:/employees";
     }
 
+    @GetMapping("/employees/{employeeId}/account")
+    public String viewEmployeeAccount(@PathVariable("employeeId") Long employeeId, Model model) {
+        EmployeeBean employeeAccount = employeeManagementService.findEmployeeById(employeeId);
+        model.addAttribute("employeeAccount", employeeAccount.getEmployeeAccount());
+        return "employees-view-account";
+    }
 
 }

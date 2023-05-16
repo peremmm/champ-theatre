@@ -32,6 +32,14 @@ public class EmployeeManagementServiceImpl implements EmployeeManagementService 
         this.roleRepository = roleRepository;
     }
 
+    @Override
+    public List<EmployeeBean> getAllEmployee(String sortField, boolean ascending) {
+        Sort.Direction direction = ascending ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, sortField);
+        List<Employee> employees = employeeRepository.findAll(sort);
+        return employees.stream().map(this::mapToEmployeeBean).collect(Collectors.toList());
+    }
+
     @Transactional
     @Override
     public Employee register(EmployeeBean employeebean) throws ServiceException {
@@ -42,14 +50,6 @@ public class EmployeeManagementServiceImpl implements EmployeeManagementService 
         return employeeRepository.save(employee);
     }
 
-    @Override
-    public List<EmployeeBean> getAllEmployee(String sortField, boolean ascending) {
-        Sort.Direction direction = ascending ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Sort sort = Sort.by(direction, sortField);
-        List<Employee> employees = employeeRepository.findAll(sort);
-        return employees.stream().map(this::mapToEmployeeBean).collect(Collectors.toList());
-    }
-
 
     private EmployeeBean mapToEmployeeBean(Employee employee) {
         return EmployeeBean.builder()
@@ -57,22 +57,21 @@ public class EmployeeManagementServiceImpl implements EmployeeManagementService 
                 .firstName(employee.getFirstName().trim())
                 .lastName(employee.getLastName().trim())
                 .email(employee.getEmail())
+                .employeeAccount(employee.getEmployeeAccount())
                 .build();
     }
 
     @Transactional
     @Override
     public EmployeeAccount addEmployeeAccount(EmployeeAccount employeeAccount, EmployeeBean employeeBean) {
-
-        /**
-         * Get the first three characters of the first name and last name
-         * If either is less than 3 characters, pass all
-         *
-         * (e.g.) Lastname = "Yu"
-         */
         Employee employee = mapToEmployee(employeeBean);
-        String firstNamePrefix = employee.getFirstName().substring(0, Math.min(employee.getFirstName().length(), 3));
-        String lastNamePrefix = employee.getLastName().substring(0, Math.min(employee.getLastName().length(), 3));
+        if (employeeRepository.findByEmail(employee.getEmail()).isPresent()) {
+            throw new ServiceException("Email already exists.");
+        }
+        Employee savedEmployee = employeeRepository.save(employee); // persist the employee first
+
+        String firstNamePrefix = savedEmployee.getFirstName().substring(0, Math.min(savedEmployee.getFirstName().length(), 3));
+        String lastNamePrefix = savedEmployee.getLastName().substring(0, Math.min(savedEmployee.getLastName().length(), 3));
 
         String username = (firstNamePrefix + lastNamePrefix).toLowerCase();
 
@@ -86,10 +85,21 @@ public class EmployeeManagementServiceImpl implements EmployeeManagementService 
 
         employeeAccount.setUsername(username);
         employeeAccount.setPassword(generatePassword());
-        employeeAccount.setEmployee(employee);
+        employeeAccount.setEmployee(savedEmployee); // use the saved employee
+
         employeeAccount.setStatus(EmployeeAccount.Status.INACTIVE);
 
         return employeeAccountRepository.save(employeeAccount);
+    }
+
+    private Employee mapToEmployee(EmployeeBean employeeBean) {
+        return Employee.builder()
+                .id(employeeBean.getId())
+                .firstName(employeeBean.getFirstName().trim())
+                .lastName(employeeBean.getLastName().trim())
+                .email(employeeBean.getEmail())
+                .employeeAccount(employeeBean.getEmployeeAccount())
+                .build();
     }
 
     /**
@@ -132,26 +142,15 @@ public class EmployeeManagementServiceImpl implements EmployeeManagementService 
     @Override
     public void updateEmployee(EmployeeBean employeeBean) {
         Employee employee = mapToEmployee(employeeBean);
+        EmployeeAccount employeeAccount = employeeBean.getEmployeeAccount();
+        employeeAccountRepository.save(employeeAccount);
         employeeRepository.save(employee);
-    }
-
-    private Employee mapToEmployee(EmployeeBean employeeBean) {
-        return Employee.builder()
-                .id(employeeBean.getId())
-                .firstName(employeeBean.getFirstName().trim())
-                .lastName(employeeBean.getLastName().trim())
-                .email(employeeBean.getEmail())
-                .build();
     }
 
     @Override
     public void delete(Long employeeId) {
+        employeeAccountRepository.delete(employeeAccountRepository.findByEmployeeId(employeeId).get());
         employeeRepository.deleteById(employeeId);
-    }
-
-    @Override
-    public void updateEmployeeAccountStatus(Long employeeId) {
-
     }
 
 
@@ -162,6 +161,13 @@ public class EmployeeManagementServiceImpl implements EmployeeManagementService 
             employeeAccount.setStatus(EmployeeAccount.Status.TERMINATED);
             employeeAccountRepository.save(employeeAccount);
         });
+    }
+
+    @Override
+    public Employee findEmployeeByEmail(String email) {
+        Optional<Employee> employee = employeeRepository.findByEmail(email);
+        // or throw an exception if appropriate
+        return employee.orElse(null);
     }
 
     private String generatePassword() {

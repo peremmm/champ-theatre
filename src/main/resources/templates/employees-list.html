@@ -46,8 +46,9 @@
                 <td id="first-name" th:text="${employee.firstName}"></td>
                 <td id="last-name" th:text="${employee.lastName}"></td>
                 <td id="email" th:text="${employee.email}"></td>
-                <td><a th:href="@{/employees/{employeeId}/edit(employeeId=${employee.id})}">Edit</a></td>
-                <td><a th:href="@{/employees/{employeeId}/delete(employeeId=${employee.id})}"  onclick="confirmDelete(event)">Delete</a></td>
+
+                <td><a th:href="@{/employees/{employeeId}/edit(employeeId=${employee.id})}"><img src="/img/edit.png" alt="Edit" title="Edit"></a></td>
+                <td><a th:href="@{/employees/{employeeId}/delete(employeeId=${employee.id})}" onclick="confirmDelete(event)"><img src="/img/delete.png" alt="Delete" title="Delete"></a></td>
 
             </tr>
             </tbody>

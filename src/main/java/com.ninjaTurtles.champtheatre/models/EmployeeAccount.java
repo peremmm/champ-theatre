@@ -39,7 +39,7 @@ public class EmployeeAccount extends AbstractEntity{
     @Column(columnDefinition = "VARCHAR(75)", nullable = false)
     private String password;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "employee_id")
     private Employee employee;
     
