@@ -9,9 +9,7 @@ import java.util.Date;
 import java.util.Optional;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
-    Optional<Reservation> findByStatus(Reservation.Status status);
     Optional<Reservation> findByBooker(Employee booker);
     Optional<Reservation> findByReviewer(Employee reviewer);
-    Optional<Reservation> findByEventDate(Date eventDate);
-    Optional<Reservation> findByTheatre(Theatre theatre);
+
 }

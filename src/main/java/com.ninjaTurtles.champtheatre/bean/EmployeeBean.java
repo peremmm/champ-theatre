@@ -1,7 +1,6 @@
 package com.ninjaTurtles.champtheatre.bean;
 
 import com.ninjaTurtles.champtheatre.models.EmployeeAccount;
-import com.ninjaTurtles.champtheatre.models.Participant;
 import com.ninjaTurtles.champtheatre.models.Reservation;
 import lombok.Builder;
 import lombok.Data;
@@ -29,7 +28,6 @@ public class EmployeeBean {
     @NotEmpty(message = "Please enter the Email")
     @Size(max = 70, message = "Email must be no more than 70 characters")
     private String email;
-    private List<Participant> participants;
     private List<Reservation> reservations1;
     private List<Reservation> reservations2;
     private EmployeeAccount employeeAccount;

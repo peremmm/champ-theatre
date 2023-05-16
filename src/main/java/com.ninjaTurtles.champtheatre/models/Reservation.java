@@ -13,9 +13,9 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "RESERVATIONS")
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 @Builder
 public class Reservation extends AbstractEntity {
     
@@ -28,7 +28,8 @@ public class Reservation extends AbstractEntity {
 
         APPROVED,
         CANCELLED,
-        REJECTED
+        REJECTED,
+
     }
     public enum Type {
         BUSINESS,
@@ -40,7 +41,8 @@ public class Reservation extends AbstractEntity {
     @SequenceGenerator(sequenceName = "reservation_sequence", name = "custom_reservation_sequence", allocationSize = 1)
     private Long id;
 
-    @Column( nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(length = 15, nullable = false)
     private Type event_type;
     
     @Lob
@@ -71,6 +73,9 @@ public class Reservation extends AbstractEntity {
     @JoinColumn(name = "reviewer_id")
     private Employee reviewer;
 
-    @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Participant> participants = new ArrayList<>();
+    @Column(name = "attendees", columnDefinition = "SMALLINT", nullable = false)
+    private Integer attendees;
+
+
+
 }

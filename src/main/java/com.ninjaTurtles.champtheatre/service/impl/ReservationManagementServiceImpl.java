@@ -20,7 +20,6 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
 
     public enum Modules {
         EmployeeAccountManagement,
-        ReservationConstraintManagement,
         ReservationRequestManagement,
         ThreatreManagement,
         ReservationManagement,
@@ -77,23 +76,25 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
     @Transactional
     @Override
     public void save(ReservationBean reservationBean) {
-        Reservation newReservation = new Reservation();
-        newReservation.setEvent_type(reservationBean.getEvent_type());
-        newReservation.setEvent_description(reservationBean.getEvent_description());
-        newReservation.setEventDate(reservationBean.getEventDate());
-        newReservation.setStartTime(reservationBean.getStartTime());
-        newReservation.setEndTime(reservationBean.getEndTime());
-        newReservation.setStatus(Reservation.Status.UNREVIEWED);
-        newReservation.setTheatre(reservationBean.getTheatre());
-        newReservation.setParticipants(reservationBean.getParticipants());
-        newReservation.setReviewer(null);
+//        Reservation newReservation = new Reservation();
+//        newReservation.setEvent_type(reservationBean.getEvent_type());
+//        newReservation.setEvent_description(reservationBean.getEvent_description());
+//        newReservation.setEventDate(reservationBean.getEventDate());
+//        newReservation.setStartTime(reservationBean.getStartTime());
+//        newReservation.setEndTime(reservationBean.getEndTime());
+//        newReservation.setStatus(Reservation.Status.UNREVIEWED);
+//        newReservation.setTheatre(reservationBean.getTheatre());
+//        newReservation.setAttendees(reservationBean.getParticipants());
+//        newReservation.setReviewer(null);
+//        newReservation.setBooker(reservationBean.getBooker())
+
 
         //NEEDS TO BE UPDATED TO USE USER SESSION
         //newReservation.setBooker(UsersessionId);
-        newReservation.setBooker(reservationBean.getBooker());
-
+        //OR
+        //reservationBean.setBooker(UserID);
         try {
-            reservationRepository.save(newReservation);
+            reservationRepository.save(mapToReservation(reservationBean));
         }catch (DataAccessException e){
             throw new ServiceException(e.getMessage());
         }
@@ -102,7 +103,6 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
 
     @Override
     public List<ReservationBean> findAll() {
-        //MIGHT NEED TO CHECK
         return reservationRepository.findAll().stream().map(this::mapToReservationBean).collect(Collectors.toList());
     }
 
@@ -149,7 +149,7 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
                 existingReservation.setEventDate(reservationBean.getEventDate());
                 existingReservation.setStartTime(reservationBean.getStartTime());
                 existingReservation.setEndTime(reservationBean.getEndTime());
-                existingReservation.setParticipants(reservationBean.getParticipants());
+                existingReservation.setAttendees(reservationBean.getAttendees());
                 existingReservation.setTheatre(reservationBean.getTheatre());
                 existingReservation.setModifiedDate(new Date());
                 reservationRepository.save(existingReservation);
@@ -171,7 +171,7 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
                 .theatre(reservationBean.getTheatre())
                 .booker(reservationBean.getBooker())
                 .reviewer(reservationBean.getReviewer())
-                .participants(reservationBean.getParticipants())
+                .attendees(reservationBean.getAttendees())
                 .status(reservationBean.getStatus())
                 .build();
 
@@ -188,7 +188,7 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
                 .theatre(reservation.getTheatre())
                 .booker(reservation.getBooker())
                 .reviewer(reservation.getReviewer())
-                .participants(reservation.getParticipants())
+                .attendees(reservation.getAttendees())
                 .status(reservation.getStatus())
                 .modifiedDate(reservation.getModifiedDate())
                 .createdDate(reservation.getCreatedDate())

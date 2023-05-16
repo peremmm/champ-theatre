@@ -52,8 +52,6 @@ public class Employee implements Serializable{
     @Column(columnDefinition = "VARCHAR(70)", nullable = false, unique = true)
     private String email;
 
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
-    private List<Participant> participants = new ArrayList<>();
     
     @OneToMany(mappedBy = "booker", cascade = CascadeType.ALL)
     private List<Reservation> reservations1 = new ArrayList<>();
