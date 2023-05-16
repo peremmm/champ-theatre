@@ -5,28 +5,25 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
+@Getter
+@Setter
 @AllArgsConstructor
-@NoArgsConstructor
-@Data
 @Table(name = "ROLES")
-public class Role implements Serializable{
+public class Role implements Serializable {
     private static final long serialVersionUID = -4330760658341102884L;
 
-	@Id
+    public Role() {
+
+    }
+
+    @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "custom_role_sequence")
     @SequenceGenerator(sequenceName = "custom_role_sequence", name = "custom_role_sequence", allocationSize = 1)
     private Long id;
@@ -34,10 +31,9 @@ public class Role implements Serializable{
     @Column(columnDefinition = "VARCHAR(75)", nullable = false)
     private String role;
 
-    @OneToMany(mappedBy = "role")
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
     private Set<EmployeeRole> employee = new HashSet<>();
-    
-    @OneToMany(mappedBy = "role")
-    private Set<RoleModule> module = new HashSet<>();
 
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
+    private Set<RoleModule> module = new HashSet<>();
 }

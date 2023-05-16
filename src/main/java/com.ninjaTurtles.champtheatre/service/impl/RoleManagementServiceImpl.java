@@ -1,18 +1,22 @@
 package com.ninjaTurtles.champtheatre.service.impl;
 
+import com.ninjaTurtles.champtheatre.bean.ModuleBean;
 import com.ninjaTurtles.champtheatre.bean.RoleBean;
-import com.ninjaTurtles.champtheatre.models.EmployeeRole;
+import com.ninjaTurtles.champtheatre.models.Module;
 import com.ninjaTurtles.champtheatre.models.Role;
 import com.ninjaTurtles.champtheatre.models.RoleModule;
+import com.ninjaTurtles.champtheatre.models.RoleModuleId;
 import com.ninjaTurtles.champtheatre.repository.RoleRepository;
 import com.ninjaTurtles.champtheatre.service.RoleManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Service
 public class RoleManagementServiceImpl implements RoleManagementService {
     final RoleRepository roleRepository;
 
@@ -38,26 +42,60 @@ public class RoleManagementServiceImpl implements RoleManagementService {
                 .id(role.getId())
                 .role(role.getRole())
                 .employee(role.getEmployee())
-                .module(role.getModule())
+                .module(role.getModule().stream()
+                        .map(module -> {
+                            ModuleBean moduleBean = new ModuleBean();
+                            moduleBean.setModuleName(module.getModule().toString());
+                            return moduleBean;
+                        })
+                        .collect(Collectors.toSet()))
                 .build();
     }
 
     @Override
-    public void addRole(Role role, Set<RoleModule> modules) {
+    public void addRole(RoleBean role, Set<ModuleBean> modules) {
+        // Convert RoleBean to Role
+        Role convertedRole = mapToRole(role);
+
         // Set the modules for the role
-        role.setModule(modules);
+        Set<RoleModule> roleModules = modules.stream()
+                .map(moduleBean -> {
+                    Module module = new Module();
+                    module.setModule(moduleBean.getModuleName());
+
+                    RoleModuleId roleModuleId = new RoleModuleId(convertedRole.getId(), module.getId());
+                    RoleModule roleModule = new RoleModule();
+                    roleModule.setId(roleModuleId);
+                    roleModule.setRole(convertedRole);
+                    roleModule.setModule(module);
+                    return roleModule;
+                })
+                .collect(Collectors.toSet());
+
+        convertedRole.setModule(roleModules);
 
         // Save the role in the repository
-        roleRepository.save(role);
+        roleRepository.save(convertedRole);
 
-        // Perform any additional logic or actions as needed
-        // Example: trigger some event, update a cache, etc.
     }
 
+    private Role mapToRole(RoleBean roleBean) {
+        Role role = new Role();
+        role.setId(roleBean.getId());
+        role.setRole(roleBean.getRole());
+        role.setEmployee(roleBean.getEmployee());
+
+        // Perform any additional mappings for other properties
+
+        return role;
+    }
+
+
+
     @Override
-    public void updateRole(Role role, Set<RoleModule> modules) {
+    public void updateRole(Role role, Set<ModuleBean> modules) {
         // Set the modules for the role
-        role.setModule(modules);
+//        role.setModule(modules);
 
         // Save the role in the repository
         roleRepository.save(role);

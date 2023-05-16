@@ -1,5 +1,6 @@
 package com.ninjaTurtles.champtheatre.service;
 
+import com.ninjaTurtles.champtheatre.bean.ModuleBean;
 import com.ninjaTurtles.champtheatre.bean.RoleBean;
 import com.ninjaTurtles.champtheatre.models.EmployeeRole;
 import com.ninjaTurtles.champtheatre.models.Module;
@@ -17,9 +18,9 @@ public interface RoleManagementService {
 
 	Optional<Role> getRoleById(Long id);
 	
-	void addRole(Role role, Set<RoleModule> modules);
+	void addRole(RoleBean role, Set<ModuleBean> modules);
 	
-	void updateRole(Role role, Set<RoleModule> modules);
+	void updateRole(Role role, Set<ModuleBean> modules);
 	
 	void deleteRole(Role role);
 	

@@ -7,21 +7,19 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.ninjaTurtles.champtheatre.service.RoleManagementService;
+import lombok.*;
 
-@Setter
-@Getter
-@EqualsAndHashCode
-@NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Data
 @Table(name = RoleModule.TABLE_NAME)
 public class RoleModule {
     protected static final String TABLE_NAME = "role_module";
+
+    public RoleModule() {
+
+    }
 
     @EmbeddedId
     private RoleModuleId id;
