@@ -1,6 +1,12 @@
-/** Highlight on active nav bar
-* Added by: Alona
-*/
+
+
+
+
+(function() {
+  "use strict";
+/**
+ *Highlight on active nav bar
+ */
     var navLinks = document.querySelectorAll('.nav-link');
     var currentPath = window.location.pathname;
 
@@ -14,11 +20,6 @@
         link.classList.remove('collapsed');
       }
     }
-
-
-
-(function() {
-  "use strict";
 
   /**
    * Easy selector helper function

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <title>Create Reservation</title>
+</head>
+
+<section th:replace="header-menu.html"></section>
+
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>Create New Reservation</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item active"><a href="/employees">My Reservations</a></li>
+                <li class="breadcrumb-item active">New</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+    <section class="section ">
+
+        <div class="row">
+
+            <!-- Left side columns -->
+            <div class="col-lg-8">
+                <div class="row">
+
+                    <!-- Form -->
+                    <div class="col-12">
+                        <div class="card">
+
+
+                            <div class="card-body">
+                                <div class="pt-4 pb-2">
+                                    <h5 class="card-title text-center pb-0 fs-4">Create a Reservation</h5>
+                                    <p class="text-center small">Fill in the details below</p>
+                                </div>
+                                <form class="row g-3 needs-validation" method="post" th:action="@{/reservations/new}" th:object="${reservation}">
+                                    <div class="row mb-3">
+                                        <label for="event_description" class="col-sm-2 col-form-label">Description</label>
+                                        <div class="col-sm-10">
+
+                                                <textarea class="form-control" style="height: 100px" name="event_description" id="event_description" th:field="*{event_description}" required></textarea>
+                                                <div th:if="${#fields.hasErrors('event_description')}" class="invalid-feedback" th:errors="*{event_description}"></div>
+
+
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label class="col-sm-2 col-form-label">Select</label>
+                                        <div class="col-sm-10">
+                                            <select class="form-select"  id="event_type" name="event_type" th:value="${event_type}">
+                                                <option selected>Choose type</option>
+                                                <option value="BUSINESS">BUSINESS</option>
+                                                <option value="LEISURE">LEISURE</option>
+                                            </select>
+
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label class="col-sm-2 col-form-label" for="theatre">Theaters:</label>
+                                        <div class="col-sm-10">
+                                            <select class="form-select"  id="theatre" name="theatre" th:value="${reservation.theatre}" >
+                                                <option value="">Select Theatre</option>
+                                                <option  th:each="theatre : ${theaters}" th:text="${theatre.name}"></option>
+                                            </select>
+
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="eventDate" class="col-sm-2 col-form-label">Date</label>
+                                        <div class="col-sm-10">
+                                            <input type="date" name="eventDate" class="form-control" id="eventDate"  th:field="*{eventDate}">
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <label for="startTime" class="col-sm-2 col-form-label">Starts At:</label>
+                                        <div class="col-sm-10">
+                                            <select class="form-select" id="startTime" name="startTime" th:value="${starts}">
+                                                <option value="08:00">08:00 AM</option>
+                                                <option value="09:00">09:00 AM</option>
+                                                <option value="10:00">10:00 AM</option>
+                                                <option value="10:00">11:00 AM</option>
+                                                <option value="12:00">12:00 PM</option>
+                                                <option value="13:00">01:00 PM</option>
+                                                <option value="14:00">02:00 PM</option>
+                                                <option value="15:00">03:00 PM</option>
+                                                <option value="16:00">04:00 PM</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <!-- End Time -->
+                                        <label for="endTime" class="col-sm-2 col-form-label">Ends At:</label>
+                                        <div class="col-sm-10">
+                                            <select class="form-select" id="endTime" name="endTime" th:value="${ends}">
+                                                <option value="12:00">12:00 PM</option>
+                                                <option value="13:00">01:00 PM</option>
+                                                <option value="14:00">02:00 PM</option>
+                                                <option value="15:00">03:00 PM</option>
+                                                <option value="16:00">04:00 PM</option>
+                                                <option value="17:00">05:00 PM</option>
+                                                <option value="18:00">06:00 PM</option>
+                                                <option value="19:00">07:00 PM</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <label for="attendees" class="col-sm-2 col-form-label">Expected Attendees</label>
+                                        <div class="col-sm-10">
+                                            <input type ="number" min =1 class="form-control" name="attendees" id="attendees" th:field="*{attendees}" required></input>
+                                            <div th:if="${#fields.hasErrors('attendees')}" class="invalid-feedback" th:errors="*{attendees}"></div>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+
+                                        <div class="text-center">
+                                            <button type="submit" class="btn btn-primary">Request</button>
+                                        </div>
+                                    </div>
+
+                                </form>
+
+
+                            </div>
+
+                        </div>
+                    </div><!-- End Reports -->
+
+                </div>
+            </div><!-- End Left side columns -->
+
+            <!-- Right side columns -->
+            <div class="col-lg-4">
+                <div class="card">
+
+                    <div class="card-body">
+
+                        <h5 class="card-title">Theatre </h5>
+                        <table class="table table-hover">
+
+                            <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Status</th>
+                                <th>Capacity</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="theatre : ${theaters}">
+                                <td th:text="${theatre.name}"></td>
+
+                                <td >
+                                    <div th:if="${theatre.status == T(com.ninjaTurtles.champtheatre.models.Theatre.Status).OCCUPIED}">
+                                        <span class="badge bg-secondary" th:text="${theatre.status}"></span>
+                                    </div>
+                                    <div th:if="${theatre.status == T(com.ninjaTurtles.champtheatre.models.Theatre.Status).MAINTENANCE}">
+                                        <span class="badge bg-warning" th:text="${theatre.status}"></span>
+                                    </div>
+                                    <div th:if="${theatre.status == T(com.ninjaTurtles.champtheatre.models.Theatre.Status).AVAILABLE}">
+                                        <span class="badge bg-primary" th:text="${theatre.status}"></span>
+                                    </div>
+
+
+                                 </td>
+                                <td th:text="${theatre.capacity}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div><!-- End Recent Activity -->
+            </div>
+        </div>
+    </section>
+</main>
+
+
+<section th:replace="footer-scripts.html"></section>
+
+</html>

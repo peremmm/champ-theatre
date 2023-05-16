@@ -1,0 +1,67 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <title>Reservations</title>
+</head>
+
+<section th:replace="header-menu.html"></section>
+
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>Requests</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item active">Requests</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+    <section class="section dashboard">
+    <h1>Requests</h1>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>TYPE</th>
+            <th>DESCRIPTION</th>
+            <th>ATTENDEES</th>
+            <th>DATE</th>
+            <th>STARTS</th>
+            <th>ENDS</th>
+            <th>STATUS</th>
+            <th>THEATRE</th>
+            <th>BOOKER</th>
+            <th>REVIEWER</th>
+            <th>CREATED ON</th>
+            <th>LAST UPDATED</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="reservation : ${reservations}">
+            <td th:text="${reservation.id}"></td>
+            <td th:text="${reservation.event_type}"></td>
+            <td th:text="${reservation.event_description}"></td>
+            <td th:text="${reservation.attendees}"></td>
+            <td th:text="${#dates.format(reservation.eventDate, 'EEEE, MMMM dd, yyyy')}"></td>
+            <td th:text="${#dates.format(reservation.startTime,'h:mm a')}"></td>
+            <td th:text="${#dates.format(reservation.endTime, 'h:mm a')}"></td>
+            <td th:text="${reservation.status}"></td>
+            <td th:text="${reservation.theatre.name}"></td>
+            <td th:text="${reservation.booker.firstName + ' ' + #strings.substring(reservation.booker.lastName, 0, 1) + '.'}"></td>
+            <td th:text="${reservation.reviewer.firstName + ' ' + #strings.substring(reservation.reviewer.lastName, 0, 1) + '.'}"></td>
+            <td th:text="${#dates.format(reservation.createdDate, 'MMMM-dd-yyyy HH:mm:ss')}"></td>
+            <td th:text="${#dates.format(reservation.modifiedDate, 'MMMM-dd-yyyy HH:mm:ss')}"></td>
+        </tr>
+        </tbody>
+    </table>
+    </section>
+</main>
+
+
+<section th:replace="footer-scripts.html"></section>
+
+</html>
+
