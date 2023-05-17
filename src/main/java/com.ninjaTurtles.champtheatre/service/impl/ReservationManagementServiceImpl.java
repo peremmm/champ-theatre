@@ -23,7 +23,6 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
         ReservationRequestManagement,
         ThreatreManagement,
         ReservationManagement,
-        PasswordManagement,
         RoleManagement,
 
     }
@@ -148,6 +147,8 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
                 existingReservation.setAttendees(reservationBean.getAttendees());
                 existingReservation.setTheatre(reservationBean.getTheatre());
                 existingReservation.setModifiedDate(new Date());
+                existingReservation.setAttendees(reservationBean.getAttendees());
+
                 reservationRepository.save(existingReservation);
             }
         } else {

@@ -16,7 +16,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-
+@Builder
 public class Theatre extends AbstractEntity {
 
 	public enum Status {

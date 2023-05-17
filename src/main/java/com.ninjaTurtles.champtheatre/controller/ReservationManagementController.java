@@ -14,12 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -95,8 +93,6 @@ public class ReservationManagementController {
                                     @RequestParam("theatreId") String theatreId,
                                     RedirectAttributes redirectAttributes) {
 
-
-        Theatre tempTheatre = new Theatre();
         LocalDate localDate = LocalDate.parse(eventDate);
         Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
         reservationBean.setEventDate(date);
@@ -110,14 +106,7 @@ public class ReservationManagementController {
         reservationBean.setEndTime(calendar.getTime());
 
         TheatreBean theatreBean = theatreManagementService.findTheatreById(Long.parseLong(theatreId));
-        tempTheatre.setId(theatreBean.getId());
-        tempTheatre.setStatus(theatreBean.getStatus());
-        tempTheatre.setName(theatreBean.getName());
-        tempTheatre.setCapacity(theatreBean.getCapacity());
-        tempTheatre.setReservations(theatreBean.getReservations());
-        tempTheatre.setCreatedDate(theatreBean.getCreatedDate());
-        tempTheatre.setModifiedDate(theatreBean.getModifiedDate());
-        reservationBean.setTheatre(tempTheatre);
+        reservationBean.setTheatre(mapToTheatre(theatreBean));
 
 
         try {
@@ -136,8 +125,6 @@ public class ReservationManagementController {
 
 
 
-
-
     @PostMapping("/reservations/assign")
     public String assignReviewer(@ModelAttribute("reservation") ReservationBean reservationbean, RedirectAttributes redirectAttributes){
         try {
@@ -153,23 +140,74 @@ public class ReservationManagementController {
         return "redirect:/reservations";
     }
 
-    @PostMapping("/reservations/edit")
-    public String updateReservation(@ModelAttribute("reservation") ReservationBean reservationbean, RedirectAttributes redirectAttributes){
+
+
+    @GetMapping("/reservations/{reservationId}/edit")
+    public String editEmployeeForm(@PathVariable("reservationId") long reservationId, Model model){
+        ReservationBean reservationBean = reservationManagementService.findById(reservationId);
+        List<TheatreBean> theatreBeans = theatreManagementService.getAllTheatre();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(reservationBean.getStartTime());
+        int start = calendar.get(Calendar.HOUR_OF_DAY);
+
+        calendar.setTime(reservationBean.getEndTime());
+        int end = calendar.get(Calendar.HOUR_OF_DAY);
+
+        model.addAttribute("start", start);
+        model.addAttribute("end", end);
+        model.addAttribute("theaters", theatreBeans);
+        model.addAttribute("reservations", reservationManagementService.findAll());
+        model.addAttribute("reservation", reservationBean);
+        model.addAttribute("defaultTheatreId", reservationBean.getTheatre().getId());
+        return "reservation-edit";
+    }
+
+    @PostMapping("/reservations/{reservationId}/edit")
+    public String updateEmployee(@PathVariable("reservationId") Long reservationId,
+                                 @RequestParam("date") String eventDate,
+                                 @RequestParam("start") String start,
+                                 @RequestParam("end") String end,
+                                 @RequestParam("theatreId") String theatreId,
+                                 @RequestParam("attendees") String attendees,
+                                 RedirectAttributes redirectAttributes) {
+        ReservationBean existingReservation = reservationManagementService.findById(reservationId);
+        LocalDate localDate = LocalDate.parse(eventDate);
+        Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        existingReservation.setEventDate(date);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.HOUR_OF_DAY, Integer.parseInt(start));
+        existingReservation.setStartTime(calendar.getTime());
+
+        calendar.setTime(date);
+        calendar.add(Calendar.HOUR_OF_DAY, Integer.parseInt(end));
+        existingReservation.setEndTime(calendar.getTime());
+
+        if(existingReservation.getTheatre().getId() != Long.parseLong(theatreId)){
+            TheatreBean theatreBean = theatreManagementService.findTheatreById(Long.parseLong(theatreId));
+            existingReservation.setTheatre(mapToTheatre(theatreBean));
+        }
+        int expectedAttendees = Integer.parseInt(attendees);
+        if(existingReservation.getAttendees() != expectedAttendees){
+            existingReservation.setAttendees(expectedAttendees);
+        }
         try {
-            reservationManagementService.updateDetails(reservationbean);
+            reservationManagementService.updateDetails(existingReservation);
         } catch (ServiceException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "redirect:/reservations/edit"; // Redirect to the new employee form
+            return "redirect:/reservations/"+existingReservation.getId()+"/edit"; // Redirect to the new employee form
         }
 
-        String message = "The reservation request with id "+reservationbean.getId()+" has been updated.";
+        String message = "The reservation request with id "+existingReservation.getId()+" has been updated.";
         redirectAttributes.addFlashAttribute("message", message);
 
         return "redirect:/reservations";
     }
 
-    private TheatreBean mapToTheatreBean(Theatre theatre) {
-        return TheatreBean.builder()
+
+    private Theatre mapToTheatre(TheatreBean theatre) {
+        return Theatre.builder()
                 .id(theatre.getId())
                 .name(theatre.getName())
                 .status(theatre.getStatus())
