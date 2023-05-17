@@ -13,11 +13,10 @@ import java.util.Set;
 
 
 public interface RoleManagementService {
-	
 	List<RoleBean> getAllRoles();
 
 	Optional<Role> getRoleById(Long id);
-	
+
 	void addRole(RoleBean role, Set<ModuleBean> modules);
 	
 	void updateRole(Role role, Set<ModuleBean> modules);

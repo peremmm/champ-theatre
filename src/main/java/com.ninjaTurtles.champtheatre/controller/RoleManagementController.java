@@ -4,6 +4,7 @@ import com.ninjaTurtles.champtheatre.bean.EmployeeBean;
 import com.ninjaTurtles.champtheatre.bean.ModuleBean;
 import com.ninjaTurtles.champtheatre.bean.RoleBean;
 import com.ninjaTurtles.champtheatre.models.Module;
+import com.ninjaTurtles.champtheatre.models.Role;
 import com.ninjaTurtles.champtheatre.models.RoleModule;
 import com.ninjaTurtles.champtheatre.service.EmployeeManagementService;
 import com.ninjaTurtles.champtheatre.service.RoleManagementService;
@@ -40,9 +41,16 @@ public class RoleManagementController {
         return "manage-roles";
     }
 
+    @GetMapping("/existingRoles")
+    public String listExistingRoles(Model model) {
+        List<RoleBean> roles = roleManagementService.getAllRoles();
+        model.addAttribute("roles", roles);
+        return "roleCreated";
+    }
+
     @PostMapping("/createRole")
-    public String createRole(@RequestParam("roleName") String roleName,
-                             @RequestParam("roleDescription") String roleDescription,
+    public String createRole(@RequestParam("name") String roleName,
+                             @RequestParam(value = "description", required = false) String roleDescription,
                              @RequestParam(value = "modules", required = false) List<String> moduleNames,
                              Model model) {
         RoleBean role = new RoleBean();
@@ -65,7 +73,4 @@ public class RoleManagementController {
         model.addAttribute("role", role);
         return "roleCreated";
     }
-
-
-
 }

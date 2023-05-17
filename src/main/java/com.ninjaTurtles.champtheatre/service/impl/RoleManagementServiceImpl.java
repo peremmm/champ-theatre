@@ -31,11 +31,11 @@ public class RoleManagementServiceImpl implements RoleManagementService {
         return roles.stream().map(this::mapToRoleBean).collect(Collectors.toList());
     }
 
-    @Override
-    public Optional<Role> getRoleById(Long id) {
-        Optional<Role> role = roleRepository.findById(103L);
-        return role;
-    }
+//    @Override
+//    public Optional<Role> getRoleById(Long id) {
+//        Optional<Role> role = roleRepository.findById(103L);
+//        return role;
+//    }
 
     private RoleBean mapToRoleBean(Role role){
         return RoleBean.builder()
@@ -50,6 +50,11 @@ public class RoleManagementServiceImpl implements RoleManagementService {
                         })
                         .collect(Collectors.toSet()))
                 .build();
+    }
+
+    @Override
+    public Optional<Role> getRoleById(Long id) {
+        return roleRepository.findById(id);
     }
 
     @Override
@@ -76,7 +81,6 @@ public class RoleManagementServiceImpl implements RoleManagementService {
 
         // Save the role in the repository
         roleRepository.save(convertedRole);
-
     }
 
     private Role mapToRole(RoleBean roleBean) {

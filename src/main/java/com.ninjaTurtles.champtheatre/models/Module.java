@@ -26,10 +26,10 @@ import lombok.Setter;
 @Getter
 @EqualsAndHashCode
 @Table(name = "MODULES")
-public class Module implements Serializable{
+public class Module implements Serializable {
     private static final long serialVersionUID = 617222588677070861L;
 
-	@Id
+    @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "custom_module_sequence")
     @SequenceGenerator(sequenceName = "custom_module_sequence", name = "custom_module_sequence", allocationSize = 1)
     private Long id;
@@ -40,4 +40,11 @@ public class Module implements Serializable{
     @OneToMany(mappedBy = "module")
     private Set<RoleModule> role = new HashSet<>();
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
+    }
 }
