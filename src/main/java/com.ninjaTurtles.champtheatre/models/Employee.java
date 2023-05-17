@@ -20,17 +20,17 @@ import javax.persistence.Table;
 
 import javax.validation.constraints.Email;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "EMPLOYEES")
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+//@Data
 @Builder
+@Setter
+@Getter
+@ToString
 public class Employee implements Serializable{
 
     private static final long serialVersionUID = -5800161177605867628L;
