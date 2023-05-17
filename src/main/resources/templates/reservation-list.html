@@ -26,6 +26,7 @@
             <th>ID</th>
             <th>TYPE</th>
             <th>DESCRIPTION</th>
+            <th>ATTENDEES</th>
             <th>DATE</th>
             <th>STARTS</th>
             <th>ENDS</th>
@@ -43,16 +44,23 @@
             <td th:text="${reservation.id}"></td>
             <td th:text="${reservation.event_type}"></td>
             <td th:text="${reservation.event_description}"></td>
+            <td th:text="${reservation.attendees}"></td>
             <td th:text="${#dates.format(reservation.eventDate, 'EEEE, MMMM dd, yyyy')}"></td>
             <td th:text="${#dates.format(reservation.startTime,'h:mm a')}"></td>
             <td th:text="${#dates.format(reservation.endTime, 'h:mm a')}"></td>
             <td th:text="${reservation.status}"></td>
             <td th:text="${reservation.theatre.name}"></td>
             <td th:text="${reservation.booker.firstName + ' ' + #strings.substring(reservation.booker.lastName, 0, 1) + '.'}"></td>
-            <td  th:text="${reservation.reviewer.firstName + ' ' + #strings.substring(reservation.reviewer.lastName, 0, 1) + '.'}"></td>
+            <div th:if="${reservation.status != T(com.ninjaTurtles.champtheatre.models.Reservation.Status).UNREVIEWED}">
+                <td th:text="${reservation.reviewer.firstName + ' ' + #strings.substring(reservation.reviewer.lastName, 0, 1) + '.'}"></td>
+            </div>
+            <div th:else>
+                <td></td>
+            </div>
             <td th:text="${#dates.format(reservation.createdDate, 'MMMM-dd-yyyy HH:mm:ss')}"></td>
             <td th:text="${#dates.format(reservation.modifiedDate, 'MMMM-dd-yyyy HH:mm:ss')}"></td>
         </tr>
+
         </tbody>
     </table>
     </section>

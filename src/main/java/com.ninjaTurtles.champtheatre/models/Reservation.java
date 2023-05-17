@@ -38,7 +38,7 @@ public class Reservation extends AbstractEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "custom_reservation_sequence")
-    @SequenceGenerator(sequenceName = "reservation_sequence", name = "custom_reservation_sequence", allocationSize = 1)
+    @SequenceGenerator(sequenceName = "reservation_sequence", name = "custom_reservation_sequence",  initialValue = 1001, allocationSize = 1)
     private Long id;
 
     @Enumerated(EnumType.STRING)

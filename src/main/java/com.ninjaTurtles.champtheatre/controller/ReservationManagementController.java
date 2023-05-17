@@ -6,6 +6,7 @@ import com.ninjaTurtles.champtheatre.bean.TheatreBean;
 import com.ninjaTurtles.champtheatre.exception.ServiceException;
 import com.ninjaTurtles.champtheatre.models.Employee;
 import com.ninjaTurtles.champtheatre.models.Reservation;
+import com.ninjaTurtles.champtheatre.models.Theatre;
 import com.ninjaTurtles.champtheatre.service.EmployeeManagementService;
 import com.ninjaTurtles.champtheatre.service.ReservationManagementService;
 import com.ninjaTurtles.champtheatre.service.TheatreManagementService;
@@ -19,6 +20,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -38,9 +44,9 @@ public class ReservationManagementController {
 
     @GetMapping("/requests")
     public String listAllReservations(Model model, RedirectAttributes redirectAttributes) {
-        System.out.println("--------------------------------------ENTERING REQUESTS");
+
         List<ReservationBean> reservations = reservationManagementService.findAll();
-        //System.out.println("--------------------------------------REQUESTS"+reservations);
+
         model.addAttribute("reservations", reservations);
 
         if (redirectAttributes.containsAttribute("message")) {
@@ -74,27 +80,52 @@ public class ReservationManagementController {
     public String reservationForm(Model model){
 
         List<TheatreBean> theatreBeans = theatreManagementService.getAllTheatre();
-        String startTime = null;
-        String endTime = null;
 
         model.addAttribute("theaters", theatreBeans);
-        //model.addAttribute("starts", startTime);
-        //model.addAttribute("ends", endTime);
-        model.addAttribute("reservation", new Reservation());
+        model.addAttribute("reservations", reservationManagementService.findAll());
+        model.addAttribute("newReservation", new Reservation());
         return "reservation-create";
     }
 
     @PostMapping("/reservations/new")
-    public String createReservation(@ModelAttribute("reservationBean") ReservationBean reservationbean, BindingResult result, RedirectAttributes redirectAttributes){
-        if( result.hasErrors()) {
-            return "reservations-create";
-        }
+    public String createReservation(@ModelAttribute("reservation") ReservationBean reservationBean,
+                                    @RequestParam("date") String eventDate,
+                                    @RequestParam("start") String start,
+                                    @RequestParam("end") String end,
+                                    @RequestParam("theatreId") String theatreId,
+                                    RedirectAttributes redirectAttributes) {
+
+
+        Theatre tempTheatre = new Theatre();
+        LocalDate localDate = LocalDate.parse(eventDate);
+        Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        reservationBean.setEventDate(date);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.HOUR_OF_DAY, Integer.parseInt(start));
+        reservationBean.setStartTime(calendar.getTime());
+
+        calendar.setTime(date);
+        calendar.add(Calendar.HOUR_OF_DAY, Integer.parseInt(end));
+        reservationBean.setEndTime(calendar.getTime());
+
+        TheatreBean theatreBean = theatreManagementService.findTheatreById(Long.parseLong(theatreId));
+        tempTheatre.setId(theatreBean.getId());
+        tempTheatre.setStatus(theatreBean.getStatus());
+        tempTheatre.setName(theatreBean.getName());
+        tempTheatre.setCapacity(theatreBean.getCapacity());
+        tempTheatre.setReservations(theatreBean.getReservations());
+        tempTheatre.setCreatedDate(theatreBean.getCreatedDate());
+        tempTheatre.setModifiedDate(theatreBean.getModifiedDate());
+        reservationBean.setTheatre(tempTheatre);
+
 
         try {
-            reservationManagementService.save(reservationbean);
+
+            reservationManagementService.save(reservationBean);
         } catch (ServiceException e) {
             redirectAttributes.addFlashAttribute("error", "Something went wrong. Pleas try again. \n"+ e.getMessage());
-            return "redirect:/reservations/new"; // Redirect to the new employee form
+            return "redirect:/reservations/new";
         }
 
         String message = "A new reservation request has been created. Please wait for approval.";
@@ -135,6 +166,18 @@ public class ReservationManagementController {
         redirectAttributes.addFlashAttribute("message", message);
 
         return "redirect:/reservations";
+    }
+
+    private TheatreBean mapToTheatreBean(Theatre theatre) {
+        return TheatreBean.builder()
+                .id(theatre.getId())
+                .name(theatre.getName())
+                .status(theatre.getStatus())
+                .capacity(theatre.getCapacity())
+                .reservations(theatre.getReservations())
+                .createdDate(theatre.getCreatedDate())
+                .modifiedDate(theatre.getModifiedDate())
+                .build();
     }
 
 }

@@ -36,7 +36,7 @@
                                     <h5 class="card-title text-center pb-0 fs-4">Create a Reservation</h5>
                                     <p class="text-center small">Fill in the details below</p>
                                 </div>
-                                <form class="row g-3 needs-validation" method="post" th:action="@{/reservations/new}" th:object="${reservation}">
+                                <form class="row g-3 needs-validation" method="post" th:action="@{/reservations/new}" th:object="${newReservation}">
                                     <div class="row mb-3">
                                         <label for="event_description" class="col-sm-2 col-form-label">Description</label>
                                         <div class="col-sm-10">
@@ -48,10 +48,9 @@
                                         </div>
                                     </div>
                                     <div class="row mb-3">
-                                        <label class="col-sm-2 col-form-label">Select</label>
+                                        <label class="col-sm-2 col-form-label">Select Type</label>
                                         <div class="col-sm-10">
                                             <select class="form-select"  id="event_type" name="event_type" th:value="${event_type}">
-                                                <option selected>Choose type</option>
                                                 <option value="BUSINESS">BUSINESS</option>
                                                 <option value="LEISURE">LEISURE</option>
                                             </select>
@@ -59,51 +58,55 @@
                                         </div>
                                     </div>
                                     <div class="row mb-3">
-                                        <label class="col-sm-2 col-form-label" for="theatre">Theaters:</label>
+                                        <label class="col-sm-2 col-form-label" for="theatreId">Theaters</label>
                                         <div class="col-sm-10">
-                                            <select class="form-select"  id="theatre" name="theatre" th:value="${reservation.theatre}" >
-                                                <option value="">Select Theatre</option>
-                                                <option  th:each="theatre : ${theaters}" th:text="${theatre.name}"></option>
+                                            <select class="form-select"  id="theatreId" name="theatreId"  >
+                                                <div  th:each="theatre : ${theaters}">
+                                                    <option th:if="${theatre.status == T(com.ninjaTurtles.champtheatre.models.Theatre.Status).AVAILABLE}" th:text="${theatre.name}" th:value="${theatre.id}"></option>
+                                                </div>
                                             </select>
 
                                         </div>
                                     </div>
                                     <div class="row mb-3">
-                                        <label for="eventDate" class="col-sm-2 col-form-label">Date</label>
+                                        <label for="date" class="col-sm-2 col-form-label">Date</label>
                                         <div class="col-sm-10">
-                                            <input type="date" name="eventDate" class="form-control" id="eventDate"  th:field="*{eventDate}">
+                                            <input type="date" name="date" class="form-control" id="date"  min="" value="" >
                                         </div>
                                     </div>
 
                                     <div class="row mb-3">
-                                        <label for="startTime" class="col-sm-2 col-form-label">Starts At:</label>
+                                        <label for="start" class="col-sm-2 col-form-label">Starts At:</label>
                                         <div class="col-sm-10">
-                                            <select class="form-select" id="startTime" name="startTime" th:value="${starts}">
-                                                <option value="08:00">08:00 AM</option>
-                                                <option value="09:00">09:00 AM</option>
-                                                <option value="10:00">10:00 AM</option>
-                                                <option value="10:00">11:00 AM</option>
-                                                <option value="12:00">12:00 PM</option>
-                                                <option value="13:00">01:00 PM</option>
-                                                <option value="14:00">02:00 PM</option>
-                                                <option value="15:00">03:00 PM</option>
-                                                <option value="16:00">04:00 PM</option>
+                                            <select class="form-select" id="start" name="start" >
+                                                <option value="8">08:00 AM</option>
+                                                <option value="9">09:00 AM</option>
+                                                <option value="10">10:00 AM</option>
+                                                <option value="11">11:00 AM</option>
+                                                <option value="12">12:00 PM</option>
+                                                <option value="13">01:00 PM</option>
+                                                <option value="14">02:00 PM</option>
+                                                <option value="15">03:00 PM</option>
+                                                <option value="16">04:00 PM</option>
                                             </select>
                                         </div>
                                     </div>
                                     <div class="row mb-3">
                                         <!-- End Time -->
-                                        <label for="endTime" class="col-sm-2 col-form-label">Ends At:</label>
+                                        <label for="end" class="col-sm-2 col-form-label">Ends At:</label>
                                         <div class="col-sm-10">
-                                            <select class="form-select" id="endTime" name="endTime" th:value="${ends}">
-                                                <option value="12:00">12:00 PM</option>
-                                                <option value="13:00">01:00 PM</option>
-                                                <option value="14:00">02:00 PM</option>
-                                                <option value="15:00">03:00 PM</option>
-                                                <option value="16:00">04:00 PM</option>
-                                                <option value="17:00">05:00 PM</option>
-                                                <option value="18:00">06:00 PM</option>
-                                                <option value="19:00">07:00 PM</option>
+                                            <select class="form-select" id="end" name="end" >
+                                                <option value="9">09:00 AM</option>
+                                                <option value="10">10:00 AM</option>
+                                                <option value="11">11:00 AM</option>
+                                                <option value="12">12:00 PM</option>
+                                                <option value="13">01:00 PM</option>
+                                                <option value="14">02:00 PM</option>
+                                                <option value="15">03:00 PM</option>
+                                                <option value="16">04:00 PM</option>
+                                                <option value="17">05:00 PM</option>
+                                                <option value="18">06:00 PM</option>
+                                                <option value="19">07:00 PM</option>
                                             </select>
                                         </div>
                                     </div>
@@ -120,7 +123,7 @@
                                     <div class="row mb-3">
 
                                         <div class="text-center">
-                                            <button type="submit" class="btn btn-primary">Request</button>
+                                            <button type="submit" class="btn btn-primary">Reserve</button>
                                         </div>
                                     </div>
 
@@ -174,13 +177,80 @@
                         </table>
 
                     </div>
-                </div><!-- End Recent Activity -->
+                </div>
+                <div class="card">
+
+                    <div class="card-body">
+                        <h5 class="card-title"  style="color:red">Occupied </h5>
+
+                        <table id="reservationTable"    style="color:red" class="table table-hover">
+
+                            <thead>
+                            <tr>
+                                <th>Theatre</th>
+                                <th>Start</th>
+                                <th>End</th>
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="reservation : ${reservations}" id="reservationRow" th:class="${#dates.format(reservation.eventDate, 'dd/MM/yyyy') != date ? 'd-none' : ''}">
+                                <td th:text="${#dates.format(reservation.eventDate, 'dd/MM/yyyy')}"></td>
+                                <td th:text="${#dates.format(reservation.startTime,'h:mm a')}"></td>
+                                <td th:text="${#dates.format(reservation.endTime, 'h:mm a')}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 </main>
 
+<script>
+// Set the minimum and default values to the current date
+var currentDate = new Date().toISOString().split('T')[0];
+document.getElementById("date").setAttribute('min', currentDate);
+document.getElementById("date").value = currentDate;
 
+
+// time condition
+  var startSelect = document.getElementById("start");
+    var endSelect = document.getElementById("end");
+
+    startSelect.addEventListener("change", function() {
+        var selectedStart = parseInt(this.value);
+
+        // Disable options earlier than selected start time and enable later options
+        for (var i = 0; i < endSelect.options.length; i++) {
+            var endTime = parseInt(endSelect.options[i].value);
+            if (endTime <= selectedStart) {
+                endSelect.options[i].disabled = true;
+            } else {
+                endSelect.options[i].disabled = false;
+            }
+        }
+
+        // Set default end time as next available time if needed
+        var selectedEnd = parseInt(endSelect.value);
+        if (selectedEnd <= selectedStart) {
+            for (var i = 0; i < endSelect.options.length; i++) {
+                var endTime = parseInt(endSelect.options[i].value);
+                if (endTime > selectedStart) {
+                    endSelect.value = endTime.toString();
+                    break;
+                }
+            }
+        }
+    });
+
+
+
+
+</script>
+
+</script>
 <section th:replace="footer-scripts.html"></section>
 
 </html>

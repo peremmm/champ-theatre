@@ -76,25 +76,21 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
     @Transactional
     @Override
     public void save(ReservationBean reservationBean) {
-//        Reservation newReservation = new Reservation();
-//        newReservation.setEvent_type(reservationBean.getEvent_type());
-//        newReservation.setEvent_description(reservationBean.getEvent_description());
-//        newReservation.setEventDate(reservationBean.getEventDate());
-//        newReservation.setStartTime(reservationBean.getStartTime());
-//        newReservation.setEndTime(reservationBean.getEndTime());
-//        newReservation.setStatus(Reservation.Status.UNREVIEWED);
-//        newReservation.setTheatre(reservationBean.getTheatre());
-//        newReservation.setAttendees(reservationBean.getParticipants());
-//        newReservation.setReviewer(null);
-//        newReservation.setBooker(reservationBean.getBooker())
-
-
+        Reservation newReservation = new Reservation();
+        newReservation.setEvent_type(reservationBean.getEvent_type());
+        newReservation.setEvent_description(reservationBean.getEvent_description());
+        newReservation.setEventDate(reservationBean.getEventDate());
+        newReservation.setStartTime(reservationBean.getStartTime());
+        newReservation.setEndTime(reservationBean.getEndTime());
+        newReservation.setStatus(Reservation.Status.UNREVIEWED);
+        newReservation.setTheatre(reservationBean.getTheatre());
+        newReservation.setAttendees(reservationBean.getAttendees());
         //NEEDS TO BE UPDATED TO USE USER SESSION
         //newReservation.setBooker(UsersessionId);
-        //OR
-        //reservationBean.setBooker(UserID);
+        //temporary
+        newReservation.setBooker(getEmployee(201L));
         try {
-            reservationRepository.save(mapToReservation(reservationBean));
+            reservationRepository.save(newReservation);
         }catch (DataAccessException e){
             throw new ServiceException(e.getMessage());
         }
