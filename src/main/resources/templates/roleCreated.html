@@ -1,36 +1,30 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Roles</title>
+    <title>Existing Roles</title>
 </head>
+<body>
+<h1>Existing Roles</h1>
 
-<section th:replace="header-menu.html"></section>
-
-<main id="main" class="main">
-    <div class="pagetitle">
-        <h1>Roles</h1>
-        <nav>
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item active">Created Roles</li>
-            </ol>
-        </nav>
-    </div>
-
-    <section class="section dashboard">
-        <div class="card mb-3">
-            <div class="card-body">
-
-
-            </div>
-        </div>
-    </section>
-
-
-
-
-</main>
-
-<section th:replace="footer-scripts.html"></section>
-
+<table>
+    <thead>
+    <tr>
+        <th>Role</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Iterate over the roles and display the data -->
+    <tr th:each="role : ${roles}">
+        <td id="role" th:text="${role.role}"></td>
+        <td id="description" th:text="${role.description}"></td>
+        <td>
+            <span th:each="module : ${role.module}">
+                <span id="module-name" th:text="${module.moduleName}"></span>
+            </span>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
 </html>

@@ -1,5 +1,6 @@
 package com.ninjaTurtles.champtheatre.test;
 
+import com.ninjaTurtles.champtheatre.bean.ModuleBean;
 import com.ninjaTurtles.champtheatre.bean.RoleBean;
 import com.ninjaTurtles.champtheatre.models.*;
 import com.ninjaTurtles.champtheatre.repository.RoleRepository;
@@ -14,6 +15,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.stubbing.Answer;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -57,25 +59,89 @@ public class RoleManagementServiceImplTest {
         verifyNoMoreInteractions(roleRepository);
     }
 
+    // Test code
     @Test
     public void testAddRole() {
         // Creating test data
-        Role role = new Role(1L, "Admin", new HashSet<>(), new HashSet<>());
-        Set<RoleModule> modules = new HashSet<>();
+        // Creating test data
+        RoleBean roleBean = new RoleBean();
+        roleBean.setId(1L);
+        roleBean.setRole("Admin");
+        roleBean.setModule(new HashSet<>());
+        roleBean.setEmployee(new HashSet<>());
 
-        RoleModule roleModule = new RoleModule();
-        roleModule.setRole(role);
-        // Set other properties of the RoleModule if needed
+        ModuleBean moduleBean = new ModuleBean();
+        moduleBean.setModuleName(roleBean.toString());
 
-        modules.add(roleModule);
+        // Adding modules to the roleBean
+        Set<ModuleBean> modules = new HashSet<>();
+
+        modules.add(moduleBean);
 
         // Calling the service method
-//        roleManagementService.addRole(role, modules);
+        roleManagementService.addRole(roleBean, modules);
 
         // Verifying the repository method was called
-        verify(roleRepository, times(1)).save(role);
+        verify(roleRepository, times(1)).save(any(Role.class));
         verifyNoMoreInteractions(roleRepository);
     }
+
+    @Test
+    public void testCreateRoleWithModules() {
+        // Mock data
+        String roleName = "Admin";
+        String roleDescription = "Administrator role";
+        List<String> moduleNames = Arrays.asList("Module1", "Module2");
+
+        // Create a mock RoleManagementService instance
+        RoleManagementServiceImpl roleManagementService = new RoleManagementServiceImpl(roleRepository);
+
+        // Mock the repository behavior
+        when(roleRepository.save(any(Role.class))).thenReturn(new Role());
+
+        // Call the createRole method
+        RoleBean roleBean = new RoleBean();
+        roleBean.setRole(roleName);
+        roleBean.setDescription(roleDescription);
+
+        Set<ModuleBean> modules = moduleNames.stream()
+                .map(moduleName -> {
+                    ModuleBean module = new ModuleBean();
+                    module.setModuleName(moduleName);
+                    return module;
+                })
+                .collect(Collectors.toSet());
+
+        roleManagementService.addRole(roleBean, modules);
+
+        // Verify that the roleRepository.save method was called
+        verify(roleRepository, times(1)).save(any(Role.class));
+    }
+
+    @Test
+    public void testCreateRoleWithoutModules() {
+        // Mock data
+        String roleName = "Admin";
+        String roleDescription = "Administrator role";
+
+        // Create a mock RoleManagementService instance
+        RoleManagementServiceImpl roleManagementService = new RoleManagementServiceImpl(roleRepository);
+
+        // Mock the repository behavior
+        when(roleRepository.save(any(Role.class))).thenReturn(new Role());
+
+        // Call the createRole method
+        RoleBean roleBean = new RoleBean();
+        roleBean.setRole(roleName);
+        roleBean.setDescription(roleDescription);
+
+        roleManagementService.addRole(roleBean, Collections.emptySet());
+
+        // Verify that the roleRepository.save method was called
+        verify(roleRepository, times(1)).save(any(Role.class));
+    }
+
+// =============================================================
 
     @Test
     public void testUpdateRole() {
