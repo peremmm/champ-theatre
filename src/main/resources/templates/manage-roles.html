@@ -24,12 +24,12 @@
                 <section>
                     <br>
                     <h2>Create New Role</h2>
-                    <form method="post" action="/createRole">
+                    <form id="createRoleForm" method="post" th:action="@{/createRole}">
                         <!-- Role name input -->
                         <div class="row mb-3">
                             <label for="roleName" class="col-sm-2 col-form-label">Role Name:</label>
                             <div class="col-sm-10">
-                                <input type="text" id="roleName" name="roleName" required class="form-control">
+                                <input type="text" id="roleName" name="name" required class="form-control">
                             </div>
                         </div>
                         <br>
@@ -37,7 +37,7 @@
                         <div class="row mb-3">
                             <label for="roleDescription" class="col-sm-2 col-form-label">Role Description:</label>
                             <div class="col-sm-10">
-                                <input type="text" id="roleDescription" name="roleDescription" class="form-control">
+                                <input type="text" id="roleDescription" name="description" class="form-control">
                             </div>
                         </div>
                         <br>
@@ -46,15 +46,30 @@
                         <div class="row mb-3">
                             <label class="col-sm-2 col-form-label">Modules:</label>
                             <div class="col-sm-10">
-                                <!-- Loop through available modules -->
-                                <div th:each="module : ${availableModules}">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="module" name="modules" th:value="${module}" th:text="${module}">
-                                        <label class="form-check-label" for="module"></label>
-                                    </div>
+                                <!-- Checkbox for each module option -->
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="employeeAccountManagement" name="modules" value="EmployeeAccountManagement">
+                                    <label class="form-check-label" for="employeeAccountManagement">Employee Account Management</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="reservationConstraintManagement" name="modules" value="ReservationConstraintManagement">
+                                    <label class="form-check-label" for="reservationConstraintManagement">Reservation Constraint Management</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="reservationManagement" name="modules" value="ReservationManagement">
+                                    <label class="form-check-label" for="reservationManagement">Reservation Management</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="theatreManagement" name="modules" value="TheatreManagement">
+                                    <label class="form-check-label" for="theatreManagement">Theatre Management</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="roleManagement" name="modules" value="RoleManagement">
+                                    <label class="form-check-label" for="roleManagement">Role Management</label>
                                 </div>
                             </div>
                         </div>
+
                         <br>
                         <!-- Submit button -->
                         <div class="row mb-3">
@@ -66,37 +81,7 @@
                     </form>
                 </section>
 
-
-<!--                <section>-->
-<!--                    <h2>User Role Assignment</h2>-->
-<!--                    &lt;!&ndash; User list &ndash;&gt;-->
-<!--                    <table>-->
-<!--                        <thead>-->
-<!--                        <tr>-->
-<!--                            <th>User</th>-->
-<!--                            <th>Assigned Role(s)</th>-->
-<!--                            <th>Actions</th>-->
-<!--                        </tr>-->
-<!--                        </thead>-->
-<!--                        <tbody>-->
-<!--                        &lt;!&ndash; Loop through the users &ndash;&gt;-->
-<!--                        <tr th:each="user : ${users}">-->
-<!--                            <td th:text="${user.name}"></td>-->
-<!--                            <td>-->
-<!--                                &lt;!&ndash; Loop through the assigned roles of the current user &ndash;&gt;-->
-<!--                                <ul>-->
-<!--                                    <li th:each="role : ${user.roles}" th:text="${role.employee}"></li>-->
-<!--                                </ul>-->
-<!--                            </td>-->
-<!--                            <td>-->
-<!--                                &lt;!&ndash; Actions for each user &ndash;&gt;-->
-<!--                                <a href="#" th:href="@{/assignRoles/{userId}(userId=${user.id})}">Assign Role</a>-->
-<!--                                <a href="#" th:href="@{/removeRoles/{userId}(userId=${user.id})}">Remove Role</a>-->
-<!--                            </td>-->
-<!--                        </tr>-->
-<!--                        </tbody>-->
-<!--                    </table>-->
-<!--                </section>-->
+                <a href="/existingRoles" class="btn btn-primary">View Existing Roles</a>
 
             </div>
         </div>
