@@ -65,7 +65,7 @@ public class EmployeeManagementController {
         try {
             employeeManagementService.addEmployeeAccount(new EmployeeAccount(), employeeBean);
         } catch (ServiceException e) {
-            redirectAttributes.addFlashAttribute("error", "Email already exists");
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/employees/new";
         }
 
