@@ -83,4 +83,19 @@ public class EmailSenderServiceImpl implements EmailSenderService {
         mailSender.send(mimeMessage);
     }
 
+//    public void sendResetPasswordLink(Employee employee) throws MessagingException {
+//        MimeMessage mimeMessage = mailSender.createMimeMessage();
+//        MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
+//        messageHelper.setTo(employee.getEmail());
+//        messageHelper.setSubject("Reset Password");
+//
+//        String resetLink = generateResetLink(employee.getResetToken()); // Assuming you have a method to generate the reset link
+//
+//        String emailContent = "To reset your password, please click the link below:\n" + resetLink;
+//        messageHelper.setText(emailContent);
+//
+//        mailSender.send(mimeMessage);
+//    }
+
+
 }

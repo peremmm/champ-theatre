@@ -26,7 +26,9 @@ public class EmployeeManagementServiceImpl implements EmployeeManagementService 
     private final RoleRepository roleRepository;
 
     @Autowired
-    public EmployeeManagementServiceImpl(EmployeeRepository employeeRepository, EmployeeAccountRepository employeeAccountRepository, RoleRepository roleRepository){
+    public EmployeeManagementServiceImpl(EmployeeRepository employeeRepository,
+                                         EmployeeAccountRepository employeeAccountRepository,
+                                         RoleRepository roleRepository) {
         this.employeeRepository = employeeRepository;
         this.employeeAccountRepository = employeeAccountRepository;
         this.roleRepository = roleRepository;

@@ -20,29 +20,29 @@ public class LoginController {
     }
 
     @GetMapping("/login")
-    public String showLoginForm() {
+    public String showLoginPage() {
         return "login";
     }
 
-    @PostMapping("/login")
-    public String login(@RequestParam("username") String username,
-                        @RequestParam("password") String password,
-                        HttpSession session) {
-
-        if (loginService.authenticate(username, password)) {
-            // Successful login
-            session.setAttribute("username", username);
-
-            if (loginService.isPasswordChanged(username)) {
-                return "redirect:/theatre-list";
-            } else {
-                return "change-password";
-            }
-        } else {
-            // Invalid credentials
-            return "login";
-        }
-    }
+//    @PostMapping("/login")
+//    public String login(@RequestParam("username") String username,
+//                        @RequestParam("password") String password,
+//                        HttpSession session) {
+//
+//        if (loginService.authenticate(username, password)) {
+//            // Successful login
+//            session.setAttribute("username", username);
+//
+//            if (loginService.isPasswordChanged(username)) {
+//                return "redirect:/theatres";
+//            } else {
+//                return "change-password";
+//            }
+//        } else {
+//            // Invalid credentials
+//            return "login";
+//        }
+//    }
 
     @GetMapping("/change-password")
     public String showPasswordChangeForm() {

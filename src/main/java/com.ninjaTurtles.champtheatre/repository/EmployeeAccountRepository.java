@@ -11,5 +11,9 @@ public interface EmployeeAccountRepository extends JpaRepository<EmployeeAccount
     Optional<EmployeeAccount> findByStatus(EmployeeAccount.Status status);
 
     Optional<EmployeeAccount> findByEmployeeId(Long employeeId);
+
+    Optional<EmployeeAccount> findByResetToken(String resetToken);
+
+    EmployeeAccount findFirstByUsername(String username);
     // Add additional methods here, if needed
 }

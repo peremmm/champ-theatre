@@ -1,4 +1,5 @@
-<head >
+<html xmlns:th="https://www/thymeleaf.org">
+<head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
@@ -88,7 +89,7 @@
           </li>
 
           <li>
-            <a class="dropdown-item d-flex align-items-center" href="#">
+            <a class="dropdown-item d-flex align-items-center" th:href="@{/logout}">
               <i class="bi bi-box-arrow-right"></i>
               <span>Sign Out</span>
             </a>
@@ -187,3 +188,4 @@
 
 
 </aside><!-- End Sidebar-->
+</html>

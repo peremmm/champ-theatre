@@ -59,7 +59,7 @@ public class Employee implements Serializable{
     @OneToMany(mappedBy = "reviewer", cascade = CascadeType.ALL)
     private List<Reservation> reservations2 = new ArrayList<>();
     
-    @OneToMany(mappedBy = "employee")
+    @OneToMany(mappedBy = "employee", fetch = FetchType.EAGER)
     private Set<EmployeeRole> roles = new HashSet<>();
     
     @OneToOne(mappedBy = "employee", fetch = FetchType.LAZY)

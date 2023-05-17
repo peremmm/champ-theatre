@@ -39,12 +39,15 @@ public class EmployeeAccount extends AbstractEntity{
     @Column(columnDefinition = "VARCHAR(75)", nullable = false)
     private String password;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "employee_id")
     private Employee employee;
     
     @Enumerated(EnumType.STRING)
     @Column(length = 15, nullable = false)
     private Status status;
+
+    @Column(columnDefinition = "VARCHAR(255)")
+    private String resetToken;
 
 }
