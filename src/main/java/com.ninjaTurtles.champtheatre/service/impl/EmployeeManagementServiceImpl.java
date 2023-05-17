@@ -5,6 +5,7 @@ import com.ninjaTurtles.champtheatre.exception.ServiceException;
 import com.ninjaTurtles.champtheatre.models.*;
 import com.ninjaTurtles.champtheatre.repository.EmployeeAccountRepository;
 import com.ninjaTurtles.champtheatre.repository.EmployeeRepository;
+import com.ninjaTurtles.champtheatre.repository.EmployeeRoleRepository;
 import com.ninjaTurtles.champtheatre.repository.RoleRepository;
 import com.ninjaTurtles.champtheatre.service.EmployeeManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +25,16 @@ public class EmployeeManagementServiceImpl implements EmployeeManagementService 
     private final EmployeeRepository employeeRepository;
     private final EmployeeAccountRepository employeeAccountRepository;
     private final RoleRepository roleRepository;
+    private final EmployeeRoleRepository employeeRoleRepository;
 
     @Autowired
     public EmployeeManagementServiceImpl(EmployeeRepository employeeRepository,
                                          EmployeeAccountRepository employeeAccountRepository,
-                                         RoleRepository roleRepository) {
+                                         RoleRepository roleRepository, EmployeeRoleRepository employeeRoleRepository) {
         this.employeeRepository = employeeRepository;
         this.employeeAccountRepository = employeeAccountRepository;
         this.roleRepository = roleRepository;
+        this.employeeRoleRepository = employeeRoleRepository;
     }
 
     @Override
@@ -40,16 +43,6 @@ public class EmployeeManagementServiceImpl implements EmployeeManagementService 
         Sort sort = Sort.by(direction, sortField);
         List<Employee> employees = employeeRepository.findAll(sort);
         return employees.stream().map(this::mapToEmployeeBean).collect(Collectors.toList());
-    }
-
-    @Transactional
-    @Override
-    public Employee register(EmployeeBean employeebean) throws ServiceException {
-        Employee employee = mapToEmployee(employeebean);
-        if (employeeRepository.findByEmail(employee.getEmail()).isPresent()) {
-            throw new ServiceException("Email already exists.");
-        }
-        return employeeRepository.save(employee);
     }
 
 
@@ -91,8 +84,28 @@ public class EmployeeManagementServiceImpl implements EmployeeManagementService 
 
         employeeAccount.setStatus(EmployeeAccount.Status.INACTIVE);
 
+        //Role Begins
+        // Create EmployeeRole and set employeeId and roleId
+        EmployeeRole employeeRole = new EmployeeRole();
+        EmployeeRoleId employeeRoleId = new EmployeeRoleId(savedEmployee.getId(), null); // roleId will be set later
+        employeeRole.setId(employeeRoleId);
+        employeeRole.setEmployee(savedEmployee);
+
+        Role role = roleRepository.findByRole("User").orElseThrow(() -> new ServiceException("Role not found.")); // Retrieve the Role with name "User"
+        employeeRole.setRole(role); // Set the retrieved Role as the role in EmployeeRole
+        employeeRoleRepository.save(employeeRole); // Save the EmployeeRole
+        employeeRoleId.setRoleId(role.getId()); // Set the roleId in the EmployeeRoleId
+        employeeRoleRepository.save(employeeRole); // Save the modified EmployeeRoleId
+
         return employeeAccountRepository.save(employeeAccount);
     }
+    /**
+     *
+     * roles (id, role)
+     * 101, 'Administrator'
+     * 102, 'Reservation Coordinator'
+     * 103, 'User'
+     */
 
     private Employee mapToEmployee(EmployeeBean employeeBean) {
         return Employee.builder()
@@ -102,30 +115,6 @@ public class EmployeeManagementServiceImpl implements EmployeeManagementService 
                 .email(employeeBean.getEmail())
                 .employeeAccount(employeeBean.getEmployeeAccount())
                 .build();
-    }
-
-    /**
-     * TO DO
-     * roles (id, role) Initial
-     * 101, 'Administrator'
-     * 102, 'Reservation Coordinator'
-     * 103, 'User'
-     */
-    @Transactional
-    @Override
-    public EmployeeRole addEmployeeRole(Long roleId, Long employeeId) {
-        EmployeeRole employeeRole = new EmployeeRole();
-        EmployeeRoleId id = new EmployeeRoleId();
-        id.setRoleId(roleId);
-        id.setEmployeeId(employeeId);
-        employeeRole.setId(id);
-        Employee employee = employeeRepository.findById(employeeId).orElse(null);
-
-        if (employee != null) {
-            employee.setRoles((Set<EmployeeRole>) employeeRole);
-        }
-        System.out.println("EmployeeID: " + employeeId + "\nRoleId: " + roleId);
-        return null; //employeeRoleRepository.save(employeeRole);
     }
 
 
@@ -190,8 +179,5 @@ public class EmployeeManagementServiceImpl implements EmployeeManagementService 
 
         return result.toString();
     }
-
-
-
 
 }

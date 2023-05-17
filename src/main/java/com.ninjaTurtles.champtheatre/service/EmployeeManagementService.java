@@ -11,13 +11,9 @@ public interface EmployeeManagementService {
 
 	List<EmployeeBean> getAllEmployee(String sortField, boolean ascending);
 
-	Employee register(EmployeeBean employeeBean);
-
 	void updateEmployee(EmployeeBean employeeBean);
 
 	EmployeeAccount addEmployeeAccount(EmployeeAccount employeeAccount, EmployeeBean employeeBean);
-
-	EmployeeRole addEmployeeRole(Long roleId, Long employeeId);
 
 	EmployeeBean findEmployeeById(long employeeId);
 

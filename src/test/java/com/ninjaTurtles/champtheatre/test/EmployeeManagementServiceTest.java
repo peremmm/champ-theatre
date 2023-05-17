@@ -1,14 +1,10 @@
 package com.ninjaTurtles.champtheatre.test;
 
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
-import java.util.Optional;
-
-import com.ninjaTurtles.champtheatre.models.EmployeeAccount;
 import com.ninjaTurtles.champtheatre.repository.EmployeeAccountRepository;
 import com.ninjaTurtles.champtheatre.repository.EmployeeRepository;
+import com.ninjaTurtles.champtheatre.repository.EmployeeRoleRepository;
 import com.ninjaTurtles.champtheatre.repository.RoleRepository;
 import com.ninjaTurtles.champtheatre.service.EmployeeManagementService;
 import com.ninjaTurtles.champtheatre.service.impl.EmployeeManagementServiceImpl;
@@ -26,13 +22,15 @@ public class EmployeeManagementServiceTest {
     private EmployeeAccountRepository employeeAccountRepository;
     @Mock
     private RoleRepository roleRepository;
+    @Mock
+    private EmployeeRoleRepository employeeRoleRepository;
 
     private EmployeeManagementService employeeManagementService;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        employeeManagementService = new EmployeeManagementServiceImpl(employeeRepository, employeeAccountRepository, roleRepository);
+        employeeManagementService = new EmployeeManagementServiceImpl(employeeRepository, employeeAccountRepository, roleRepository, employeeRoleRepository);
     }
 
     @Test
