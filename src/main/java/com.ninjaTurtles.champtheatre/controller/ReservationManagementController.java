@@ -128,7 +128,7 @@ public class ReservationManagementController {
     @PostMapping("/reservations/assign")
     public String assignReviewer(@ModelAttribute("reservation") ReservationBean reservationbean, RedirectAttributes redirectAttributes){
         try {
-            reservationManagementService.updateStatus(reservationbean);
+            //reservationManagementService.updateStatus(reservationbean);
         } catch (ServiceException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/reservations/edit"; // Redirect to the new employee form
@@ -205,6 +205,22 @@ public class ReservationManagementController {
         return "redirect:/reservations";
     }
 
+
+    @GetMapping("/reservations/{reservationId}/cancel")
+    public String cancelReservation(@PathVariable("reservationId") Long reservationId,
+                                 RedirectAttributes redirectAttributes) {
+
+        try {
+            reservationManagementService.cancel(reservationId);
+        } catch (ServiceException e) {
+            redirectAttributes.addFlashAttribute("error", "Unable to cancel the reservation");
+            return "redirect:/reservations/edit"; // Redirect to the new employee form
+        }
+
+        redirectAttributes.addFlashAttribute("message",
+                "Reservation " + reservationId + " has been canceled");
+        return "redirect:/reservations";
+    }
 
     private Theatre mapToTheatre(TheatreBean theatre) {
         return Theatre.builder()

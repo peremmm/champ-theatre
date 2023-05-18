@@ -26,9 +26,9 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
         RoleManagement,
 
     }
-    private ReservationRepository reservationRepository;
-    private EmployeeRepository employeeRepository;
-    private TheatreRepository theatreRepository;
+    private final ReservationRepository reservationRepository;
+    private final EmployeeRepository employeeRepository;
+    private final TheatreRepository theatreRepository;
 
     @Autowired
     public ReservationManagementServiceImpl(ReservationRepository reservationRepository,EmployeeRepository employeeRepository, TheatreRepository theatreRepository) {
@@ -40,6 +40,8 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
     @Override
     public ReservationBean findById(Long reservationId) {
         Reservation reservation = reservationRepository.findById(reservationId).get();
+
+
         return mapToReservationBean(reservation);
     }
 
@@ -55,17 +57,6 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
 
     }
 
-    @Override
-    public List<ReservationBean> findByReviewer(Employee reviewer) {
-
-        Optional<Reservation> optionalReservation = reservationRepository.findByReviewer(reviewer);
-        if (optionalReservation.isPresent()){
-            List<Reservation> reservations = optionalReservation.map(Collections::singletonList).orElse(Collections.emptyList());
-            return reservations.stream().map((reservation) -> mapToReservationBean(reservation)).collect(Collectors.toList());
-
-        }
-        return Collections.emptyList();
-    }
 
     /**  FOR TESTING ONLY**/
     private Employee getEmployee(Long employeeId) {
@@ -95,6 +86,30 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
         }
     }
 
+    @Transactional
+    @Override
+    public void assign(Long reservationId) {
+        Reservation existingReservation = reservationRepository.findById(reservationId).orElseThrow(null);
+
+        if(existingReservation != null && existingReservation.getReviewer() == null ) {
+
+            // WITH SESSION
+            // Set<EmployeeRole> currentRoles = employeeRepository.findById(User session ID).getRoles();
+            Set<EmployeeRole> currentRoles = getEmployee(202L).getRoles();
+
+            for(EmployeeRole employeeRole : currentRoles){
+                if(employeeRole.getRole().getModule().contains(Modules.ReservationRequestManagement)) {
+                    existingReservation.setStatus(Reservation.Status.PENDING);
+                    reservationRepository.save(existingReservation);
+                    break;
+                }
+            }
+        }
+        else {
+            throw new ServiceException("Something went wrong. Please try again.");
+        }
+    }
+
 
     @Override
     public List<ReservationBean> findAll() {
@@ -103,31 +118,43 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
 
     @Transactional
     @Override
-    public void updateStatus(ReservationBean reservationBean) {
+    public void updateStatus(Long reservationId, Reservation.Status status) {
 
-        Reservation existingReservation = reservationRepository.findById(reservationBean.getId()).orElseThrow(null);
-        // When session is setup, use this for the if condition
-        //if(existingReservation != null &&  reservationBean.getReviewer().getId() == userSessionId){
-        if(existingReservation != null &&  reservationBean.getReviewer() != null) {
-            Set<EmployeeRole> currentRoles = reservationBean.getReviewer().getRoles();
+        Reservation existingReservation = reservationRepository.findById(reservationId).orElseThrow(null);
 
-            for(EmployeeRole employeeRole : currentRoles){
-                if(employeeRole.getRole().getModule().contains(Modules.ReservationRequestManagement)) {
-                    if (existingReservation.getReviewer() == null) {
-                        existingReservation.setStatus(Reservation.Status.PENDING);
-                        existingReservation.setReviewer(reservationBean.getReviewer());
+        if(existingReservation != null && existingReservation.getReviewer() != null && (status == Reservation.Status.APPROVED || status == Reservation.Status.REJECTED ) ) {
 
-                    } //else if (existingReservation.getReviewer().getId() == userSessionId && existingReservation.getStatus() == Reservation.Status.PENDING) {
-                    else if (existingReservation.getReviewer() != null && existingReservation.getStatus() == Reservation.Status.PENDING) {
-                        existingReservation.setStatus(reservationBean.getStatus());
+            // When session is setup, use if condition
+            //if(existingReservation != null &&  existingReservation.getReviewer().getId() == userSessionId){
+                // WITH SESSION
+                // Set<EmployeeRole> currentRoles = employeeRepository.findById(User session ID).getRoles();
+                Set<EmployeeRole> currentRoles = existingReservation.getReviewer().getRoles();
+
+                for(EmployeeRole employeeRole : currentRoles){
+                    if(employeeRole.getRole().getModule().contains(Modules.ReservationRequestManagement)) {
+                        existingReservation.setStatus(status);
+                        reservationRepository.save(existingReservation);
+                        break;
                     }
-                    reservationRepository.save(existingReservation);
-                    break;
                 }
-            }
+            //}
+        }
+        else {
+            throw new ServiceException("Something went wrong. Please try again.");
+        }
+    }
 
-        }else {
-            throw new ServiceException("Something went wrong. We can't seem to find the reservation that you want to modify.");
+    @Transactional
+    @Override
+    public void cancel(Long reservationId) {
+        Reservation existingReservation = reservationRepository.findById(reservationId).orElseThrow(null);
+        //        if(existingReservation != null && existingReservation.getBooker().getId== UserSessionID  && (existingReservation.getStatus() == Reservation.Status.UNREVIEWED || existingReservation.getStatus()== Reservation.Status.APPROVED )  ) {
+        if(existingReservation != null  && (existingReservation.getStatus() == Reservation.Status.UNREVIEWED || existingReservation.getStatus()== Reservation.Status.APPROVED )  ) {
+            existingReservation.setStatus(Reservation.Status.CANCELLED);
+            reservationRepository.save(existingReservation);
+        }
+        else {
+            throw new ServiceException("Something went wrong. Pleas try again");
         }
     }
 

@@ -15,14 +15,14 @@ public interface ReservationManagementService {
 
 	List<ReservationBean> findByBooker(Employee booker);
 
-	List<ReservationBean> findByReviewer(Employee reviewer);
-
 	void save(ReservationBean reservationBean);
 
-
+	void assign(Long reservationId);
 	List<ReservationBean> findAll();
 
 	void updateDetails(ReservationBean reservationbean);
 
-	void updateStatus(ReservationBean reservationbean);
+	void updateStatus(Long reservationId, Reservation.Status status);
+	void cancel(Long reservationId);
+
 }

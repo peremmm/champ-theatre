@@ -1,6 +1,5 @@
 package com.ninjaTurtles.champtheatre.controller;
 
-import com.ninjaTurtles.champtheatre.bean.EmployeeAccountBean;
 import com.ninjaTurtles.champtheatre.bean.EmployeeBean;
 import com.ninjaTurtles.champtheatre.repository.EmployeeAccountRepository;
 import com.ninjaTurtles.champtheatre.service.EmployeeManagementService;
