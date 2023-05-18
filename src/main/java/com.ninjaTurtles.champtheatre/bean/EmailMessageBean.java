@@ -8,6 +8,7 @@ import lombok.Data;
 @Data
 @Builder
 public class EmailMessageBean {
+    private Long employeeId;
     private String to;
     private String subject;
     private String message;

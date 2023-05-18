@@ -14,10 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -182,6 +179,14 @@ public class EmployeeManagementServiceImpl implements EmployeeManagementService 
         }
 
         return result.toString();
+    }
+
+    @Override
+    public String getEmployeeEmailById(Long employeeId) {
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new NoSuchElementException("Employee not found with ID: " + employeeId));
+
+        return employee.getEmail();
     }
 
 }
