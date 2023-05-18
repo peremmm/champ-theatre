@@ -1,54 +1,112 @@
 package com.ninjaTurtles.champtheatre.security;
 
+import com.ninjaTurtles.champtheatre.models.EmployeeAccount;
+import com.ninjaTurtles.champtheatre.models.EmployeeAccount.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Optional;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private CustomUserDetailsService userDetailsService;
+    private final EmployeeDetailsService employeeDetailsService;
 
     @Autowired
-    public SecurityConfig(CustomUserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
+    public SecurityConfig(EmployeeDetailsService employeeDetailsService) {
+        this.employeeDetailsService = employeeDetailsService;
     }
 
     @Bean
     public static PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return NoOpPasswordEncoder.getInstance();
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/login", "/forgot-password", "/change-password", "/reset-password",
-                            "/employees", "/theatres", "/role-management", "/createRole", "/send-email", "/requests",
-                            "/reservations", "/css/**", "/js/**")
+                .antMatchers("/login", "/forgot-password", "/change-password", "/css/**", "/js/**")
                 .permitAll()
                 .and()
                 .formLogin(form -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("/employees")
                         .loginProcessingUrl("/login")
-                        .failureUrl("/login")
+                        .failureUrl("/login?error=true")
                         .permitAll()
-                ).logout(logout -> logout
-                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout")).permitAll()
+                        .successHandler(new CustomAuthenticationSuccessHandler()) // Custom success handler
+                        .failureHandler(new CustomAuthenticationFailureHandler()) // Custom failure handler
+                ).logout(
+                        logout -> logout
+                                .logoutRequestMatcher(new AntPathRequestMatcher("/logout")).permitAll()
                 );
+
         return http.build();
     }
 
     public void configure(AuthenticationManagerBuilder builder) throws Exception {
-        builder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+        builder.userDetailsService(employeeDetailsService).passwordEncoder(passwordEncoder());
+    }
+
+    // Custom success handler
+    public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+        @Override
+        public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+            EmployeeAccount employeeAccount = getLoggedInEmployeeAccount(authentication);
+            if (employeeAccount != null) {
+                if (employeeAccount.getStatus() == Status.INACTIVE) {
+                    // Handle inactive account by redirecting to change-password page
+                    response.sendRedirect("/change-password");
+                } else if (employeeAccount.getStatus() == Status.TERMINATED) {
+                    // Handle terminated account
+                    response.sendRedirect("/terminated-account");
+                } else {
+                    // Handle other successful login scenarios
+                    response.sendRedirect("/dashboard");
+                }
+            } else {
+                // Handle invalid authentication
+                response.sendRedirect("/login?error=true");
+            }
+        }
+
+        private EmployeeAccount getLoggedInEmployeeAccount(Authentication authentication) {
+            if (authentication.getPrincipal() instanceof UserDetails) {
+                UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+                String username = userDetails.getUsername();
+                // Retrieve the EmployeeAccount using the username
+                Optional<EmployeeAccount> employeeAccount = employeeDetailsService.getEmployeeAccount(username);
+                return employeeAccount.orElse(null);
+            }
+            return null;
+        }
+    }
+
+    // Custom failure handler
+    public class CustomAuthenticationFailureHandler implements AuthenticationFailureHandler {
+        @Override
+        public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+            // Handle authentication failure
+            response.sendRedirect("/login?error=true");
+        }
     }
 }

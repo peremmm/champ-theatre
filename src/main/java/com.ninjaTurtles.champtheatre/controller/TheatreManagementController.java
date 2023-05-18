@@ -6,10 +6,11 @@ import com.ninjaTurtles.champtheatre.service.TheatreManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -22,62 +23,41 @@ public class TheatreManagementController {
     }
 
     @GetMapping("/theatres")
-    public String GetAllTheatres(Model model){
+    public String listTheatres(Model model, RedirectAttributes redirectAttributes) {
         List<TheatreBean> theatres = theatreManagementService.getAllTheatre();
         model.addAttribute("theatres", theatres);
+
+        if (redirectAttributes.containsAttribute("message")) {
+            model.addAttribute("message", redirectAttributes.getAttribute("message"));
+        }
+        if (redirectAttributes.containsAttribute("error")) {
+            model.addAttribute("error", redirectAttributes.getAttribute("error"));
+        }
         return "theatre-list";
     }
 
-    @GetMapping("/theatres/{theatreId}")
-    public String getTheatreById(@PathVariable("theatreId") long theatreId, Model model){
-        TheatreBean theatreBean = theatreManagementService.findTheatreById(theatreId);
-        model.addAttribute("theatre",theatreBean);
-        return "theatre-details";
-    }
 
-    @GetMapping("/theatres/{theatreId}/update")
-    public String updateTheatreDetails(@PathVariable("theatreId") Long theatreId, Model model) {
+    @GetMapping("/theatres/{theatreId}/edit")
+    public String editTheatreDetailsForm(@PathVariable("theatreId") Long theatreId, Model model) {
         TheatreBean theatre = theatreManagementService.findTheatreById(theatreId);
         model.addAttribute("theatre", theatre);
         model.addAttribute("statuses", Theatre.Status.values());
         return "theatre-edit-details";
     }
 
-    @PostMapping("/theatres/{theatreId}/update")
-    public String saveTheatreDetails(@PathVariable("theatreId") Long theatreId,
-                                     @ModelAttribute("theatre") Theatre theatre,
-                                     BindingResult result,
-                                     Model model) {
+    @PostMapping("/theatres/{theatreId}/edit")
+    public String updateTheatreDetails(@PathVariable("theatreId") Long theatreId,
+                                     @Valid @ModelAttribute("theatre") TheatreBean theatreBean,
+                                     BindingResult result, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
-            model.addAttribute("theatre", theatre);
-            model.addAttribute("statuses", Theatre.Status.values());
             return "theatre-edit-details";
         }
-        theatre.setId(theatreId);
-        theatreManagementService.updateTheatreDetails(theatre);
-        return "redirect:/theatres/" + theatreId;
+        theatreBean.setId(theatreId);
+        theatreManagementService.updateTheatreDetails(theatreBean);
+        redirectAttributes.addFlashAttribute("message",
+                "Theatre " +
+                        theatreBean.getId() +
+                        " has been EDITED");
+        return "redirect:/theatres";
     }
-
-
-    @GetMapping("/theatres/{theatreId}/change-status")
-    public String changeTheatreStatusForm(@PathVariable("theatreId") Long theatreId, Model model) {
-        TheatreBean theatre = theatreManagementService.findTheatreById(theatreId);
-        model.addAttribute("theatre", theatre);
-        model.addAttribute("statuses", Theatre.Status.values());
-        return "theatre-edit-status";
-    }
-
-    @PostMapping("/theatres/{theatreId}/change-status")
-    public String saveTheatreStatus(@PathVariable Long theatreId, @ModelAttribute("theatre") Theatre theatre,
-                                      BindingResult result, Model model) {
-        if (result.hasErrors()){
-            model.addAttribute("theatre", theatre);
-            model.addAttribute("statuses", Theatre.Status.values());
-            return "theatre-edit-status";
-        }
-        theatre.setId(theatreId);
-        theatreManagementService.changeTheatreStatus(theatre);
-        return "redirect:/theatres/" + theatreId;
-    }
-
 }

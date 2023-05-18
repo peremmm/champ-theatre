@@ -1,22 +1,32 @@
 package com.ninjaTurtles.champtheatre.controller;
 
+import com.ninjaTurtles.champtheatre.bean.EmployeeAccountBean;
+import com.ninjaTurtles.champtheatre.bean.EmployeeBean;
+import com.ninjaTurtles.champtheatre.repository.EmployeeAccountRepository;
+import com.ninjaTurtles.champtheatre.service.EmployeeManagementService;
 import com.ninjaTurtles.champtheatre.service.LoginService;
+import com.ninjaTurtles.champtheatre.security.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import javax.servlet.http.HttpSession;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class LoginController {
 
     private final LoginService loginService;
+    private final EmployeeManagementService employeeManagementService;
+    private final EmployeeAccountRepository employeeAccountRepository;
 
     @Autowired
-    public LoginController(LoginService loginService) {
+    public LoginController(LoginService loginService, EmployeeManagementService employeeManagementService, EmployeeAccountRepository employeeAccountRepository) {
         this.loginService = loginService;
+        this.employeeManagementService = employeeManagementService;
+        this.employeeAccountRepository = employeeAccountRepository;
     }
 
     @GetMapping("/login")
@@ -24,44 +34,30 @@ public class LoginController {
         return "login";
     }
 
-//    @PostMapping("/login")
-//    public String login(@RequestParam("username") String username,
-//                        @RequestParam("password") String password,
-//                        HttpSession session) {
-//
-//        if (loginService.authenticate(username, password)) {
-//            // Successful login
-//            session.setAttribute("username", username);
-//
-//            if (loginService.isPasswordChanged(username)) {
-//                return "redirect:/theatres";
-//            } else {
-//                return "change-password";
-//            }
-//        } else {
-//            // Invalid credentials
-//            return "login";
-//        }
-//    }
-
-    @GetMapping("/change-password")
-    public String showPasswordChangeForm() {
+    @GetMapping("/employees/{employeeId}/change-password")
+    public String showPasswordChangeForm(@PathVariable("employeeId") Long employeeId, Model model) {
+        String username = SecurityUtil.getSessionUser();
+        EmployeeBean employeeBean = employeeManagementService.findEmployeeById(employeeId);
+        model.addAttribute("employeeBean", employeeBean);
         return "change-password";
     }
 
-    @PostMapping("/change-password")
-    public String changePassword(@RequestParam("newPassword") String newPassword,
+    @PostMapping("/employees/{employeeId}/change-password")
+    public String changePassword(@PathVariable("employeeId") Long employeeId,
+                                 @RequestParam("newPassword") String newPassword,
                                  @RequestParam("confirmPassword") String confirmPassword,
-                                 HttpSession session) {
+                                 RedirectAttributes redirectAttributes) {
 
-        String username = (String) session.getAttribute("username");
+        String username = SecurityUtil.getSessionUser();
 
         if (newPassword.equals(confirmPassword)) {
             loginService.changePassword(username, newPassword);
-            return "employees-list";
-        } else {
+        }else {
             // Passwords do not match
             return "change-password";
         }
+
+        redirectAttributes.addFlashAttribute("message", "Password for " + username + " has been changed");
+        return "redirect:/employees";
     }
 }

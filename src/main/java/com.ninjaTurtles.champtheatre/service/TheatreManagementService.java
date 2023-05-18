@@ -11,8 +11,6 @@ public interface TheatreManagementService {
 	List<TheatreBean> getAllTheatre();
 
 	TheatreBean findTheatreById(Long theatreId);
-
-	void changeTheatreStatus(Theatre theatre);
 	
-	void updateTheatreDetails(Theatre theatre);
+	void updateTheatreDetails(TheatreBean theatreBean);
 }

@@ -5,6 +5,7 @@ import com.ninjaTurtles.champtheatre.models.Theatre;
 import com.ninjaTurtles.champtheatre.repository.TheatreRepository;
 import com.ninjaTurtles.champtheatre.service.TheatreManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,25 +32,30 @@ public class TheatreManagementServiceImpl implements TheatreManagementService {
         return mapToTheatreBean(theatre);
     }
 
+//    @Override
+//    public void changeTheatreStatus(Theatre theatre) {
+//        Theatre existingTheatre = theatreRepository.findById(theatre.getId()).orElse(null);
+//        if(existingTheatre != null) {
+//            existingTheatre.setStatus(theatre.getStatus());
+//            theatreRepository.save(existingTheatre);
+//        }
+//    }
+
     @Override
-    public void changeTheatreStatus(Theatre theatre) {
-        Theatre existingTheatre = theatreRepository.findById(theatre.getId()).orElse(null);
-        if(existingTheatre != null) {
-            existingTheatre.setStatus(theatre.getStatus());
-            theatreRepository.save(existingTheatre);
+    public void updateTheatreDetails(TheatreBean theatreBean) {
+        Theatre theatre = mapToTheatre(theatreBean);
+        Long theatreId = theatreBean.getId(); // Store the theater ID in a variable
+        Theatre existingTheatre = theatreRepository.findById(theatreId).orElse(null); // Find the existing theater by ID
+
+        if (existingTheatre != null) {
+            existingTheatre.setName(theatre.getName()); // Update the name
+            existingTheatre.setCapacity(theatre.getCapacity()); // Update the capacity
+            existingTheatre.setStatus(theatre.getStatus()); // Update the status
+
+            theatreRepository.save(existingTheatre); // Save the updated theater
         }
     }
 
-    @Override
-    public void updateTheatreDetails(Theatre theatre) {
-        Theatre existingTheatre = theatreRepository.findById(theatre.getId()).orElse(null);
-        if(existingTheatre != null) {
-            existingTheatre.setName(theatre.getName());
-            existingTheatre.setCapacity(theatre.getCapacity());
-            existingTheatre.setReservations(theatre.getReservations());
-            theatreRepository.save(existingTheatre);
-        }
-    }
 
     private TheatreBean mapToTheatreBean(Theatre theatre) {
         return TheatreBean.builder()
@@ -60,6 +66,18 @@ public class TheatreManagementServiceImpl implements TheatreManagementService {
                 .reservations(theatre.getReservations())
                 .createdDate(theatre.getCreatedDate())
                 .modifiedDate(theatre.getModifiedDate())
+                .build();
+    }
+
+    private Theatre mapToTheatre(TheatreBean theatreBean) {
+        return Theatre.builder()
+                .id(theatreBean.getId())
+                .name(theatreBean.getName())
+                .status(theatreBean.getStatus())
+                .capacity(theatreBean.getCapacity())
+                .reservations(theatreBean.getReservations())
+                .createdDate(theatreBean.getCreatedDate())
+                .modifiedDate(theatreBean.getModifiedDate())
                 .build();
     }
 

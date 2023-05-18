@@ -7,7 +7,8 @@ import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDateTime;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
@@ -15,6 +16,9 @@ import java.util.List;
 @Builder
 public class TheatreBean {
     private Long id;
+
+    @NotNull
+    @NotEmpty(message = "Please enter the theatre name")
     private String name;
     private Theatre.Status status;
     private Integer capacity;

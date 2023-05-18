@@ -20,25 +20,23 @@
     </div><!-- End Page Title -->
     <section class="section dashboard">
         <h1>Theatre List</h1>
-        <table class="table">
+        <table class="table" id="theatre-table">
             <thead>
             <tr>
                 <th>ID</th>
                 <th>Name</th>
                 <th>Capacity</th>
                 <th>Status</th>
-                <th>Date Created</th>
-                <th>Date Modified</th>
+                <th colspan="1">Action</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="theatre : ${theatres}">
-                <td th:text="${theatre.id}"></td>
-                <td th:text="${theatre.name}"></td>
-                <td th:text="${theatre.capacity}"></td>
-                <td th:text="${theatre.status}"></td>
-                <td th:text="${theatre.createdDate}"></td>
-                <td th:text="${theatre.modifiedDate}"></td>
+                <td th:text="${theatre.id}" id="id"></td>
+                <td th:text="${theatre.name}" id="name"></td>
+                <td th:text="${theatre.capacity}" id="capacity"></td>
+                <td th:text="${theatre.status}" id="status"></td>
+                <td><a th:href="@{/theatres/{theatreId}/edit(theatreId=${theatre.id})}"><img src="/img/edit.png" alt="Edit" title="Edit"></a></td>
             </tr>
             </tbody>
         </table>

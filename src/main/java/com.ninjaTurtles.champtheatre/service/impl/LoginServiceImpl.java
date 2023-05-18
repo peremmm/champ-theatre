@@ -4,7 +4,6 @@ import com.ninjaTurtles.champtheatre.models.EmployeeAccount;
 import com.ninjaTurtles.champtheatre.repository.EmployeeAccountRepository;
 import com.ninjaTurtles.champtheatre.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -13,25 +12,10 @@ import java.util.Optional;
 public class LoginServiceImpl implements LoginService {
 
     private final EmployeeAccountRepository employeeAccountRepository;
-    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public LoginServiceImpl(EmployeeAccountRepository employeeAccountRepository, PasswordEncoder passwordEncoder) {
+    public LoginServiceImpl(EmployeeAccountRepository employeeAccountRepository) {
         this.employeeAccountRepository = employeeAccountRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
-
-    @Override
-    public boolean authenticate(String username, String password) {
-        // Perform authentication logic, e.g., check against the database
-        Optional<EmployeeAccount> optionalEmployeeAccount = employeeAccountRepository.findByUsername(username);
-
-        if (optionalEmployeeAccount.isPresent()) {
-            EmployeeAccount employeeAccount = optionalEmployeeAccount.get();
-            return employeeAccount.getPassword().equals(password);
-        }
-
-        return false;
     }
 
     @Override
@@ -42,9 +26,9 @@ public class LoginServiceImpl implements LoginService {
             EmployeeAccount employeeAccount = optionalEmployeeAccount.get();
 
             if (employeeAccount.getStatus() == EmployeeAccount.Status.ACTIVE) {
-                employeeAccount.setPassword(passwordEncoder.encode(newPassword));
+                employeeAccount.setPassword(newPassword);
             } else {
-                employeeAccount.setPassword(passwordEncoder.encode(newPassword));
+                employeeAccount.setPassword(newPassword);
                 employeeAccount.setStatus(EmployeeAccount.Status.ACTIVE);
             }
 

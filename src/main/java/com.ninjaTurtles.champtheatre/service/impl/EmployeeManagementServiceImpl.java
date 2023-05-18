@@ -10,6 +10,7 @@ import com.ninjaTurtles.champtheatre.repository.RoleRepository;
 import com.ninjaTurtles.champtheatre.service.EmployeeManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -26,15 +27,18 @@ public class EmployeeManagementServiceImpl implements EmployeeManagementService 
     private final EmployeeAccountRepository employeeAccountRepository;
     private final RoleRepository roleRepository;
     private final EmployeeRoleRepository employeeRoleRepository;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     public EmployeeManagementServiceImpl(EmployeeRepository employeeRepository,
                                          EmployeeAccountRepository employeeAccountRepository,
-                                         RoleRepository roleRepository, EmployeeRoleRepository employeeRoleRepository) {
+                                         RoleRepository roleRepository, EmployeeRoleRepository employeeRoleRepository,
+                                         PasswordEncoder passwordEncoder) {
         this.employeeRepository = employeeRepository;
         this.employeeAccountRepository = employeeAccountRepository;
         this.roleRepository = roleRepository;
         this.employeeRoleRepository = employeeRoleRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -79,7 +83,7 @@ public class EmployeeManagementServiceImpl implements EmployeeManagementService 
         }
 
         employeeAccount.setUsername(username);
-        employeeAccount.setPassword(generatePassword());
+        employeeAccount.setPassword(passwordEncoder.encode(generatePassword()));
         employeeAccount.setEmployee(savedEmployee); // use the saved employee
 
         employeeAccount.setStatus(EmployeeAccount.Status.INACTIVE);

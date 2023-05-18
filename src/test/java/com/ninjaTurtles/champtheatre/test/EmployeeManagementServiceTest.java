@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class EmployeeManagementServiceTest {
 
@@ -27,10 +28,12 @@ public class EmployeeManagementServiceTest {
 
     private EmployeeManagementService employeeManagementService;
 
+    private PasswordEncoder passwordEncoder;
+
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        employeeManagementService = new EmployeeManagementServiceImpl(employeeRepository, employeeAccountRepository, roleRepository, employeeRoleRepository);
+        employeeManagementService = new EmployeeManagementServiceImpl(employeeRepository, employeeAccountRepository, roleRepository, employeeRoleRepository, passwordEncoder);
     }
 
     @Test
