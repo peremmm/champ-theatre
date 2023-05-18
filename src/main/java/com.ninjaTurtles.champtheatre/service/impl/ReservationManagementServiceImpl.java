@@ -4,8 +4,10 @@ import com.ninjaTurtles.champtheatre.bean.ReservationBean;
 import com.ninjaTurtles.champtheatre.exception.DataAccessException;
 import com.ninjaTurtles.champtheatre.exception.ServiceException;
 import com.ninjaTurtles.champtheatre.models.*;
+import com.ninjaTurtles.champtheatre.repository.EmployeeAccountRepository;
 import com.ninjaTurtles.champtheatre.repository.EmployeeRepository;
 import com.ninjaTurtles.champtheatre.repository.ReservationRepository;
+import com.ninjaTurtles.champtheatre.security.SecurityUtil;
 import com.ninjaTurtles.champtheatre.service.ReservationManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,11 +30,13 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
 
     private final ReservationRepository reservationRepository;
     private final EmployeeRepository employeeRepository;
+    private final EmployeeAccountRepository employeeAccountRepository;
 
     @Autowired
-    public ReservationManagementServiceImpl(ReservationRepository reservationRepository, EmployeeRepository employeeRepository) {
+    public ReservationManagementServiceImpl(ReservationRepository reservationRepository, EmployeeRepository employeeRepository, EmployeeAccountRepository employeeAccountRepository) {
         this.reservationRepository = reservationRepository;
         this.employeeRepository = employeeRepository;
+        this.employeeAccountRepository = employeeAccountRepository;
     }
 
     @Override
@@ -42,8 +46,10 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
     }
 
     @Override
-    public List<ReservationBean> findByBooker(Employee booker) {
-        Optional<Reservation> optionalReservation = reservationRepository.findByBooker(booker);
+    public List<ReservationBean> findByUser() {
+        String username = SecurityUtil.getSessionUser();
+        EmployeeAccount employeeAccount = employeeAccountRepository.findByUsername(username).get();
+        Optional<Reservation> optionalReservation = reservationRepository.findByBooker(employeeAccount.getEmployee());
         if (optionalReservation.isPresent()) {
             List<Reservation> reservations = optionalReservation.map(Collections::singletonList).orElse(Collections.emptyList());
             return reservations.stream().map((reservation) -> mapToReservationBean(reservation)).collect(Collectors.toList());
@@ -56,9 +62,9 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
     /**
      * FOR TESTING ONLY
      **/
-    private Employee getEmployee(Long employeeId) {
-        return employeeRepository.findById(employeeId).get();
-    }
+//    private Employee getEmployee(Long employeeId) {
+//        return employeeRepository.findById(employeeId).get();
+//    }
 
     @Transactional
     @Override
@@ -104,10 +110,9 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
                 newReservation.setStatus(Reservation.Status.APPROVED);
             }
 
-            //NEEDS TO BE UPDATED TO USE USER SESSION
-            //newReservation.setBooker(UsersessionId);
-            //temporary
-            newReservation.setBooker(getEmployee(201L));
+            String username = SecurityUtil.getSessionUser();
+            EmployeeAccount employeeAccount = employeeAccountRepository.findByUsername(username).get();
+            newReservation.setBooker(employeeAccount.getEmployee());
 
             try {
                 reservationRepository.save(newReservation);
@@ -126,10 +131,9 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
         Reservation existingReservation = reservationRepository.findById(reservationId).orElseThrow(null);
 
         if (existingReservation != null && existingReservation.getReviewer() == null) {
-
-            // WITH SESSION
-            // Set<EmployeeRole> currentRoles = employeeRepository.findById(User session ID).getRoles();
-            Employee reviewer = getEmployee(202L);
+            String username = SecurityUtil.getSessionUser();
+            EmployeeAccount employeeAccount = employeeAccountRepository.findByUsername(username).get();
+            Employee reviewer = employeeAccount.getEmployee();
             Set<EmployeeRole> currentRoles = reviewer.getRoles();
             if (!currentRoles.isEmpty()) {
                 for (EmployeeRole employeeRole : currentRoles) {
@@ -166,11 +170,10 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
 
         if (existingReservation != null && existingReservation.getReviewer() != null && (status == Reservation.Status.APPROVED || status == Reservation.Status.REJECTED)) {
 
-            // When session is setup, use if condition
-            //if( existingReservation.getReviewer().getId() == userSessionId){
-            // WITH SESSION
-            // Set<EmployeeRole> currentRoles = employeeRepository.findById(User session ID).getRoles();
-            Set<EmployeeRole> currentRoles = existingReservation.getReviewer().getRoles();
+            String username = SecurityUtil.getSessionUser();
+            EmployeeAccount employeeAccount = employeeAccountRepository.findByUsername(username).get();
+            Employee reviewer = employeeAccount.getEmployee();
+            Set<EmployeeRole> currentRoles = reviewer.getRoles();
 
             if (!currentRoles.isEmpty()) {
                 for (EmployeeRole employeeRole : currentRoles) {
@@ -196,8 +199,10 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
     @Override
     public void cancel(Long reservationId) {
         Reservation existingReservation = reservationRepository.findById(reservationId).orElseThrow(null);
-        //        if(existingReservation != null && existingReservation.getBooker().getId== UserSessionID  && (existingReservation.getStatus() == Reservation.Status.UNREVIEWED || existingReservation.getStatus()== Reservation.Status.APPROVED )  ) {
-        if (existingReservation != null && (existingReservation.getStatus() == Reservation.Status.UNREVIEWED || existingReservation.getStatus() == Reservation.Status.APPROVED)) {
+        String username = SecurityUtil.getSessionUser();
+        EmployeeAccount employeeAccount = employeeAccountRepository.findByUsername(username).get();
+        Employee user = employeeAccount.getEmployee();
+        if(existingReservation != null && existingReservation.getBooker().getId()== user.getId()  && (existingReservation.getStatus() == Reservation.Status.UNREVIEWED || existingReservation.getStatus()== Reservation.Status.APPROVED )  ) {
             existingReservation.setStatus(Reservation.Status.CANCELLED);
             reservationRepository.save(existingReservation);
         } else {
@@ -208,12 +213,14 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
     @Transactional
     @Override
     public void updateDetails(ReservationBean reservationBean) {
-        // USE SESSION
-        //Reservation existingReservation = reservationRepository.findById(User session Id).orElseThrow(null);
         Reservation existingReservation = reservationRepository.findById(reservationBean.getId()).orElseThrow(null);
+        String username = SecurityUtil.getSessionUser();
+        EmployeeAccount employeeAccount = employeeAccountRepository.findByUsername(username).get();
+        Employee user = employeeAccount.getEmployee();
+
         if (existingReservation != null) {
-            if (reservationBean.getBooker().getId().equals(existingReservation.getBooker().getId()) && existingReservation.getStatus() == Reservation.Status.UNREVIEWED) {
-                //if (reservationBean.getBooker().getId().equals(userSessionId) && reservationBean.getBooker().getId().equals(existingReservation.getBooker().getId()) && existingReservation.getStatus() == Reservation.Status.UNREVIEWED) {
+            //if (reservationBean.getBooker().getId().equals(existingReservation.getBooker().getId()) && existingReservation.getStatus() == Reservation.Status.UNREVIEWED) {
+            if (reservationBean.getBooker().getId().equals(user.getId()) && reservationBean.getBooker().getId().equals(existingReservation.getBooker().getId()) && existingReservation.getStatus() == Reservation.Status.UNREVIEWED) {
 
                 boolean doesNotCollide = true;
                 List<Reservation> existingReservations = reservationRepository.findAll().stream()

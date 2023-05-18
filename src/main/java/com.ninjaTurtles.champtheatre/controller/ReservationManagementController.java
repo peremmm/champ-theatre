@@ -4,8 +4,12 @@ package com.ninjaTurtles.champtheatre.controller;
 import com.ninjaTurtles.champtheatre.bean.ReservationBean;
 import com.ninjaTurtles.champtheatre.bean.TheatreBean;
 import com.ninjaTurtles.champtheatre.exception.ServiceException;
+import com.ninjaTurtles.champtheatre.models.Employee;
+import com.ninjaTurtles.champtheatre.models.EmployeeAccount;
 import com.ninjaTurtles.champtheatre.models.Reservation;
 import com.ninjaTurtles.champtheatre.models.Theatre;
+import com.ninjaTurtles.champtheatre.repository.EmployeeAccountRepository;
+import com.ninjaTurtles.champtheatre.security.SecurityUtil;
 import com.ninjaTurtles.champtheatre.service.EmployeeManagementService;
 import com.ninjaTurtles.champtheatre.service.ReservationManagementService;
 import com.ninjaTurtles.champtheatre.service.TheatreManagementService;
@@ -57,9 +61,8 @@ public class ReservationManagementController {
     /****** WAITING FOR USER SESSION *******/
     @GetMapping("/reservations")
     public String listUserReservations(Model model, RedirectAttributes redirectAttributes) {
-        // Need user
-        //List<ReservationBean> reservations = reservationManagementService.findByBooker(User Session ID);
-        List<ReservationBean> reservations = reservationManagementService.findAll();
+
+        List<ReservationBean> reservations = reservationManagementService.findByUser();
         model.addAttribute("reservations", reservations);
 
         if (redirectAttributes.containsAttribute("message")) {

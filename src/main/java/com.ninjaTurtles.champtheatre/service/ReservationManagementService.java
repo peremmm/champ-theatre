@@ -13,7 +13,7 @@ public interface ReservationManagementService {
 	
 	ReservationBean findById(Long reservationId);
 
-	List<ReservationBean> findByBooker(Employee booker);
+	List<ReservationBean> findByUser();
 
 	void save(ReservationBean reservationBean);
 
