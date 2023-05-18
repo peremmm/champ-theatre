@@ -75,13 +75,14 @@ public class SecurityConfig {
             if (employeeAccount != null) {
                 if (employeeAccount.getStatus() == Status.INACTIVE) {
                     // Handle inactive account by redirecting to change-password page
-                    response.sendRedirect("/change-password");
+                    String employeeId = String.valueOf(employeeAccount.getEmployee().getId());
+                    response.sendRedirect("/employees/" + employeeId + "/change-password");
                 } else if (employeeAccount.getStatus() == Status.TERMINATED) {
                     // Handle terminated account
                     response.sendRedirect("/terminated-account");
                 } else {
                     // Handle other successful login scenarios
-                    response.sendRedirect("/dashboard");
+                    response.sendRedirect("/employees");
                 }
             } else {
                 // Handle invalid authentication
