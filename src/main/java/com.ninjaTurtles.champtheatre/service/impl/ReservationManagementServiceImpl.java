@@ -28,6 +28,13 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
 
     }
 
+    @Override
+    public Reservation getReservationById(Long reservationId) {
+        // Implement the logic to retrieve the Reservation entity by ID
+        Optional<Reservation> optionalReservation = reservationRepository.findById(reservationId);
+        return optionalReservation.orElse(null);
+    }
+
     private final ReservationRepository reservationRepository;
     private final EmployeeRepository employeeRepository;
     private final EmployeeAccountRepository employeeAccountRepository;

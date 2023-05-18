@@ -1,6 +1,7 @@
 package com.ninjaTurtles.champtheatre.controller;
 
 
+import com.ninjaTurtles.champtheatre.bean.EmployeeBean;
 import com.ninjaTurtles.champtheatre.bean.ReservationBean;
 import com.ninjaTurtles.champtheatre.bean.TheatreBean;
 import com.ninjaTurtles.champtheatre.exception.ServiceException;
@@ -10,6 +11,7 @@ import com.ninjaTurtles.champtheatre.models.Reservation;
 import com.ninjaTurtles.champtheatre.models.Theatre;
 import com.ninjaTurtles.champtheatre.repository.EmployeeAccountRepository;
 import com.ninjaTurtles.champtheatre.security.SecurityUtil;
+import com.ninjaTurtles.champtheatre.service.EmailSenderService;
 import com.ninjaTurtles.champtheatre.service.EmployeeManagementService;
 import com.ninjaTurtles.champtheatre.service.ReservationManagementService;
 import com.ninjaTurtles.champtheatre.service.TheatreManagementService;
@@ -19,6 +21,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.mail.MessagingException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Calendar;
@@ -32,13 +35,15 @@ public class ReservationManagementController {
     private final ReservationManagementService reservationManagementService;
     private final EmployeeManagementService employeeManagementService;
     private TheatreManagementService theatreManagementService;
+    private final EmailSenderService emailSenderService;
 
 
     @Autowired
-    public ReservationManagementController(ReservationManagementService reservationManagementService, EmployeeManagementService employeeManagementService, TheatreManagementService theatreManagementService) {
+    public ReservationManagementController(ReservationManagementService reservationManagementService, EmployeeManagementService employeeManagementService, TheatreManagementService theatreManagementService, EmailSenderService emailSenderService) {
         this.reservationManagementService = reservationManagementService;
         this.employeeManagementService = employeeManagementService;
         this.theatreManagementService = theatreManagementService;
+        this.emailSenderService = emailSenderService;
     }
 
     @GetMapping("/requests")
@@ -217,9 +222,21 @@ public class ReservationManagementController {
                                      RedirectAttributes redirectAttributes) {
         try {
             reservationManagementService.updateStatus(reservationId, Reservation.Status.APPROVED);
+
+            // Retrieve the actual Reservation and Employee objects
+            Reservation reservation = reservationManagementService.getReservationById(reservationId);
+            EmployeeBean employeeBean = employeeManagementService.findEmployeeIdByEmail(reservation.getBooker().getEmail());
+
+            // Convert EmployeeBean to Employee
+            Employee employee = convertEmployeeBeanToEmployee(employeeBean);
+
+            emailSenderService.sendReserveStatusUpdate(reservation, employee);
+
         } catch (ServiceException e) {
             redirectAttributes.addFlashAttribute("message", e.getMessage());
             return "redirect:/requests";
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
         }
 
         redirectAttributes.addFlashAttribute("message",
@@ -227,14 +244,34 @@ public class ReservationManagementController {
         return "redirect:/requests";
     }
 
+    // Conversion method from EmployeeBean to Employee
+    private Employee convertEmployeeBeanToEmployee(EmployeeBean employeeBean) {
+        Employee employee = new Employee();
+        employee.setId(employeeBean.getId());
+
+        return employee;
+    }
+
     @GetMapping("/reservations/{reservationId}/reject")
     public String rejectReservation(@PathVariable("reservationId") Long reservationId,
                                     RedirectAttributes redirectAttributes) {
         try {
             reservationManagementService.updateStatus(reservationId, Reservation.Status.REJECTED);
+
+            // Retrieve the actual Reservation and Employee objects
+            Reservation reservation = reservationManagementService.getReservationById(reservationId);
+            EmployeeBean employeeBean = employeeManagementService.findEmployeeIdByEmail(reservation.getBooker().getEmail());
+
+            // Convert EmployeeBean to Employee
+            Employee employee = convertEmployeeBeanToEmployee(employeeBean);
+
+            emailSenderService.sendReserveStatusUpdate(reservation, employee);
+
         } catch (ServiceException e) {
             redirectAttributes.addFlashAttribute("message", e.getMessage());
             return "redirect:/requests";
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
         }
 
         redirectAttributes.addFlashAttribute("message",

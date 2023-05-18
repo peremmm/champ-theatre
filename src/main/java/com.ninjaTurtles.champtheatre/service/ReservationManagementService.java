@@ -13,6 +13,8 @@ public interface ReservationManagementService {
 	
 	ReservationBean findById(Long reservationId);
 
+	Reservation getReservationById(Long reservationId);
+
 	List<ReservationBean> findByUser();
 
 	void save(ReservationBean reservationBean);

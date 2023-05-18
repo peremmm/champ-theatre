@@ -60,11 +60,12 @@ public class EmailSenderServiceImpl implements EmailSenderService {
     public void sendReserveStatusUpdate(Reservation reservation, Employee employee) throws MessagingException {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
-        messageHelper.setTo(employee.getEmail());
+        messageHelper.setTo(reservation.getBooker().getEmail());
         messageHelper.setSubject("Reservation Status Update");
 
-        String message = "Good day, " + employee.getFirstName() + "!" + "<br><br>" +
-                "Your reservation status is now: " + reservation.getStatus().toString() + "</strong><br><br>";
+        String message = "Good day, " + reservation.getBooker().getFirstName() + "!" + "<br><br>" +
+                "Your reservation status is now: <strong>" + reservation.getStatus().toString() + "</strong><br><br>" +
+                "<em>For more inquiries, please contact the admin.</em>";
 
         messageHelper.setText(message, true);
 
