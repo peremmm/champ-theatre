@@ -26,15 +26,46 @@ public class LoginServiceImpl implements LoginService {
             EmployeeAccount employeeAccount = optionalEmployeeAccount.get();
 
             if (employeeAccount.getStatus() == EmployeeAccount.Status.ACTIVE) {
-                employeeAccount.setPassword(newPassword);
+                if (isValidPassword(newPassword)) {
+                    employeeAccount.setPassword(newPassword);
+                } else {
+                    throw new IllegalArgumentException("Invalid password. The password must contain at least one lowercase letter, one uppercase letter, and one number.");
+                }
             } else {
-                employeeAccount.setPassword(newPassword);
-                employeeAccount.setStatus(EmployeeAccount.Status.ACTIVE);
+                if (isValidPassword(newPassword)) {
+                    employeeAccount.setPassword(newPassword);
+                    employeeAccount.setStatus(EmployeeAccount.Status.ACTIVE);
+                } else {
+                    throw new IllegalArgumentException("Invalid password. The password must contain at least one lowercase letter, one uppercase letter, and one number.");
+                }
             }
 
             employeeAccountRepository.save(employeeAccount);
         }
     }
+
+    private boolean isValidPassword(String password) {
+        boolean hasLowercase = false;
+        boolean hasUppercase = false;
+        boolean hasNumber = false;
+
+        for (char c : password.toCharArray()) {
+            if (Character.isLowerCase(c)) {
+                hasLowercase = true;
+            } else if (Character.isUpperCase(c)) {
+                hasUppercase = true;
+            } else if (Character.isDigit(c)) {
+                hasNumber = true;
+            }
+
+            if (hasLowercase && hasUppercase && hasNumber) {
+                return true; // Password meets the requirements
+            }
+        }
+
+        return false; // Password does not meet the requirements
+    }
+
 
     @Override
     public boolean isPasswordChanged(String username) {

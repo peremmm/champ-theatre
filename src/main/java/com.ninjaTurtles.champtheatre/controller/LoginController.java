@@ -55,7 +55,7 @@ public class LoginController {
             redirectAttributes.addFlashAttribute("error",
                     "New password and confirm password do not match");
         }
-        return "redirect:/employees";
+        return "redirect:/reservations";
     }
 
 }

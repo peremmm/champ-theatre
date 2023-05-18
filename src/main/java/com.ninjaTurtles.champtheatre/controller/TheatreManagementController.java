@@ -1,7 +1,10 @@
 package com.ninjaTurtles.champtheatre.controller;
 
 import com.ninjaTurtles.champtheatre.bean.TheatreBean;
+import com.ninjaTurtles.champtheatre.models.EmployeeAccount;
 import com.ninjaTurtles.champtheatre.models.Theatre;
+import com.ninjaTurtles.champtheatre.security.SecurityUtil;
+import com.ninjaTurtles.champtheatre.service.EmployeeManagementService;
 import com.ninjaTurtles.champtheatre.service.TheatreManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,6 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class TheatreManagementController {
@@ -24,8 +28,15 @@ public class TheatreManagementController {
 
     @GetMapping("/theatres")
     public String listTheatres(Model model, RedirectAttributes redirectAttributes) {
+//        Optional<EmployeeAccount> employeeAccount = new EmployeeAccount();
         List<TheatreBean> theatres = theatreManagementService.getAllTheatre();
-        model.addAttribute("theatres", theatres);
+//        String username = SecurityUtil.getSessionUser();
+//        if (username != null){
+//            employeeAccount = employeeManagementService.findByUsername(username);
+//            String fullname = employeeAccount.
+            model.addAttribute("theatres", theatres);
+//        }
+
 
         if (redirectAttributes.containsAttribute("message")) {
             model.addAttribute("message", redirectAttributes.getAttribute("message"));

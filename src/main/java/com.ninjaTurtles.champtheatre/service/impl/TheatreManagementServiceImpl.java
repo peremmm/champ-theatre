@@ -3,6 +3,7 @@ package com.ninjaTurtles.champtheatre.service.impl;
 import com.ninjaTurtles.champtheatre.bean.TheatreBean;
 import com.ninjaTurtles.champtheatre.models.Theatre;
 import com.ninjaTurtles.champtheatre.repository.TheatreRepository;
+import com.ninjaTurtles.champtheatre.service.EmployeeManagementService;
 import com.ninjaTurtles.champtheatre.service.TheatreManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -22,6 +23,7 @@ public class TheatreManagementServiceImpl implements TheatreManagementService {
 
     @Override
     public List<TheatreBean> getAllTheatre() {
+
         List<Theatre> theatres = theatreRepository.findAll();
         return theatres.stream().map(this::mapToTheatreBean).collect(Collectors.toList());
     }
@@ -43,6 +45,7 @@ public class TheatreManagementServiceImpl implements TheatreManagementService {
 
     @Override
     public void updateTheatreDetails(TheatreBean theatreBean) {
+
         Theatre theatre = mapToTheatre(theatreBean);
         Long theatreId = theatreBean.getId(); // Store the theater ID in a variable
         Theatre existingTheatre = theatreRepository.findById(theatreId).orElse(null); // Find the existing theater by ID

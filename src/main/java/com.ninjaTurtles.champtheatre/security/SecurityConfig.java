@@ -44,12 +44,15 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/login", "/forgot-password", "/employees/{employeeId}/change-password", "/css/**", "/js/**")
+                .antMatchers("/login", "/forgot-password", "/employees/{employeeId}/change-password", "/css/**", "/js/**", "/img/**")
                 .permitAll()
+                .antMatchers("/employees/**", "/theatres/**", "/requests", "/roleManagement").hasRole("Administrator")
+                .antMatchers("/requests/**").hasRole("RESERVATION COORDINATOR")
+                .anyRequest().authenticated()
                 .and()
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/employees")
+                        .defaultSuccessUrl("/reservations")
                         .loginProcessingUrl("/login")
                         .failureUrl("/login?error=true")
                         .permitAll()
@@ -82,7 +85,7 @@ public class SecurityConfig {
                     response.sendRedirect("/terminated-account");
                 } else {
                     // Handle other successful login scenarios
-                    response.sendRedirect("/employees");
+                    response.sendRedirect("/reservations");
                 }
             } else {
                 // Handle invalid authentication
