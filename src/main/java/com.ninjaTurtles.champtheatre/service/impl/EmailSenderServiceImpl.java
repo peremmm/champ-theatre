@@ -42,7 +42,15 @@ public class EmailSenderServiceImpl implements EmailSenderService {
         MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
         messageHelper.setTo(employee.getEmail());
         messageHelper.setSubject("Auto-generated Password");
-        messageHelper.setText("Your auto-generated password is: " + account.getPassword());
+
+        String message = "Good day!<br><br>" +
+                "Here's your log in credentials:<br>" +
+                "Username: <strong>" + account.getUsername() + "</strong><br>" +
+                "Your auto-generated password is: <strong>" + account.getPassword() + "</strong><br><br>" +
+                "Please use this password to log in initially to the system.<br>" +
+                "Alternatively, you can click <a href=\"http://localhost:8080/login\">here</a> to log in.";
+
+        messageHelper.setText(message, true); // Enable HTML formatting
 
         mailSender.send(mimeMessage);
     }
@@ -54,7 +62,11 @@ public class EmailSenderServiceImpl implements EmailSenderService {
         MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
         messageHelper.setTo(employee.getEmail());
         messageHelper.setSubject("Reservation Status Update");
-        messageHelper.setText("Your reservation status is now: " + reservation.getStatus().toString());
+
+        String message = "Good day, " + employee.getFirstName() + "!" + "<br><br>" +
+                "Your reservation status is now: " + reservation.getStatus().toString() + "</strong><br><br>";
+
+        messageHelper.setText(message, true);
 
         mailSender.send(mimeMessage);
     }
