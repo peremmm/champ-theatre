@@ -44,9 +44,9 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/login", "/forgot-password", "/employees/{employeeId}/change-password", "/css/**", "/js/**", "/img/**")
+                .antMatchers("/login", "/forgot-password", "/change-password", "/css/**", "/js/**", "/img/**")
                 .permitAll()
-                .antMatchers("/employees/**", "/theatres/**", "/requests", "/roleManagement").hasRole("Administrator")
+                .antMatchers("/employees/**", "/theatres/**", "/requests", "/roleManagement", "/profile").hasRole("Administrator")
                 .antMatchers("/requests/**").hasRole("RESERVATION COORDINATOR")
                 .anyRequest().authenticated()
                 .and()
@@ -79,7 +79,7 @@ public class SecurityConfig {
                 if (employeeAccount.getStatus() == Status.INACTIVE) {
                     // Handle inactive account by redirecting to change-password page
                     String employeeId = String.valueOf(employeeAccount.getEmployee().getId());
-                    response.sendRedirect("/employees/" + employeeId + "/change-password");
+                    response.sendRedirect("/change-password");
                 } else if (employeeAccount.getStatus() == Status.TERMINATED) {
                     // Handle terminated account
                     response.sendRedirect("/terminated-account");

@@ -3,9 +3,9 @@ package com.ninjaTurtles.champtheatre.service;
 import com.ninjaTurtles.champtheatre.bean.EmployeeBean;
 import com.ninjaTurtles.champtheatre.models.Employee;
 import com.ninjaTurtles.champtheatre.models.EmployeeAccount;
-import com.ninjaTurtles.champtheatre.models.EmployeeRole;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface EmployeeManagementService {
 
@@ -26,4 +26,6 @@ public interface EmployeeManagementService {
 	Employee findEmployeeByEmail(String email);
 
 	String getEmployeeEmailById(Long employeeId);
+
+	Optional<EmployeeAccount> findByUsername(String username);
 }

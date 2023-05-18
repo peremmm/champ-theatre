@@ -61,10 +61,10 @@
             </div>
 <!--            <td th:text="${#dates.format(reservation.createdDate, 'dd/MM/yyyy HH:mm:ss')}"></td>-->
 <!--            <td th:text="${#dates.format(reservation.modifiedDate, 'dd/MM/yyyy HH:mm:ss')}"></td>-->
-            <div th:if="${reservation.status == T(com.ninjaTurtles.champtheatre.models.Reservation.Status).PENDING}">
+            <div th:if="${reservation.status == T(com.ninjaTurtles.champtheatre.models.Reservation.Status).PENDING and user.id == reservation.reviewer.id}">
                 <td><a th:href="@{/reservations/{reservationId}/approve(reservationId=${reservation.id})}"  onclick="confirmApproval(event)"><i style="font-size: 30px" class="bi bi-check" alt="Approve" title="Approve"></i></a></td>
             </div>
-            <div th:if="${reservation.status == T(com.ninjaTurtles.champtheatre.models.Reservation.Status).PENDING}">
+            <div th:if="${reservation.status == T(com.ninjaTurtles.champtheatre.models.Reservation.Status).PENDING and user.id == reservation.reviewer.id}">
                 <td><a th:href="@{/reservations/{reservationId}/reject(reservationId=${reservation.id})}" onclick="confirmRejection(event)"><i style="font-size: 30px" class="bi bi-x" alt="Reject" title="Reject"></i></a></td>
             </div>
         </tr>

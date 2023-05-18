@@ -48,9 +48,11 @@ public class ReservationManagementController {
 
     @GetMapping("/requests")
     public String listAllReservations(Model model, RedirectAttributes redirectAttributes) {
-
+        String username = SecurityUtil.getSessionUser();
+        EmployeeAccount employeeAccount = employeeManagementService.findByUsername(username).get();
         List<ReservationBean> reservations = reservationManagementService.findAll();
 
+        model.addAttribute("user", employeeAccount.getEmployee());
         model.addAttribute("reservations", reservations);
 
         if (redirectAttributes.containsAttribute("message")) {
@@ -63,7 +65,6 @@ public class ReservationManagementController {
     }
 
 
-    /****** WAITING FOR USER SESSION *******/
     @GetMapping("/reservations")
     public String listUserReservations(Model model, RedirectAttributes redirectAttributes) {
 

@@ -1,7 +1,9 @@
 package com.ninjaTurtles.champtheatre.controller;
 
 import com.ninjaTurtles.champtheatre.bean.EmployeeBean;
+import com.ninjaTurtles.champtheatre.models.EmployeeAccount;
 import com.ninjaTurtles.champtheatre.repository.EmployeeAccountRepository;
+import com.ninjaTurtles.champtheatre.security.SecurityUtil;
 import com.ninjaTurtles.champtheatre.service.EmployeeManagementService;
 import com.ninjaTurtles.champtheatre.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,31 +31,36 @@ public class LoginController {
         return "login";
     }
 
-    @GetMapping("/employees/{employeeAccountId}/change-password")
-    public String showChangePasswordForm(@PathVariable("employeeAccountId") Long employeeId, Model model) {
-        EmployeeBean employeeBean = employeeManagementService.findEmployeeById(employeeId);
+    @GetMapping("/change-password")
+    public String showChangePasswordForm(Model model) {
+        String username = SecurityUtil.getSessionUser();
+        EmployeeAccount employeeBean = employeeAccountRepository.findByUsername(username).get();
         model.addAttribute("employee", employeeBean); // Update attribute name to "employee"
         return "change-password";
     }
 
 
-    @PostMapping("/employees/{employeeAccountId}/change-password")
-    public String changePassword(@PathVariable("employeeAccountId") Long employeeAccountId,
-                                 @RequestParam("newPassword") String newPassword,
+    @PostMapping("/change-password")
+    public String changePassword(@RequestParam("newPassword") String newPassword,
                                  @RequestParam("confirmPassword") String confirmPassword,
                                  RedirectAttributes redirectAttributes) {
 
-        EmployeeBean employeeBean = employeeManagementService.findEmployeeById(employeeAccountId);
-        String username = employeeBean.getEmployeeAccount().getUsername();
+        String username = SecurityUtil.getSessionUser();
 
         if (newPassword.equals(confirmPassword)) {
-            loginService.changePassword(username, newPassword);
+            try {
+                loginService.changePassword(username, newPassword);
+            } catch (IllegalArgumentException e){
+                redirectAttributes.addFlashAttribute("error", e.getMessage());
+                return "redirect:/change-password";
+            }
             redirectAttributes.addFlashAttribute("message",
                     "Password for " + username + " has been changed");
         } else {
             // Passwords do not match
             redirectAttributes.addFlashAttribute("error",
                     "New password and confirm password do not match");
+            return "redirect:/change-password";
         }
         return "redirect:/reservations";
     }

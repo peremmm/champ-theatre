@@ -56,12 +56,11 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
     public List<ReservationBean> findByUser() {
         String username = SecurityUtil.getSessionUser();
         EmployeeAccount employeeAccount = employeeAccountRepository.findByUsername(username).get();
-        Optional<Reservation> optionalReservation = reservationRepository.findByBooker(employeeAccount.getEmployee());
-        if (optionalReservation.isPresent()) {
-            List<Reservation> reservations = optionalReservation.map(Collections::singletonList).orElse(Collections.emptyList());
-            return reservations.stream().map((reservation) -> mapToReservationBean(reservation)).collect(Collectors.toList());
-        }
-        return Collections.emptyList();
+        List<Reservation> optionalReservation = reservationRepository.findAll().stream()
+                .filter(reservation -> reservation.getBooker().equals(employeeAccount.getEmployee()))
+                .collect(Collectors.toList());
+
+        return optionalReservation.stream().map(this::mapToReservationBean).collect(Collectors.toList());
 
     }
 

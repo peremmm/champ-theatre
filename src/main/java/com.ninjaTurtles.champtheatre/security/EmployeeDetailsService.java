@@ -1,6 +1,7 @@
 package com.ninjaTurtles.champtheatre.security;
 
 import com.ninjaTurtles.champtheatre.models.EmployeeAccount;
+import com.ninjaTurtles.champtheatre.models.EmployeeRole;
 import com.ninjaTurtles.champtheatre.repository.EmployeeAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +15,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class EmployeeDetailsService implements UserDetailsService {
@@ -29,14 +31,15 @@ public class EmployeeDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         EmployeeAccount employeeAccount = employeeAccountRepository.findFirstByUsername(username);
         if (employeeAccount != null) {
-            List<GrantedAuthority> authorities = new ArrayList<>();
-            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+//            List<GrantedAuthority> authorities = new ArrayList<>();
+//            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+//            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 
             User authUser = new User(
                     employeeAccount.getUsername(),
                     employeeAccount.getPassword(),
-                    authorities
+                    employeeAccount.getEmployee().getRoles().stream().map((role) -> new SimpleGrantedAuthority(role.getRole().getRole()))
+                            .collect(Collectors.toList())
             );
             return authUser;
         } else {

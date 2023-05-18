@@ -5,6 +5,8 @@ import com.ninjaTurtles.champtheatre.exception.ServiceException;
 import com.ninjaTurtles.champtheatre.models.Employee;
 import com.ninjaTurtles.champtheatre.models.EmployeeAccount;
 import com.ninjaTurtles.champtheatre.models.EmployeeRole;
+import com.ninjaTurtles.champtheatre.security.SecurityConfig;
+import com.ninjaTurtles.champtheatre.security.SecurityUtil;
 import com.ninjaTurtles.champtheatre.service.EmailSenderService;
 import com.ninjaTurtles.champtheatre.service.EmployeeManagementService;
 import com.ninjaTurtles.champtheatre.service.EmployeeRoleService;
@@ -142,12 +144,22 @@ public class EmployeeManagementController {
         return "redirect:/employees";
     }
 
-    @GetMapping("/employees/{employeeId}/view")
-    public String viewEmployeeDetails(@PathVariable("employeeId") long employeeId, Model model){
-        EmployeeBean employee = employeeManagementService.findEmployeeById(employeeId);
+    @GetMapping("/profile")
+    public String viewEmployeeDetails( Model model){
+        String username = SecurityUtil.getSessionUser();
+//        EmployeeBean employeeBean = employeeManagementService.
+        EmployeeAccount employeeAccount = employeeManagementService.findByUsername(username).get();
+        Employee employee = employeeAccount.getEmployee();
         EmployeeRole employeeRole = employeeRoleService.findRoleByEmployeeId(employee.getId());
-        employee.setEmployeeRoleSet(employeeRole.getRole().getId());
-        model.addAttribute("employee", employee);
+        EmployeeBean employeeBean = EmployeeBean.builder()
+                .id(employee.getId())
+                .firstName(employee.getFirstName().trim())
+                .lastName(employee.getLastName().trim())
+                .email(employee.getEmail())
+                .employeeAccount(employee.getEmployeeAccount())
+                .employeeRoleSet(employeeRole.getRole().getId())
+                        .build();
+        model.addAttribute("employee", employeeBean);
         return "profile-view";
     }
 

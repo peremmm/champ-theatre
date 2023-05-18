@@ -133,6 +133,14 @@ public class EmployeeManagementServiceImpl implements EmployeeManagementService,
     }
 
     @Override
+    public Optional<EmployeeAccount> findByUsername(String username) {
+        Optional<EmployeeAccount> employeeAccount = employeeAccountRepository.findByUsername(username);
+        return employeeAccount; // or throw an exception, return a default value, etc.
+    }
+
+
+
+    @Override
     public void updateEmployee(EmployeeBean employeeBean) {
         Employee employee = mapToEmployee(employeeBean);
         EmployeeAccount employeeAccount = employeeBean.getEmployeeAccount();
