@@ -38,20 +38,20 @@ public class RoleManagementController {
         model.addAttribute("roles", roles);
 
         model.addAttribute("availableModules", Modules.values());
-        return "manage-roles";
+        return "role-management";
     }
 
     @GetMapping("/existingRoles")
     public String listExistingRoles(Model model) {
         List<RoleBean> roles = roleManagementService.getAllRoles();
         model.addAttribute("roles", roles);
-        return "roleCreated";
+        return "role-create";
     }
 
     @PostMapping("/createRole")
     public String createRole(@RequestParam("name") String roleName,
                              @RequestParam(value = "description", required = false) String roleDescription,
-                             @RequestParam(value = "modules", required = false) List<String> moduleNames,
+                             @RequestParam(value = "modules", required = true) List<String> moduleNames,
                              Model model) {
         RoleBean role = new RoleBean();
         role.setRole(roleName);
@@ -71,6 +71,8 @@ public class RoleManagementController {
         }
 
         model.addAttribute("role", role);
-        return "roleCreated";
+        return "redirect:/existingRoles";
     }
+
+
 }

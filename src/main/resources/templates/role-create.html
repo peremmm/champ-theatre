@@ -1,0 +1,136 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <title>Existing Roles</title>-->
+<!--    <section th:replace="header-menu.html"></section>-->
+<!--</head>-->
+
+<!--<body>-->
+<!--<main id="main" class="main">-->
+<!--    <div class="pagetitle">-->
+<!--        <h1>Manage Roles</h1>-->
+<!--        <nav>-->
+<!--            <ol class="breadcrumb">-->
+<!--                <li class="breadcrumb-item"><a href="/roleManagement"> ◄ Create Role</a></li>-->
+<!--                <li class="breadcrumb-item active">Existing Roles</li>-->
+<!--            </ol>-->
+<!--        </nav>-->
+<!--    </div>-->
+
+<!--    <section class="section dashboard">-->
+<!--        <div class="card mb-3">-->
+<!--            <div class="card-body">-->
+<!--                <h1>Existing Roles</h1>-->
+
+<!--                <table>-->
+<!--                    <thead>-->
+<!--                    <tr>-->
+<!--                        <th>Role</th>-->
+<!--                        <th>Modules</th>-->
+<!--                        <th>Description</th>-->
+<!--                    </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                    &lt;!&ndash; Iterate over the roles and display the data &ndash;&gt;-->
+<!--                    <tr th:each="role, rowIndex : ${roles}">-->
+<!--                        <td th:text="${role.role}"></td>-->
+<!--                        <td>-->
+<!--                            <span th:each="module : ${role.module}">-->
+<!--                                <span th:text="${module.moduleName}"></span>-->
+<!--                                <br>-->
+<!--                            </span>-->
+<!--                        </td>-->
+<!--                        <td th:text="${role.description}"></td> &lt;!&ndash; Display the role description &ndash;&gt;-->
+<!--                    </tr>-->
+<!--                    <tr th:if="${#lists.isEmpty(roles)}">-->
+<!--                        <td colspan="3">No roles found.</td>-->
+<!--                    </tr>-->
+<!--                    </tbody>-->
+<!--                </table>-->
+
+<!--            </div>-->
+<!--        </div>-->
+
+<!--    </section>-->
+<!--</main>-->
+<!--</body>-->
+
+<!--<section th:replace="footer-scripts.html"></section>-->
+<!--</html>-->
+
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Existing Roles</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+    <section th:replace="header-menu.html"></section>
+</head>
+
+<body>
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Manage Roles</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/roleManagement"> ◄ Create Role</a></li>
+                <li class="breadcrumb-item active">Existing Roles</li>
+            </ol>
+        </nav>
+    </div>
+
+    <section class="section dashboard">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h1>Existing Roles</h1>
+
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Role</th>
+                        <th>Modules</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- Iterate over the roles and display the data -->
+                    <tr th:each="role, rowIndex : ${roles}">
+                        <td th:text="${role.role}"></td>
+                        <td>
+                            <span th:each="module : ${role.module}">
+                                <span th:text="${module.moduleName}"></span>
+                                <br>
+                            </span>
+                        </td>
+                        <td th:text="${role.description}"></td> <!-- Display the role description -->
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(roles)}">
+                        <td colspan="3">No roles found.</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+    </section>
+</main>
+</body>
+
+<section th:replace="footer-scripts.html"></section>
+</html>

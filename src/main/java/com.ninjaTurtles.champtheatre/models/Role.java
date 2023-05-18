@@ -36,4 +36,7 @@ public class Role implements Serializable {
 
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
     private Set<RoleModule> module = new HashSet<>();
+
+    @Transient // This annotation indicates that the field is not persistent
+    private String description; // Non-persistent field for description
 }

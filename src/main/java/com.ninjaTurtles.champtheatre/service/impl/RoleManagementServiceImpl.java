@@ -31,21 +31,16 @@ public class RoleManagementServiceImpl implements RoleManagementService {
         return roles.stream().map(this::mapToRoleBean).collect(Collectors.toList());
     }
 
-//    @Override
-//    public Optional<Role> getRoleById(Long id) {
-//        Optional<Role> role = roleRepository.findById(103L);
-//        return role;
-//    }
-
-    private RoleBean mapToRoleBean(Role role){
+    private RoleBean mapToRoleBean(Role role) {
         return RoleBean.builder()
                 .id(role.getId())
                 .role(role.getRole())
                 .employee(role.getEmployee())
+                .description(role.getDescription())
                 .module(role.getModule().stream()
-                        .map(module -> {
+                        .map(roleModule -> {
                             ModuleBean moduleBean = new ModuleBean();
-                            moduleBean.setModuleName(module.getModule().toString());
+                            moduleBean.setModuleName(roleModule.getModule().getModule());
                             return moduleBean;
                         })
                         .collect(Collectors.toSet()))
@@ -57,30 +52,51 @@ public class RoleManagementServiceImpl implements RoleManagementService {
         return roleRepository.findById(id);
     }
 
-    @Override
-    public void addRole(RoleBean role, Set<ModuleBean> modules) {
-        // Convert RoleBean to Role
-        Role convertedRole = mapToRole(role);
+//    @Override
+//    public void addRole(RoleBean role, Set<ModuleBean> modules) {
+//        // Convert RoleBean to Role
+//        Role convertedRole = mapToRole(role);
+//
+//        // Set the modules for the role
+//        Set<RoleModule> roleModules = modules.stream()
+//                .map(moduleBean -> {
+//                    Module module = new Module();
+//                    module.setModule(moduleBean.getModuleName().toString());
+//
+//                    RoleModuleId roleModuleId = new RoleModuleId(convertedRole.getId(), module.getId());
+//                    RoleModule roleModule = new RoleModule();
+//                    roleModule.setId(roleModuleId);
+//                    roleModule.setRole(convertedRole);
+//                    roleModule.setModule(module);
+//                    return roleModule;
+//                })
+//                .collect(Collectors.toSet());
+//
+//        convertedRole.setModule(roleModules);
+//
+//        // Save the role in the repository
+//        roleRepository.save(convertedRole);
+//    }
 
-        // Set the modules for the role
+    @Override
+    public void addRole(RoleBean roleBean, Set<ModuleBean> modules) {
+        Role role = mapToRole(roleBean);
+
         Set<RoleModule> roleModules = modules.stream()
                 .map(moduleBean -> {
                     Module module = new Module();
                     module.setModule(moduleBean.getModuleName());
 
-                    RoleModuleId roleModuleId = new RoleModuleId(convertedRole.getId(), module.getId());
                     RoleModule roleModule = new RoleModule();
-                    roleModule.setId(roleModuleId);
-                    roleModule.setRole(convertedRole);
+                    roleModule.setRole(role);
                     roleModule.setModule(module);
                     return roleModule;
                 })
                 .collect(Collectors.toSet());
 
-        convertedRole.setModule(roleModules);
+        role.setModule(roleModules);
 
-        // Save the role in the repository
-        roleRepository.save(convertedRole);
+        roleRepository.save(role);
     }
 
     private Role mapToRole(RoleBean roleBean) {
@@ -88,6 +104,7 @@ public class RoleManagementServiceImpl implements RoleManagementService {
         role.setId(roleBean.getId());
         role.setRole(roleBean.getRole());
         role.setEmployee(roleBean.getEmployee());
+        role.setDescription(roleBean.getDescription());
 
         // Perform any additional mappings for other properties
 
@@ -134,3 +151,6 @@ public class RoleManagementServiceImpl implements RoleManagementService {
 //        // Example: trigger some event, update a cache, etc.
 //    }
 }
+
+
+
