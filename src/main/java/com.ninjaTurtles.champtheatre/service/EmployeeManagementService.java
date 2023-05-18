@@ -24,4 +24,6 @@ public interface EmployeeManagementService {
 	void deleteEmployeeAccount(Long employeeId);
 
 	Employee findEmployeeByEmail(String email);
+
+	String getEmployeeEmailById(Long employeeId);
 }
