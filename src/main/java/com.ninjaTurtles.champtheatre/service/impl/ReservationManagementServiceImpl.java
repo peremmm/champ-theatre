@@ -63,14 +63,7 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
         return optionalReservation.stream().map(this::mapToReservationBean).collect(Collectors.toList());
 
     }
-
-
-    /**
-     * FOR TESTING ONLY
-     **/
-//    private Employee getEmployee(Long employeeId) {
-//        return employeeRepository.findById(employeeId).get();
-//    }
+    
 
     @Transactional
     @Override
@@ -193,9 +186,6 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
                 }
             }
 
-            //}else {
-            //  throw new ServiceException("I'm sorry, you cannot approve/reject this reservation.");
-            // }
         } else {
             throw new ServiceException("Something went wrong. Please try again.");
         }
@@ -225,7 +215,6 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
         Employee user = employeeAccount.getEmployee();
 
         if (existingReservation != null) {
-            //if (reservationBean.getBooker().getId().equals(existingReservation.getBooker().getId()) && existingReservation.getStatus() == Reservation.Status.UNREVIEWED) {
             if (reservationBean.getBooker().getId().equals(user.getId()) && reservationBean.getBooker().getId().equals(existingReservation.getBooker().getId()) && existingReservation.getStatus() == Reservation.Status.UNREVIEWED) {
 
                 boolean doesNotCollide = true;
