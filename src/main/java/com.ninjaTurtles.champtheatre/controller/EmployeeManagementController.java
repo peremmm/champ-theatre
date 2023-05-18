@@ -4,8 +4,10 @@ import com.ninjaTurtles.champtheatre.bean.EmployeeBean;
 import com.ninjaTurtles.champtheatre.exception.ServiceException;
 import com.ninjaTurtles.champtheatre.models.Employee;
 import com.ninjaTurtles.champtheatre.models.EmployeeAccount;
+import com.ninjaTurtles.champtheatre.models.EmployeeRole;
 import com.ninjaTurtles.champtheatre.service.EmailSenderService;
 import com.ninjaTurtles.champtheatre.service.EmployeeManagementService;
+import com.ninjaTurtles.champtheatre.service.EmployeeRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
@@ -26,11 +28,13 @@ import java.util.Random;
 public class EmployeeManagementController {
 
     private final EmployeeManagementService employeeManagementService;
+    private final EmployeeRoleService employeeRoleService;
     private final EmailSenderService emailSenderService;
 
     @Autowired
-    public EmployeeManagementController(EmployeeManagementService employeeManagementService, EmailSenderService emailSenderService) {
+    public EmployeeManagementController(EmployeeManagementService employeeManagementService, EmployeeRoleService employeeRoleService, EmailSenderService emailSenderService) {
         this.employeeManagementService = employeeManagementService;
+        this.employeeRoleService = employeeRoleService;
         this.emailSenderService = emailSenderService;
     }
 
@@ -115,6 +119,8 @@ public class EmployeeManagementController {
     @GetMapping("/employees/{employeeId}/edit")
     public String editEmployeeForm(@PathVariable("employeeId") long employeeId, Model model){
         EmployeeBean employee = employeeManagementService.findEmployeeById(employeeId);
+        EmployeeRole employeeRole = employeeRoleService.findRoleByEmployeeId(employee.getId());
+        employee.setEmployeeRoleSet(employeeRole.getRole().getId());
         model.addAttribute("employee", employee);
         return "employees-edit";
     }

@@ -36,6 +36,11 @@ SELECT 101, 'Administrator' FROM dual UNION ALL
 SELECT 102, 'Reservation Coordinator' FROM dual UNION ALL
 SELECT 103, 'User' FROM dual;
 
+--for EMPLOYEE_ROLE table
+INSERT INTO employee_role (employee_id, role_id) VALUES (201, 101);
+INSERT INTO employee_role (employee_id, role_id) VALUES (202, 102);
+INSERT INTO employee_role (employee_id, role_id) VALUES (203, 101);
+
 -- for ROLE_MODULE table
 INSERT INTO role_module (module_id,role_id)
 SELECT 101, 101 FROM dual UNION ALL

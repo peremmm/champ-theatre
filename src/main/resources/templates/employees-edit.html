@@ -50,14 +50,11 @@
                             </div>
                             <div class="col-md-3">
                                 <label for="validationDefault04" class="form-label">Status</label>
-<!--                                <select class="form-select" id="validationDefault04" th:field="*{employee.employeeAccount.status}" aria-readonly="true">-->
-<!--                                    <option value="" selected disabled>Choose...</option>-->
-<!--                                    <option value="ACTIVE">ACTIVE</option>-->
-<!--                                    <option value="INACTIVE">INACTIVE</option>-->
-<!--                                    <option value="TERMINATED">TERMINATED</option>-->
-<!--                                </select>-->
                                 <input type="text" class="form-control" id="validationDefault04" th:value="${employee.employeeAccount.status}" disabled>
-
+                            </div>
+                            <div class="col-md-3">
+                                <label for="role" class="form-label">Role</label>
+                                <input type="text" class="form-control" id="role" th:value="${employee.employeeRoleSet}" disabled>
                             </div>
                         </form>
                         <!-- End Browser Default Validation -->
@@ -108,7 +105,6 @@
                                     <option value="TERMINATED">TERMINATED</option>
                                 </select>
                             </div>
-
 
                             <div class="col-12">
                                 <button id="edit-btn" class="btn btn-primary w-100" type="button"  data-bs-toggle="modal" data-bs-target="#basicModal" disabled>Edit Account</button>

@@ -71,4 +71,7 @@ public class Employee implements Serializable{
 
     public Employee(String john, String doe, String s) {
     }
+
+    public Employee(long l, String john, String doe, String s, Object o) {
+    }
 }

@@ -15,5 +15,4 @@ public interface EmployeeAccountRepository extends JpaRepository<EmployeeAccount
     Optional<EmployeeAccount> findByResetToken(String resetToken);
 
     EmployeeAccount findFirstByUsername(String username);
-    // Add additional methods here, if needed
 }

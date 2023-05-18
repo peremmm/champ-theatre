@@ -8,6 +8,7 @@ import com.ninjaTurtles.champtheatre.repository.EmployeeRepository;
 import com.ninjaTurtles.champtheatre.repository.EmployeeRoleRepository;
 import com.ninjaTurtles.champtheatre.repository.RoleRepository;
 import com.ninjaTurtles.champtheatre.service.EmployeeManagementService;
+import com.ninjaTurtles.champtheatre.service.EmployeeRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,7 +19,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class EmployeeManagementServiceImpl implements EmployeeManagementService {
+public class EmployeeManagementServiceImpl implements EmployeeManagementService, EmployeeRoleService {
 
     private final EmployeeRepository employeeRepository;
     private final EmployeeAccountRepository employeeAccountRepository;
@@ -108,7 +109,7 @@ public class EmployeeManagementServiceImpl implements EmployeeManagementService 
      * 103, 'User'
      */
 
-    private Employee mapToEmployee(EmployeeBean employeeBean) {
+    public Employee mapToEmployee(EmployeeBean employeeBean) {
         return Employee.builder()
                 .id(employeeBean.getId())
                 .firstName(employeeBean.getFirstName().trim())
@@ -135,6 +136,8 @@ public class EmployeeManagementServiceImpl implements EmployeeManagementService 
     public void updateEmployee(EmployeeBean employeeBean) {
         Employee employee = mapToEmployee(employeeBean);
         EmployeeAccount employeeAccount = employeeBean.getEmployeeAccount();
+        EmployeeRole employeeRole = employeeRoleRepository.findByEmployeeId(employee.getId());
+        employeeRoleRepository.save(employeeRole);
         employeeAccountRepository.save(employeeAccount);
         employeeRepository.save(employee);
     }
@@ -142,6 +145,7 @@ public class EmployeeManagementServiceImpl implements EmployeeManagementService 
     @Override
     public void delete(Long employeeId) {
         employeeAccountRepository.delete(employeeAccountRepository.findByEmployeeId(employeeId).get());
+        employeeRoleRepository.delete(employeeRoleRepository.findByEmployeeId(employeeId));
         employeeRepository.deleteById(employeeId);
     }
 
@@ -189,4 +193,8 @@ public class EmployeeManagementServiceImpl implements EmployeeManagementService 
         return employee.getEmail();
     }
 
+    @Override
+    public EmployeeRole findRoleByEmployeeId(Long employeeId) {
+        return employeeRoleRepository.findByEmployeeId(employeeId);
+    }
 }

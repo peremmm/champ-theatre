@@ -30,6 +30,7 @@ public class EmployeeBean {
     private String email;
     private List<Reservation> reservations1;
     private List<Reservation> reservations2;
+    private Long employeeRoleSet;
     private EmployeeAccount employeeAccount;
     private LocalDateTime createdOn;
     private LocalDateTime updateOn;
