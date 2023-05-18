@@ -1,6 +1,8 @@
 package com.ninjaTurtles.champtheatre.controller;
 
+import com.ninjaTurtles.champtheatre.bean.EmployeeAccountBean;
 import com.ninjaTurtles.champtheatre.bean.EmployeeBean;
+import com.ninjaTurtles.champtheatre.bean.TheatreBean;
 import com.ninjaTurtles.champtheatre.repository.EmployeeAccountRepository;
 import com.ninjaTurtles.champtheatre.service.EmployeeManagementService;
 import com.ninjaTurtles.champtheatre.service.LoginService;
@@ -8,11 +10,10 @@ import com.ninjaTurtles.champtheatre.security.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.validation.Valid;
 
 @Controller
 public class LoginController {
@@ -33,30 +34,34 @@ public class LoginController {
         return "login";
     }
 
-    @GetMapping("/employees/{employeeId}/change-password")
-    public String showPasswordChangeForm(@PathVariable("employeeId") Long employeeId, Model model) {
-        String username = SecurityUtil.getSessionUser();
+    @GetMapping("/employees/{employeeAccountId}/change-password")
+    public String showChangePasswordForm(@PathVariable("employeeAccountId") Long employeeId, Model model) {
         EmployeeBean employeeBean = employeeManagementService.findEmployeeById(employeeId);
-        model.addAttribute("employeeBean", employeeBean);
+        model.addAttribute("employee", employeeBean); // Update attribute name to "employee"
         return "change-password";
     }
 
-    @PostMapping("/employees/{employeeId}/change-password")
-    public String changePassword(@PathVariable("employeeId") Long employeeId,
+
+    @PostMapping("/employees/{employeeAccountId}/change-password")
+    public String changePassword(@PathVariable("employeeAccountId") Long employeeAccountId,
                                  @RequestParam("newPassword") String newPassword,
                                  @RequestParam("confirmPassword") String confirmPassword,
                                  RedirectAttributes redirectAttributes) {
 
-        String username = SecurityUtil.getSessionUser();
+        EmployeeBean employeeBean = employeeManagementService.findEmployeeById(employeeAccountId);
+        String username = employeeBean.getEmployeeAccount().getUsername();
 
         if (newPassword.equals(confirmPassword)) {
             loginService.changePassword(username, newPassword);
-        }else {
+            redirectAttributes.addFlashAttribute("message",
+                    "Password for " + username + " has been changed");
+        } else {
             // Passwords do not match
-            return "change-password";
+            redirectAttributes.addFlashAttribute("error",
+                    "New password and confirm password do not match");
         }
 
-        redirectAttributes.addFlashAttribute("message", "Password for " + username + " has been changed");
         return "redirect:/employees";
     }
+
 }

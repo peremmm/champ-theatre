@@ -55,9 +55,7 @@ public class TheatreManagementController {
         theatreBean.setId(theatreId);
         theatreManagementService.updateTheatreDetails(theatreBean);
         redirectAttributes.addFlashAttribute("message",
-                "Theatre " +
-                        theatreBean.getId() +
-                        " has been EDITED");
+                "Theatre " + theatreBean.getId() + " has been EDITED");
         return "redirect:/theatres";
     }
 }
