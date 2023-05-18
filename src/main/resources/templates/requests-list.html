@@ -34,8 +34,9 @@
             <th>THEATRE</th>
             <th>BOOKER</th>
             <th>REVIEWER</th>
-            <th>CREATED ON</th>
-            <th>LAST UPDATED</th>
+<!--            <th>CREATED ON</th>-->
+<!--            <th>LAST UPDATED</th>-->
+            <th colspan="2">Action</th>
 
         </tr>
         </thead>
@@ -51,20 +52,82 @@
             <td th:text="${reservation.status}"></td>
             <td th:text="${reservation.theatre.name}"></td>
             <td th:text="${reservation.booker.firstName + ' ' + #strings.substring(reservation.booker.lastName, 0, 1) + '.'}"></td>
-            <div th:if="${reservation.status != T(com.ninjaTurtles.champtheatre.models.Reservation.Status).UNREVIEWED}">
+            <div th:if="${reservation.reviewer }">
                 <td th:text="${reservation.reviewer.firstName + ' ' + #strings.substring(reservation.reviewer.lastName, 0, 1) + '.'}"></td>
             </div>
-            <div th:else>
-                <td></td>
+            <div th:if="${reservation.reviewer==null and reservation.status == T(com.ninjaTurtles.champtheatre.models.Reservation.Status).UNREVIEWED }">
+                <td><a th:href="@{/reservations/{reservationId}/assign(reservationId=${reservation.id})}" onclick="confirmAssign(event)"><span>Assign Self</span>
+                </a></td>
             </div>
-            <td th:text="${#dates.format(reservation.createdDate, 'MMMM-dd-yyyy HH:mm:ss')}"></td>
-            <td th:text="${#dates.format(reservation.modifiedDate, 'MMMM-dd-yyyy HH:mm:ss')}"></td>
+<!--            <td th:text="${#dates.format(reservation.createdDate, 'dd/MM/yyyy HH:mm:ss')}"></td>-->
+<!--            <td th:text="${#dates.format(reservation.modifiedDate, 'dd/MM/yyyy HH:mm:ss')}"></td>-->
+            <div th:if="${reservation.status == T(com.ninjaTurtles.champtheatre.models.Reservation.Status).PENDING}">
+                <td><a th:href="@{/reservations/{reservationId}/approve(reservationId=${reservation.id})}"  onclick="confirmApproval(event)"><i style="font-size: 30px" class="bi bi-check" alt="Approve" title="Approve"></i></a></td>
+            </div>
+            <div th:if="${reservation.status == T(com.ninjaTurtles.champtheatre.models.Reservation.Status).PENDING}">
+                <td><a th:href="@{/reservations/{reservationId}/reject(reservationId=${reservation.id})}" onclick="confirmRejection(event)"><i style="font-size: 30px" class="bi bi-x" alt="Reject" title="Reject"></i></a></td>
+            </div>
         </tr>
         </tbody>
     </table>
     </section>
 </main>
 
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var message = /*[[${message}]]*/ null;
+    if (message) {
+        alert(message);
+    }
+    /*]]>*/
+
+    function confirmAssign(event) {
+        var confirmed = confirm('Are you sure you want to review this reservation?');
+        if (!confirmed) {
+          event.preventDefault();
+        }
+        return confirmed;
+      }
+
+    function confirmApproval(event) {
+        var confirmed = confirm('Are you sure you want to approve this reservation?');
+        if (!confirmed) {
+          event.preventDefault();
+        }
+        return confirmed;
+      }
+      function confirmRejection(event) {
+        var confirmed = confirm('Are you sure you want to reject this reservation?');
+        if (!confirmed) {
+          event.preventDefault();
+        }
+        return confirmed;
+      }
+
+
+    function filterTable() {
+        var input, filter, table, rows, cell, i, j;
+        input = document.getElementById("search-input");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("reservation-table");
+        rows = table.getElementsByTagName("tr");
+
+        for (i = 0; i < rows.length; i++) {
+            rows[i].style.display = "none";
+
+            for (j = 0; j < rows[i].cells.length; j++) {
+                cell = rows[i].cells[j];
+
+                if (cell.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                    rows[i].style.display = "";
+                    break;
+                }
+            }
+        }
+    }
+
+
+</script>
 
 <section th:replace="footer-scripts.html"></section>
 

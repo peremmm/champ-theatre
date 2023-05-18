@@ -26,12 +26,13 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
         RoleManagement,
 
     }
+
     private final ReservationRepository reservationRepository;
     private final EmployeeRepository employeeRepository;
     private final TheatreRepository theatreRepository;
 
     @Autowired
-    public ReservationManagementServiceImpl(ReservationRepository reservationRepository,EmployeeRepository employeeRepository, TheatreRepository theatreRepository) {
+    public ReservationManagementServiceImpl(ReservationRepository reservationRepository, EmployeeRepository employeeRepository, TheatreRepository theatreRepository) {
         this.reservationRepository = reservationRepository;
         this.employeeRepository = employeeRepository;
         this.theatreRepository = theatreRepository;
@@ -48,7 +49,7 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
     @Override
     public List<ReservationBean> findByBooker(Employee booker) {
         Optional<Reservation> optionalReservation = reservationRepository.findByBooker(booker);
-        if (optionalReservation.isPresent()){
+        if (optionalReservation.isPresent()) {
             List<Reservation> reservations = optionalReservation.map(Collections::singletonList).orElse(Collections.emptyList());
             return reservations.stream().map((reservation) -> mapToReservationBean(reservation)).collect(Collectors.toList());
 
@@ -58,7 +59,9 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
     }
 
 
-    /**  FOR TESTING ONLY**/
+    /**
+     * FOR TESTING ONLY
+     **/
     private Employee getEmployee(Long employeeId) {
         return employeeRepository.findById(employeeId).get();
     }
@@ -81,8 +84,8 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
         newReservation.setBooker(getEmployee(201L));
         try {
             reservationRepository.save(newReservation);
-        }catch (DataAccessException e){
-            throw new ServiceException(e.getMessage());
+        } catch (DataAccessException e) {
+            throw new ServiceException("Something went wrong. Please try again.");
         }
     }
 
@@ -91,22 +94,29 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
     public void assign(Long reservationId) {
         Reservation existingReservation = reservationRepository.findById(reservationId).orElseThrow(null);
 
-        if(existingReservation != null && existingReservation.getReviewer() == null ) {
+        if (existingReservation != null && existingReservation.getReviewer() == null) {
 
             // WITH SESSION
             // Set<EmployeeRole> currentRoles = employeeRepository.findById(User session ID).getRoles();
-            Set<EmployeeRole> currentRoles = getEmployee(202L).getRoles();
-
-            for(EmployeeRole employeeRole : currentRoles){
-                if(employeeRole.getRole().getModule().contains(Modules.ReservationRequestManagement)) {
-                    existingReservation.setStatus(Reservation.Status.PENDING);
-                    reservationRepository.save(existingReservation);
-                    break;
+            Employee reviewer = getEmployee(202L);
+            Set<EmployeeRole> currentRoles = reviewer.getRoles();
+            if (!currentRoles.isEmpty()) {
+                for (EmployeeRole employeeRole : currentRoles) {
+                    for (RoleModule roleModule : employeeRole.getRole().getModule()) {
+                        if (roleModule.getModule().getModule().equals("ReservationRequestManagement")) {
+                            existingReservation.setStatus(Reservation.Status.PENDING);
+                            existingReservation.setReviewer(reviewer);
+                            reservationRepository.save(existingReservation);
+                            break;
+                        }
+                    }
                 }
+            } else {
+                throw new ServiceException("Employee does not have a role!");
             }
-        }
-        else {
-            throw new ServiceException("Something went wrong. Please try again.");
+
+        } else {
+            throw new ServiceException("Something went wrong. We cannot find the reservation");
         }
     }
 
@@ -122,24 +132,32 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
 
         Reservation existingReservation = reservationRepository.findById(reservationId).orElseThrow(null);
 
-        if(existingReservation != null && existingReservation.getReviewer() != null && (status == Reservation.Status.APPROVED || status == Reservation.Status.REJECTED ) ) {
+        if (existingReservation != null && existingReservation.getReviewer() != null && (status == Reservation.Status.APPROVED || status == Reservation.Status.REJECTED)) {
 
             // When session is setup, use if condition
-            //if(existingReservation != null &&  existingReservation.getReviewer().getId() == userSessionId){
-                // WITH SESSION
-                // Set<EmployeeRole> currentRoles = employeeRepository.findById(User session ID).getRoles();
-                Set<EmployeeRole> currentRoles = existingReservation.getReviewer().getRoles();
+            //if( existingReservation.getReviewer().getId() == userSessionId){
+            // WITH SESSION
+            // Set<EmployeeRole> currentRoles = employeeRepository.findById(User session ID).getRoles();
+            Set<EmployeeRole> currentRoles = existingReservation.getReviewer().getRoles();
 
-                for(EmployeeRole employeeRole : currentRoles){
-                    if(employeeRole.getRole().getModule().contains(Modules.ReservationRequestManagement)) {
-                        existingReservation.setStatus(status);
-                        reservationRepository.save(existingReservation);
-                        break;
+            if (!currentRoles.isEmpty()) {
+                for (EmployeeRole employeeRole : currentRoles) {
+                    for (RoleModule roleModule : employeeRole.getRole().getModule()) {
+                        if (roleModule.getModule().getModule().equals("ReservationRequestManagement")) {
+                            existingReservation.setStatus(status);
+                            reservationRepository.save(existingReservation);
+                            break;
+                        }
                     }
                 }
-            //}
-        }
-        else {
+            } else {
+                throw new ServiceException("Employee does not have a role!");
+            }
+
+            //}else {
+            //  throw new ServiceException("I'm sorry, you cannot approve/reject this reservation.");
+            // }
+        } else {
             throw new ServiceException("Something went wrong. Please try again.");
         }
     }
@@ -149,12 +167,11 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
     public void cancel(Long reservationId) {
         Reservation existingReservation = reservationRepository.findById(reservationId).orElseThrow(null);
         //        if(existingReservation != null && existingReservation.getBooker().getId== UserSessionID  && (existingReservation.getStatus() == Reservation.Status.UNREVIEWED || existingReservation.getStatus()== Reservation.Status.APPROVED )  ) {
-        if(existingReservation != null  && (existingReservation.getStatus() == Reservation.Status.UNREVIEWED || existingReservation.getStatus()== Reservation.Status.APPROVED )  ) {
+        if (existingReservation != null && (existingReservation.getStatus() == Reservation.Status.UNREVIEWED || existingReservation.getStatus() == Reservation.Status.APPROVED)) {
             existingReservation.setStatus(Reservation.Status.CANCELLED);
             reservationRepository.save(existingReservation);
-        }
-        else {
-            throw new ServiceException("Something went wrong. Pleas try again");
+        } else {
+            throw new ServiceException("Something went wrong. Please try again");
         }
     }
 
@@ -165,9 +182,9 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
         //Reservation existingReservation = reservationRepository.findById(1001L).orElseThrow(null);
 
         Reservation existingReservation = reservationRepository.findById(reservationBean.getId()).orElseThrow(null);
-        if(existingReservation != null) {
+        if (existingReservation != null) {
             if (reservationBean.getBooker().getId().equals(existingReservation.getBooker().getId()) && existingReservation.getStatus() == Reservation.Status.UNREVIEWED) {
-            //if (reservationBean.getBooker().getId().equals(userSessionId) && reservationBean.getBooker().getId().equals(existingReservation.getBooker().getId()) && existingReservation.getStatus() == Reservation.Status.UNREVIEWED) {
+                //if (reservationBean.getBooker().getId().equals(userSessionId) && reservationBean.getBooker().getId().equals(existingReservation.getBooker().getId()) && existingReservation.getStatus() == Reservation.Status.UNREVIEWED) {
                 existingReservation.setEventDate(reservationBean.getEventDate());
                 existingReservation.setStartTime(reservationBean.getStartTime());
                 existingReservation.setEndTime(reservationBean.getEndTime());
@@ -177,6 +194,8 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
                 existingReservation.setAttendees(reservationBean.getAttendees());
 
                 reservationRepository.save(existingReservation);
+            } else {
+                throw new ServiceException("I'm sorry, you are not authorized to edit the reservation.");
             }
         } else {
             throw new ServiceException("Something went wrong. We can't seem to find the reservation that you want to modify.");

@@ -1,10 +1,9 @@
 package com.ninjaTurtles.champtheatre.controller;
 
-import com.ninjaTurtles.champtheatre.bean.EmployeeBean;
+
 import com.ninjaTurtles.champtheatre.bean.ReservationBean;
 import com.ninjaTurtles.champtheatre.bean.TheatreBean;
 import com.ninjaTurtles.champtheatre.exception.ServiceException;
-import com.ninjaTurtles.champtheatre.models.Employee;
 import com.ninjaTurtles.champtheatre.models.Reservation;
 import com.ninjaTurtles.champtheatre.models.Theatre;
 import com.ninjaTurtles.champtheatre.service.EmployeeManagementService;
@@ -13,12 +12,9 @@ import com.ninjaTurtles.champtheatre.service.TheatreManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.validation.Valid;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Calendar;
@@ -61,7 +57,7 @@ public class ReservationManagementController {
     @GetMapping("/reservations")
     public String listUserReservations(Model model, RedirectAttributes redirectAttributes) {
         // Need user
-        //List<ReservationBean> reservations = reservationManagementService.findByBooker(new Employee());
+        //List<ReservationBean> reservations = reservationManagementService.findByBooker(User Session ID);
         List<ReservationBean> reservations = reservationManagementService.findAll();
         model.addAttribute("reservations", reservations);
 
@@ -108,33 +104,14 @@ public class ReservationManagementController {
         TheatreBean theatreBean = theatreManagementService.findTheatreById(Long.parseLong(theatreId));
         reservationBean.setTheatre(mapToTheatre(theatreBean));
 
-
         try {
 
             reservationManagementService.save(reservationBean);
         } catch (ServiceException e) {
-            redirectAttributes.addFlashAttribute("error", "Something went wrong. Pleas try again. \n"+ e.getMessage());
-            return "redirect:/reservations/new";
-        }
-
-        String message = "A new reservation request has been created. Please wait for approval.";
-        redirectAttributes.addFlashAttribute("message", message);
-
-        return "redirect:/reservations";
-    }
-
-
-
-    @PostMapping("/reservations/assign")
-    public String assignReviewer(@ModelAttribute("reservation") ReservationBean reservationbean, RedirectAttributes redirectAttributes){
-        try {
-            //reservationManagementService.updateStatus(reservationbean);
-        } catch (ServiceException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "redirect:/reservations/edit"; // Redirect to the new employee form
         }
 
-        String message = "The reservation request with id "+reservationbean.getId()+" is now being processed.";
+        String message = "A new reservation request has been created.";
         redirectAttributes.addFlashAttribute("message", message);
 
         return "redirect:/reservations";
@@ -143,7 +120,7 @@ public class ReservationManagementController {
 
 
     @GetMapping("/reservations/{reservationId}/edit")
-    public String editEmployeeForm(@PathVariable("reservationId") long reservationId, Model model){
+    public String editReservationForm(@PathVariable("reservationId") long reservationId, Model model){
         ReservationBean reservationBean = reservationManagementService.findById(reservationId);
         List<TheatreBean> theatreBeans = theatreManagementService.getAllTheatre();
 
@@ -164,7 +141,7 @@ public class ReservationManagementController {
     }
 
     @PostMapping("/reservations/{reservationId}/edit")
-    public String updateEmployee(@PathVariable("reservationId") Long reservationId,
+    public String updateReservation(@PathVariable("reservationId") Long reservationId,
                                  @RequestParam("date") String eventDate,
                                  @RequestParam("start") String start,
                                  @RequestParam("end") String end,
@@ -196,7 +173,7 @@ public class ReservationManagementController {
             reservationManagementService.updateDetails(existingReservation);
         } catch (ServiceException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "redirect:/reservations/"+existingReservation.getId()+"/edit"; // Redirect to the new employee form
+            return "redirect:/reservations/"+existingReservation.getId()+"/edit";
         }
 
         String message = "The reservation request with id "+existingReservation.getId()+" has been updated.";
@@ -213,13 +190,58 @@ public class ReservationManagementController {
         try {
             reservationManagementService.cancel(reservationId);
         } catch (ServiceException e) {
-            redirectAttributes.addFlashAttribute("error", "Unable to cancel the reservation");
-            return "redirect:/reservations/edit"; // Redirect to the new employee form
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/reservations";
         }
 
         redirectAttributes.addFlashAttribute("message",
                 "Reservation " + reservationId + " has been canceled");
         return "redirect:/reservations";
+    }
+
+    @GetMapping("/reservations/{reservationId}/approve")
+    public String approveReservation(@PathVariable("reservationId") Long reservationId,
+                                    RedirectAttributes redirectAttributes) {
+        try {
+            reservationManagementService.updateStatus(reservationId,Reservation.Status.APPROVED);
+        } catch (ServiceException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/requests";
+        }
+
+        redirectAttributes.addFlashAttribute("message",
+                "Reservation " + reservationId + " has been approved");
+        return "redirect:/requests";
+    }
+
+    @GetMapping("/reservations/{reservationId}/reject")
+    public String rejectReservation(@PathVariable("reservationId") Long reservationId,
+                                     RedirectAttributes redirectAttributes) {
+        try {
+            reservationManagementService.updateStatus(reservationId,Reservation.Status.REJECTED);
+        } catch (ServiceException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/requests";
+        }
+
+        redirectAttributes.addFlashAttribute("message",
+                "Reservation " + reservationId + " has been approved");
+        return "redirect:/requests";
+    }
+
+    @GetMapping("/reservations/{reservationId}/assign")
+    public String assignUserToReviewReservation(@PathVariable("reservationId") Long reservationId,
+                                     RedirectAttributes redirectAttributes) {
+        try {
+            reservationManagementService.assign(reservationId);
+        } catch (ServiceException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/requests";
+        }
+
+        redirectAttributes.addFlashAttribute("message",
+                "Reservation " + reservationId + " is now waiting for your approval");
+        return "redirect:/requests";
     }
 
     private Theatre mapToTheatre(TheatreBean theatre) {

@@ -51,10 +51,10 @@
                 <td th:text="${#dates.format(reservation.endTime, 'h:mm a')}"></td>
                 <td th:text="${reservation.status}"></td>
                 <td th:text="${reservation.theatre.name}"></td>
-                <div th:if="${reservation.reviewer}">
+                <div th:if="${reservation.reviewer != null}">
                     <td th:text="${reservation.reviewer.firstName + ' ' + #strings.substring(reservation.reviewer.lastName, 0, 1) + '.'}"></td>
                 </div>
-                <div th:else>
+                <div th:if="${reservation.reviewer == null}">
                     <td></td>
                 </div>
                 <td th:text="${#dates.format(reservation.createdDate, 'dd/MM/yyyy HH:mm:ss')}"></td>
