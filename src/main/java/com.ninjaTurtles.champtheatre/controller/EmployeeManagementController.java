@@ -142,6 +142,15 @@ public class EmployeeManagementController {
         return "redirect:/employees";
     }
 
+    @GetMapping("/employees/{employeeId}/view")
+    public String viewEmployeeDetails(@PathVariable("employeeId") long employeeId, Model model){
+        EmployeeBean employee = employeeManagementService.findEmployeeById(employeeId);
+        EmployeeRole employeeRole = employeeRoleService.findRoleByEmployeeId(employee.getId());
+        employee.setEmployeeRoleSet(employeeRole.getRole().getId());
+        model.addAttribute("employee", employee);
+        return "profile-view";
+    }
+
     @GetMapping("/employees/{employeeId}/delete")
     public String deleteEmployee(@PathVariable("employeeId") Long employeeId,
                                  RedirectAttributes redirectAttributes) {
