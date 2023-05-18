@@ -1,19 +1,14 @@
 package com.ninjaTurtles.champtheatre.controller;
 
-import com.ninjaTurtles.champtheatre.bean.EmployeeAccountBean;
 import com.ninjaTurtles.champtheatre.bean.EmployeeBean;
-import com.ninjaTurtles.champtheatre.bean.TheatreBean;
 import com.ninjaTurtles.champtheatre.repository.EmployeeAccountRepository;
 import com.ninjaTurtles.champtheatre.service.EmployeeManagementService;
 import com.ninjaTurtles.champtheatre.service.LoginService;
-import com.ninjaTurtles.champtheatre.security.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import javax.validation.Valid;
 
 @Controller
 public class LoginController {
@@ -60,7 +55,6 @@ public class LoginController {
             redirectAttributes.addFlashAttribute("error",
                     "New password and confirm password do not match");
         }
-
         return "redirect:/employees";
     }
 
