@@ -4,6 +4,21 @@
 
 (function() {
   "use strict";
+ /*<![CDATA[*/
+             var error = /*[[${error}]]*/ null;
+             if (error) {
+                 alert(error);
+             }
+  /*]]>*/
+
+   /*<![CDATA[*/
+      var message = /*[[${message}]]*/ null;
+      if (message) {
+          alert(message);
+      }
+      /*]]>*/
+
+
 /**
  *Highlight on active nav bar
  */

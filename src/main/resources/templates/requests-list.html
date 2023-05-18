@@ -74,12 +74,7 @@
 </main>
 
 <script th:inline="javascript">
-    /*<![CDATA[*/
-    var message = /*[[${message}]]*/ null;
-    if (message) {
-        alert(message);
-    }
-    /*]]>*/
+
 
     function confirmAssign(event) {
         var confirmed = confirm('Are you sure you want to review this reservation?');

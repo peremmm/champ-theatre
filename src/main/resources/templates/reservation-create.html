@@ -71,7 +71,7 @@
                                     <div class="row mb-3">
                                         <label for="date" class="col-sm-2 col-form-label">Date</label>
                                         <div class="col-sm-10">
-                                            <input type="date" name="date" class="form-control" id="date"  min="" value="" >
+                                            <input type="date" name="date" class="form-control" id="date"  min="" value="" onchange="filterReservations()">
                                         </div>
                                     </div>
 
@@ -123,6 +123,7 @@
                                     <div class="row mb-3">
 
                                         <div class="text-center">
+
                                             <button type="submit" class="btn btn-primary">Reserve</button>
                                         </div>
                                     </div>
@@ -181,7 +182,7 @@
                 <div class="card">
 
                     <div class="card-body">
-                        <h5 class="card-title"  style="color:red">Occupied </h5>
+                        <h5 class="card-title"  style="color:red">Unavailable Slots </h5>
 
                         <table id="reservationTable"    style="color:red" class="table table-hover">
 
@@ -194,10 +195,14 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr th:each="reservation : ${reservations}" id="reservationRow" th:class="${#dates.format(reservation.eventDate, 'dd/MM/yyyy') != date ? 'd-none' : ''}">
-                                <td th:text="${#dates.format(reservation.eventDate, 'dd/MM/yyyy')}"></td>
-                                <td th:text="${#dates.format(reservation.startTime,'h:mm a')}"></td>
-                                <td th:text="${#dates.format(reservation.endTime, 'h:mm a')}"></td>
+
+                            <tr th:each="reservation : ${reservations}" id="reservationRow" >
+                                <div th:if="${reservation.status == T(com.ninjaTurtles.champtheatre.models.Reservation.Status).APPROVED  or reservation.status == T(com.ninjaTurtles.champtheatre.models.Reservation.Status).UNREVIEWED  }" >
+                                    <td style="display: none;" th:text="${#dates.format(reservation.eventDate, 'dd/MM/yyyy')}"></td>
+                                    <td th:text="${reservation.theatre.name}"></td>
+                                    <td th:text="${#dates.format(reservation.startTime,'h:mm a')}"></td>
+                                    <td th:text="${#dates.format(reservation.endTime, 'h:mm a')}"></td>
+                                </div>
                             </tr>
                             </tbody>
                         </table>
@@ -210,9 +215,13 @@
 
 <script>
 // Set the minimum and default values to the current date
-var currentDate = new Date().toISOString().split('T')[0];
-document.getElementById("date").setAttribute('min', currentDate);
-document.getElementById("date").value = currentDate;
+var currentDate = new Date();
+currentDate.setDate(currentDate.getDate() + 1);
+var tomorrowDate = currentDate.toISOString().split('T')[0];
+
+document.getElementById("date").setAttribute('min', tomorrowDate);
+document.getElementById("date").value = tomorrowDate;
+
 
 
 // time condition
@@ -245,9 +254,30 @@ document.getElementById("date").value = currentDate;
         }
     });
 
+function filterReservations() {
+        var inputDateElement = document.getElementById("date");
+        var inputDate = inputDateElement.value;
+        var formattedInputDate = formatDate(inputDate);
 
+        var rows = document.querySelectorAll("#reservationRow");
 
+        rows.forEach(function(row) {
+            var eventDate = row.cells[0].textContent;
+            if (eventDate === formattedInputDate) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    }
 
+    function formatDate(dateString) {
+        var dateParts = dateString.split("-");
+        var formattedDate = dateParts[2] + "/" + dateParts[1] + "/" + dateParts[0];
+        return formattedDate;
+    }
+
+filterReservations();
 </script>
 
 </script>

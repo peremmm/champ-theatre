@@ -22,7 +22,8 @@ public interface ReservationManagementService {
 
 	void updateDetails(ReservationBean reservationbean);
 
-	void updateStatus(Long reservationId, Reservation.Status status);
+
+    void updateStatus(Long reservationId, Reservation.Status status);
 	void cancel(Long reservationId);
 
 }

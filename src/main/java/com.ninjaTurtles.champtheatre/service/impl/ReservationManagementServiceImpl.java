@@ -6,7 +6,6 @@ import com.ninjaTurtles.champtheatre.exception.ServiceException;
 import com.ninjaTurtles.champtheatre.models.*;
 import com.ninjaTurtles.champtheatre.repository.EmployeeRepository;
 import com.ninjaTurtles.champtheatre.repository.ReservationRepository;
-import com.ninjaTurtles.champtheatre.repository.TheatreRepository;
 import com.ninjaTurtles.champtheatre.service.ReservationManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,20 +28,16 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
 
     private final ReservationRepository reservationRepository;
     private final EmployeeRepository employeeRepository;
-    private final TheatreRepository theatreRepository;
 
     @Autowired
-    public ReservationManagementServiceImpl(ReservationRepository reservationRepository, EmployeeRepository employeeRepository, TheatreRepository theatreRepository) {
+    public ReservationManagementServiceImpl(ReservationRepository reservationRepository, EmployeeRepository employeeRepository) {
         this.reservationRepository = reservationRepository;
         this.employeeRepository = employeeRepository;
-        this.theatreRepository = theatreRepository;
     }
 
     @Override
     public ReservationBean findById(Long reservationId) {
         Reservation reservation = reservationRepository.findById(reservationId).get();
-
-
         return mapToReservationBean(reservation);
     }
 
@@ -52,7 +47,6 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
         if (optionalReservation.isPresent()) {
             List<Reservation> reservations = optionalReservation.map(Collections::singletonList).orElse(Collections.emptyList());
             return reservations.stream().map((reservation) -> mapToReservationBean(reservation)).collect(Collectors.toList());
-
         }
         return Collections.emptyList();
 
@@ -69,24 +63,61 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
     @Transactional
     @Override
     public void save(ReservationBean reservationBean) {
-        Reservation newReservation = new Reservation();
-        newReservation.setEvent_type(reservationBean.getEvent_type());
-        newReservation.setEvent_description(reservationBean.getEvent_description());
-        newReservation.setEventDate(reservationBean.getEventDate());
-        newReservation.setStartTime(reservationBean.getStartTime());
-        newReservation.setEndTime(reservationBean.getEndTime());
-        newReservation.setStatus(Reservation.Status.UNREVIEWED);
-        newReservation.setTheatre(reservationBean.getTheatre());
-        newReservation.setAttendees(reservationBean.getAttendees());
-        //NEEDS TO BE UPDATED TO USE USER SESSION
-        //newReservation.setBooker(UsersessionId);
-        //temporary
-        newReservation.setBooker(getEmployee(201L));
-        try {
-            reservationRepository.save(newReservation);
-        } catch (DataAccessException e) {
-            throw new ServiceException("Something went wrong. Please try again.");
+        boolean doesNotCollide = true;
+
+        List<Reservation> existingReservations = reservationRepository.findAll().stream()
+                .filter(reservation -> reservation.getStatus().equals(Reservation.Status.APPROVED) ||
+                        reservation.getStatus().equals(Reservation.Status.UNREVIEWED))
+                .collect(Collectors.toList());
+
+        for (Reservation reservation : existingReservations) {
+            if (reservationBean.getEndTime().after(reservation.getStartTime()) &&
+                    reservationBean.getStartTime().before(reservation.getEndTime())) {
+                doesNotCollide = false;
+                break;
+            }
         }
+
+        if (doesNotCollide) {
+            Reservation newReservation = new Reservation();
+            newReservation.setEvent_type(reservationBean.getEvent_type());
+            newReservation.setEvent_description(reservationBean.getEvent_description());
+            newReservation.setEventDate(reservationBean.getEventDate());
+            newReservation.setStartTime(reservationBean.getStartTime());
+            newReservation.setEndTime(reservationBean.getEndTime());
+            newReservation.setTheatre(reservationBean.getTheatre());
+
+            if(reservationBean.getTheatre().getCapacity() >= reservationBean.getAttendees()){
+                newReservation.setAttendees(reservationBean.getAttendees());
+            }else{
+                throw new ServiceException("Reservation's attendees exceeded the theatre's capacity.");
+            }
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(reservationBean.getEventDate());
+            int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+            boolean isWeekend = dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY;
+
+            if (isWeekend) {
+                newReservation.setStatus(Reservation.Status.UNREVIEWED);
+            } else {
+                newReservation.setStatus(Reservation.Status.APPROVED);
+            }
+
+            //NEEDS TO BE UPDATED TO USE USER SESSION
+            //newReservation.setBooker(UsersessionId);
+            //temporary
+            newReservation.setBooker(getEmployee(201L));
+
+            try {
+                reservationRepository.save(newReservation);
+            } catch (DataAccessException e) {
+                throw new ServiceException("Something went wrong. Please try again.");
+            }
+        } else {
+            throw new ServiceException("Conflict with existing reservation/s.");
+        }
+
     }
 
     @Transactional
@@ -126,6 +157,7 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
         return reservationRepository.findAll().stream().map(this::mapToReservationBean).collect(Collectors.toList());
     }
 
+
     @Transactional
     @Override
     public void updateStatus(Long reservationId, Reservation.Status status) {
@@ -150,8 +182,6 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
                         }
                     }
                 }
-            } else {
-                throw new ServiceException("Employee does not have a role!");
             }
 
             //}else {
@@ -178,22 +208,58 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
     @Transactional
     @Override
     public void updateDetails(ReservationBean reservationBean) {
-        // For testing only
-        //Reservation existingReservation = reservationRepository.findById(1001L).orElseThrow(null);
-
+        // USE SESSION
+        //Reservation existingReservation = reservationRepository.findById(User session Id).orElseThrow(null);
         Reservation existingReservation = reservationRepository.findById(reservationBean.getId()).orElseThrow(null);
         if (existingReservation != null) {
             if (reservationBean.getBooker().getId().equals(existingReservation.getBooker().getId()) && existingReservation.getStatus() == Reservation.Status.UNREVIEWED) {
                 //if (reservationBean.getBooker().getId().equals(userSessionId) && reservationBean.getBooker().getId().equals(existingReservation.getBooker().getId()) && existingReservation.getStatus() == Reservation.Status.UNREVIEWED) {
-                existingReservation.setEventDate(reservationBean.getEventDate());
-                existingReservation.setStartTime(reservationBean.getStartTime());
-                existingReservation.setEndTime(reservationBean.getEndTime());
-                existingReservation.setAttendees(reservationBean.getAttendees());
-                existingReservation.setTheatre(reservationBean.getTheatre());
-                existingReservation.setModifiedDate(new Date());
-                existingReservation.setAttendees(reservationBean.getAttendees());
 
-                reservationRepository.save(existingReservation);
+                boolean doesNotCollide = true;
+                List<Reservation> existingReservations = reservationRepository.findAll().stream()
+                        .filter(reservation -> reservation.getStatus().equals(Reservation.Status.APPROVED) ||
+                                reservation.getStatus().equals(Reservation.Status.UNREVIEWED))
+                        .collect(Collectors.toList());
+
+                for (Reservation reservation : existingReservations) {
+                    if (reservationBean.getEndTime().after(reservation.getStartTime()) &&
+                            reservationBean.getStartTime().before(reservation.getEndTime())) {
+                        doesNotCollide = false;
+                        break;
+                    }
+                }
+
+                if (doesNotCollide) {
+
+                    existingReservation.setEventDate(reservationBean.getEventDate());
+                    existingReservation.setStartTime(reservationBean.getStartTime());
+                    existingReservation.setEndTime(reservationBean.getEndTime());
+                    existingReservation.setTheatre(reservationBean.getTheatre());
+                    existingReservation.setModifiedDate(new Date());
+                    if(reservationBean.getTheatre().getCapacity() >= reservationBean.getAttendees()){
+                        existingReservation.setAttendees(reservationBean.getAttendees());
+                    }else{
+                        throw new ServiceException("Reservation's attendees exceeded the theatre's capacity.");
+                    }
+
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(reservationBean.getEventDate());
+                    int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+                    boolean isWeekend = dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY;
+
+                    if (!isWeekend) {
+                        existingReservation.setStatus(Reservation.Status.APPROVED);
+                    }
+
+                    try {
+                        reservationRepository.save(existingReservation);
+                    } catch (DataAccessException e) {
+                        throw new ServiceException("Something went wrong. Please try again.");
+                    }
+                } else {
+                    throw new ServiceException("Conflict with existing reservation/s.");
+                }
+
             } else {
                 throw new ServiceException("I'm sorry, you are not authorized to edit the reservation.");
             }
@@ -203,22 +269,6 @@ public class ReservationManagementServiceImpl implements ReservationManagementSe
     }
 
 
-    private Reservation mapToReservation(ReservationBean reservationBean) {
-        return Reservation.builder()
-                .id(reservationBean.getId())
-                .event_description(reservationBean.getEvent_description())
-                .event_type(reservationBean.getEvent_type())
-                .eventDate(reservationBean.getEventDate())
-                .startTime(reservationBean.getStartTime())
-                .endTime(reservationBean.getEndTime())
-                .theatre(reservationBean.getTheatre())
-                .booker(reservationBean.getBooker())
-                .reviewer(reservationBean.getReviewer())
-                .attendees(reservationBean.getAttendees())
-                .status(reservationBean.getStatus())
-                .build();
-
-    }
 
     private ReservationBean mapToReservationBean(Reservation reservation) {
         return ReservationBean.builder()

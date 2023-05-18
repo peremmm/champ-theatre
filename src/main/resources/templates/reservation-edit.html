@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" >
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Edit Reservation</title>
 </head>
@@ -36,17 +36,24 @@
                                     <h5 class="card-title text-center pb-0 fs-4">Edit Reservation</h5>
                                     <p class="text-center small">Fill in the details below</p>
                                 </div>
-                                <form class="row g-3 needs-validation" method="post"  th:action="@{/reservations/{reservationId}/edit(reservationId=${reservation.id})}" th:object="${reservation}">
+                                <form class="row g-3 needs-validation" method="post"
+                                      th:action="@{/reservations/{reservationId}/edit(reservationId=${reservation.id})}"
+                                      th:object="${reservation}">
                                     <div class="row mb-3">
-                                        <label for="event_description" class="col-sm-2 col-form-label">Description</label>
+                                        <label for="event_description"
+                                               class="col-sm-2 col-form-label">Description</label>
                                         <div class="col-sm-10">
-                                                <textarea class="form-control" style="height: 100px" name="event_description" id="event_description" th:text="${reservation.event_description}" th:value="${reservation.event_description}"  disabled ></textarea>
+                                            <textarea class="form-control" style="height: 100px"
+                                                      name="event_description" id="event_description"
+                                                      th:text="${reservation.event_description}"
+                                                      th:value="${reservation.event_description}" disabled></textarea>
                                         </div>
                                     </div>
                                     <div class="row mb-3">
                                         <label class="col-sm-2 col-form-label">Select Type</label>
                                         <div class="col-sm-10">
-                                            <select class="form-select"  id="event_type" name="event_type" th:value="${event_type}" disabled>
+                                            <select class="form-select" id="event_type" name="event_type"
+                                                    th:value="${event_type}" disabled>
                                                 <option value="BUSINESS">BUSINESS</option>
                                                 <option value="LEISURE">LEISURE</option>
                                             </select>
@@ -70,22 +77,23 @@
                                     <div class="row mb-3">
                                         <label for="date" class="col-sm-2 col-form-label">Date</label>
                                         <div class="col-sm-10">
-                                            <input type="date" name="date" class="form-control" id="date" min="" value="" />                                        </div>
+                                            <input type="date" name="date" class="form-control" id="date" min=""
+                                                   value=""/></div>
                                     </div>
 
                                     <div class="row mb-3">
                                         <label for="start" class="col-sm-2 col-form-label">Starts At:</label>
                                         <div class="col-sm-10">
-                                            <select class="form-select" id="start" name="start" >
-                                                <option value="8"  th:selected="${start == 8}">08:00 AM</option>
-                                                <option value="9"  th:selected="${start == 9}">09:00 AM</option>
-                                                <option value="10"  th:selected="${start == 10}">10:00 AM</option>
-                                                <option value="11"  th:selected="${start == 11}">11:00 AM</option>
-                                                <option value="12"  th:selected="${start == 12}">12:00 PM</option>
-                                                <option value="13"  th:selected="${start == 13}">01:00 PM</option>
-                                                <option value="14"  th:selected="${start == 14}">02:00 PM</option>
-                                                <option value="15"  th:selected="${start == 15}">03:00 PM</option>
-                                                <option value="16"  th:selected="${start == 16}">04:00 PM</option>
+                                            <select class="form-select" id="start" name="start">
+                                                <option value="8" th:selected="${start == 8}">08:00 AM</option>
+                                                <option value="9" th:selected="${start == 9}">09:00 AM</option>
+                                                <option value="10" th:selected="${start == 10}">10:00 AM</option>
+                                                <option value="11" th:selected="${start == 11}">11:00 AM</option>
+                                                <option value="12" th:selected="${start == 12}">12:00 PM</option>
+                                                <option value="13" th:selected="${start == 13}">01:00 PM</option>
+                                                <option value="14" th:selected="${start == 14}">02:00 PM</option>
+                                                <option value="15" th:selected="${start == 15}">03:00 PM</option>
+                                                <option value="16" th:selected="${start == 16}">04:00 PM</option>
                                             </select>
                                         </div>
                                     </div>
@@ -93,15 +101,15 @@
                                         <!-- End Time -->
                                         <label for="end" class="col-sm-2 col-form-label">Ends At:</label>
                                         <div class="col-sm-10">
-                                            <select class="form-select" id="end" name="end" >
-                                                <option value="9"  th:selected="${end == 9}">09:00 AM</option>
-                                                <option value="10"  th:selected="${end == 10}">10:00 AM</option>
-                                                <option value="11"  th:selected="${end == 11}">11:00 AM</option>
-                                                <option value="12"  th:selected="${end == 12}">12:00 PM</option>
-                                                <option value="13"  th:selected="${end == 13}">01:00 PM</option>
-                                                <option value="14"  th:selected="${end == 14}">02:00 PM</option>
-                                                <option value="15"  th:selected="${end == 15}">03:00 PM</option>
-                                                <option value="16"  th:selected="${end == 16}">04:00 PM</option>
+                                            <select class="form-select" id="end" name="end">
+                                                <option value="9" th:selected="${end == 9}">09:00 AM</option>
+                                                <option value="10" th:selected="${end == 10}">10:00 AM</option>
+                                                <option value="11" th:selected="${end == 11}">11:00 AM</option>
+                                                <option value="12" th:selected="${end == 12}">12:00 PM</option>
+                                                <option value="13" th:selected="${end == 13}">01:00 PM</option>
+                                                <option value="14" th:selected="${end == 14}">02:00 PM</option>
+                                                <option value="15" th:selected="${end == 15}">03:00 PM</option>
+                                                <option value="16" th:selected="${end == 16}">04:00 PM</option>
                                                 <option value="17" th:selected="${end == 17}">05:00 PM</option>
                                                 <option value="18" th:selected="${end == 18}">06:00 PM</option>
                                                 <option value="19" th:selected="${end == 19}">07:00 PM</option>
@@ -110,10 +118,13 @@
                                     </div>
 
                                     <div class="row mb-3">
-                                        <label for="attendees" class="col-sm-2 col-form-label">Expected Attendees</label>
+                                        <label for="attendees" class="col-sm-2 col-form-label">Expected
+                                            Attendees</label>
                                         <div class="col-sm-10">
-                                            <input type ="number" min =1 class="form-control" name="attendees" id="attendees" th:field="*{attendees}"  required></input>
-                                            <div th:if="${#fields.hasErrors('attendees')}" class="invalid-feedback" th:errors="*{attendees}"></div>
+                                            <input type="number" min=1 class="form-control" name="attendees"
+                                                   id="attendees" th:field="*{attendees}" required></input>
+                                            <div th:if="${#fields.hasErrors('attendees')}" class="invalid-feedback"
+                                                 th:errors="*{attendees}"></div>
 
                                         </div>
                                     </div>
@@ -121,21 +132,27 @@
                                     <div class="row mb-3">
 
                                         <div class="col-12">
-                                            <button id="edit-btn" class="btn btn-primary w-100" type="button"  data-bs-toggle="modal" data-bs-target="#basicModal" >Save Changes</button>
+                                            <button id="edit-btn" class="btn btn-primary w-100" type="button"
+                                                    data-bs-toggle="modal" data-bs-target="#basicModal">Save Changes
+                                            </button>
                                         </div>
                                         <div class="modal fade" id="basicModal" tabindex="-1">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
                                                         <h5 class="modal-title">Confirmation</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
                                                         Confirming new changes to reservation?
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                        <button type="submit" class="btn btn-primary">Save changes</button>
+                                                        <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Close
+                                                        </button>
+                                                        <button type="submit" class="btn btn-primary">Save changes
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -158,10 +175,8 @@
                 <div class="card">
 
                     <div class="card-body">
-
                         <h5 class="card-title">Theatre </h5>
                         <table class="table table-hover">
-
                             <thead>
                             <tr>
                                 <th>Name</th>
@@ -173,7 +188,7 @@
                             <tr th:each="theatre : ${theaters}">
                                 <td th:text="${theatre.name}"></td>
 
-                                <td >
+                                <td>
                                     <div th:if="${theatre.status == T(com.ninjaTurtles.champtheatre.models.Theatre.Status).OCCUPIED}">
                                         <span class="badge bg-secondary" th:text="${theatre.status}"></span>
                                     </div>
@@ -185,7 +200,7 @@
                                     </div>
 
 
-                                 </td>
+                                </td>
                                 <td th:text="${theatre.capacity}"></td>
                             </tr>
                             </tbody>
@@ -196,9 +211,9 @@
                 <div class="card">
 
                     <div class="card-body">
-                        <h5 class="card-title"  style="color:red">Occupied </h5>
+                        <h5 class="card-title" style="color:red">Unavailable Slots </h5>
 
-                        <table id="reservationTable"    style="color:red" class="table table-hover">
+                        <table id="reservationTable" style="color:red" class="table table-hover">
 
                             <thead>
                             <tr>
@@ -209,10 +224,14 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr th:each="reservation : ${reservations}" id="reservationRow" th:class="${#dates.format(reservation.eventDate, 'dd/MM/yyyy') != date ? 'd-none' : ''}">
-                                <td th:text="${#dates.format(reservation.eventDate, 'dd/MM/yyyy')}"></td>
-                                <td th:text="${#dates.format(reservation.startTime,'h:mm a')}"></td>
-                                <td th:text="${#dates.format(reservation.endTime, 'h:mm a')}"></td>
+                            <tr th:each="reservation : ${reservations}" id="reservationRow">
+                                <div th:if="${reservation.status == T(com.ninjaTurtles.champtheatre.models.Reservation.Status).APPROVED  or reservation.status == T(com.ninjaTurtles.champtheatre.models.Reservation.Status).UNREVIEWED  }">
+                                    <td style="display: none;"
+                                        th:text="${#dates.format(reservation.eventDate, 'dd/MM/yyyy')}"></td>
+                                    <td th:text="${reservation.theatre.name}"></td>
+                                    <td th:text="${#dates.format(reservation.startTime,'h:mm a')}"></td>
+                                    <td th:text="${#dates.format(reservation.endTime, 'h:mm a')}"></td>
+                                </div>
                             </tr>
                             </tbody>
                         </table>
@@ -225,8 +244,10 @@
 
 <script>
     // Set the minimum and default values to the current date
-    var currentDate = new Date().toISOString().split('T')[0];
-    document.getElementById("date").setAttribute('min', currentDate);
+    var currentDate = new Date();
+    currentDate.setDate(currentDate.getDate() + 1);
+    var tomorrowDate = currentDate.toISOString().split('T')[0];
+    document.getElementById("date").setAttribute('min', tomorrowDate);
     //document.getElementById("date").value = currentDate;
 
 
@@ -272,6 +293,31 @@
     });
 
 
+    function filterReservations() {
+        var inputDateElement = document.getElementById("date");
+        var inputDate = inputDateElement.value;
+        var formattedInputDate = formatDate(inputDate);
+
+        var rows = document.querySelectorAll("#reservationRow");
+
+        rows.forEach(function(row) {
+            var eventDate = row.cells[0].textContent;
+            if (eventDate === formattedInputDate) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    }
+
+    function formatDate(dateString) {
+        var dateParts = dateString.split("-");
+        var formattedDate = dateParts[2] + "/" + dateParts[1] + "/" + dateParts[0];
+        return formattedDate;
+    }
+
+
+filterReservations();
 
 
 </script>
